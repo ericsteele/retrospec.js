@@ -10,9 +10,9 @@
 
 // libs
 var esprima = require('esprima'),          // js parser
-		FS = require('fs'),                    // file system
-		parse = require('../lib/r.js/parse'),  // r.js parse lib
-		Q = require('q');                      // promises
+    FS = require('fs'),                    // file system
+    parse = require('../lib/r.js/parse'),  // r.js parse lib
+    Q = require('q');                      // promises
 
 // add Q promise support to FS.readile
 var readFile = Q.nfbind(FS.readFile);
