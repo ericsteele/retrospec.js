@@ -5,8 +5,8 @@ var chai = require('chai');
 
 // Grab Chai's assert, expect, and should interfaces
 var assert = chai.assert,
-		expect = chai.expect,
-		should = chai.should(); // Note that should has to be executed
+    expect = chai.expect,
+    should = chai.should(); // Note that should has to be executed
 
 // Object under test
 var example = {
