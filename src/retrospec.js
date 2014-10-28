@@ -12,7 +12,9 @@
 var esprima = require('esprima'),          // js parser
     FS = require('fs'),                    // file system
     parse = require('../lib/r.js/parse'),  // r.js parse lib
-    Q = require('q');                      // promises
+    Q = require('q'),                      // promises
+    glob = require('glob'),                // file globbing
+    estraverse = require('estraverse');    // ast traversal
 
 // add Q promise support to FS.readile
 var readFile = Q.nfbind(FS.readFile);
@@ -31,7 +33,7 @@ var retrospec = module.exports = {};
  */
 retrospec.parseJS = function(filePath, encoding, callback) {
 	var deferred = Q.defer();
-		
+	
 	readFile(filePath, encoding).then(
 		function success(text) {
 			var ast = esprima.parse(text);
@@ -41,6 +43,7 @@ retrospec.parseJS = function(filePath, encoding, callback) {
 			deferred.reject(error);
 		});
 
+	deferred.promise.nodeify(callback);
 	return deferred.promise;
 };
 
@@ -65,6 +68,7 @@ retrospec.findDependencies = function(filePath, encoding, callback) {
 			deferred.reject(error);
 		});
 
+	deferred.promise.nodeify(callback);
 	return deferred.promise;
 };
 
@@ -89,6 +93,7 @@ retrospec.findCjsDependencies = function(filePath, encoding, callback) {
 			deferred.reject(error);
 		});
 
+	deferred.promise.nodeify(callback);
 	return deferred.promise;
 };
 
@@ -121,5 +126,73 @@ retrospec.findConfig = function(filePath, encoding, callback) {
 			deferred.reject(error);
 		});
 
+	deferred.promise.nodeify(callback);
+	return deferred.promise;
+};
+
+/**
+ * Match files using the patterns the shell uses, like stars and stuff.
+ *
+ * @param {String} pattern
+ * @param {Object} options
+ * @param {Function} callback
+ *
+ * @returns {Array} an array of matched files.
+ */
+retrospec.glob = function(pattern, options, callback) {
+	var deferred = Q.defer();
+
+	glob(pattern, options, function (error, files) {
+		if(error) deferred.reject(error);
+		deferred.resolve(files);
+	});
+
+	deferred.promise.nodeify(callback);
+	return deferred.promise;
+};
+
+/**
+ * Finds 'angular.module()' statements.
+ * 
+ * @param {String} filePath
+ * @param {String} encoding
+ * @param {Function} callback
+ *
+ * @returns {Array} an array of matched modules.
+ */
+retrospec.findAngularModules = function(filePath, encoding, callback) {
+	var deferred = Q.defer();
+
+	// array of found modules
+	var modules = [];
+
+	readFile(filePath, encoding).then(
+		function success(text) {
+			var ast = esprima.parse(text);
+
+			estraverse.traverse(ast, {
+					enter: function (node, parent) {
+						if(node.type === 'ExpressionStatement' &&
+						   node.expression.type === 'CallExpression' &&
+						   node.expression.callee.type === 'MemberExpression' &&
+						   node.expression.callee.object.name === 'angular' &&
+						   node.expression.callee.property.name === 'module' &&
+						   node.expression.arguments[1].elements.length > 0) {
+							
+							modules.push({
+								name: node.expression.arguments[0].value,
+								deps: node.expression.arguments[1].elements
+							});
+						}
+					}
+			});
+
+			deferred.resolve(modules);
+		},
+		function failure(error) {
+			deferred.reject(error);
+		});
+
+	deferred.promise.nodeify(callback);
 	return deferred.promise;
 };

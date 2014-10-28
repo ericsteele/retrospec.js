@@ -26,7 +26,7 @@ var path = require('path');
 // Test input files
 var files = {
 	empty: {
-		path: path.resolve(__dirname, 'input/requirejs/empty.js'),
+		path: path.resolve(__dirname, 'input/empty.js'),
 		deps: [],
 		cjsDeps: []
 	},
@@ -53,7 +53,7 @@ var files = {
 // Module under test
 var retrospec = require('../src/retrospec');
 
-describe('retrospec', function() {
+describe('retrospec [requirejs]', function() {
  
 	describe('.parseJS', function() {
 		it('should be a function', function() {
