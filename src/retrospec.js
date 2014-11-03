@@ -23,13 +23,13 @@ var readFile = Q.nfbind(FS.readFile);
 var retrospec = module.exports = {};
 
 /**
- * Parses the specified JavaSript file produces an Abstract Syntax Tree (AST).
+ * Parses the specified JavaSript file and produces an Abstract Syntax Tree (AST).
  *
- * @param {String} filePath
- * @param {String} encoding
- * @param {Function} callback
+ * @param {String} filePath - absolute path of the JavaSript file
+ * @param {String} encoding - the file encoding (e.g. "utf-8")
+ * @param {Function} callback - optional callback to invoke  
  *
- * @returns {Object} an Abstract Syntax Tree (AST).
+ * @returns {Object} a promise to produce an Abstract Syntax Tree (AST).
  */
 retrospec.parseJS = function(filePath, encoding, callback) {
 	var deferred = Q.defer();
@@ -50,11 +50,11 @@ retrospec.parseJS = function(filePath, encoding, callback) {
 /**
  * Finds all dependencies specified in dependency arrays and inside simplified commonjs wrappers.
  *
- * @param {String} filePath
- * @param {String} encoding
- * @param {Function} callback
+ * @param {String} filePath - absolute path of the JavaSript file
+ * @param {String} encoding - the file encoding (e.g. "utf-8")
+ * @param {Function} callback - optional callback to invoke  
  *
- * @returns {Array} an array of dependency strings.
+ * @returns {Object} a promise to produce an array of dependency strings.
  */
 retrospec.findDependencies = function(filePath, encoding, callback) {
 	var deferred = Q.defer();
@@ -75,11 +75,11 @@ retrospec.findDependencies = function(filePath, encoding, callback) {
 /**
  * Finds only CJS dependencies, ones that are the form: require('stringLiteral')
  *
- * @param {String} filePath
- * @param {String} encoding
- * @param {Function} callback
+ * @param {String} filePath - absolute path of the JavaSript file
+ * @param {String} encoding - the file encoding (e.g. "utf-8")
+ * @param {Function} callback - optional callback to invoke  
  *
- * @returns {Array} an array of dependency strings.
+ * @returns {Promise} A promise to produce an array of dependency strings.
  */
 retrospec.findCjsDependencies = function(filePath, encoding, callback) {
 	var deferred = Q.defer();
@@ -99,20 +99,21 @@ retrospec.findCjsDependencies = function(filePath, encoding, callback) {
 
 /**
  * Finds any config that is passed to requirejs. That includes calls to:
- *   1. require/requirejs.config()
- *   2. require/requirejs({}, ...)
- * 
- * @param {String} filePath
- * @param {String} encoding
- * @param {Function} callback
+ *   1. require.config()
+ *   2. requirejs.config()
+ *   3. require({}, ...)
+ *   4. requirejs({}, ...)
  *
- * @returns {Object} a config details object with the following properties:
- * - config: {Object} the config object found. Can be undefined if no
- * config found.
+ * @param {String} filePath - absolute path of the JavaSript file
+ * @param {String} encoding - the file encoding (e.g. "utf-8")
+ * @param {Function} callback - optional callback to invoke  
+ *
+ * @returns {Promise} A promise to produce a RequireJS config details {Object} with the following properties:
+ * - config: {Object} the config object found. Can be undefined if no config found.
  * - range: {Array} the start index and end index in the contents where
- * the config was found. Can be undefined if no config found.
- * Can throw an error if the config in the file cannot be evaluated in
- * a build context to valid JavaScript.
+ *                  the config was found. Can be undefined if no config found.
+ *                  Can throw an error if the config in the file cannot be 
+ *                  evaluated ina build context to valid JavaScript.
  */
 retrospec.findConfig = function(filePath, encoding, callback) {
 	var deferred = Q.defer();
@@ -137,7 +138,7 @@ retrospec.findConfig = function(filePath, encoding, callback) {
  * @param {Object} options
  * @param {Function} callback
  *
- * @returns {Array} an array of matched files.
+ * @returns {Promise} A promise to produce an array of matched files.
  */
 retrospec.glob = function(pattern, options, callback) {
 	var deferred = Q.defer();
@@ -152,39 +153,27 @@ retrospec.glob = function(pattern, options, callback) {
 };
 
 /**
- * Finds 'angular.module()' statements.
- * 
- * @param {String} filePath
- * @param {String} encoding
- * @param {Function} callback
+ * Finds 'angular.module("",[])' statements in the specified file,
  *
- * @returns {Array} an array of matched modules.
+ * @param {String} filePath - absolute path of the JavaSript file
+ * @param {String} encoding - the file encoding (e.g. "utf-8")
+ * @param {Function} callback - optional callback to invoke  
+ *
+ * @returns {Promise} A promise to produce an array of matched modules.
  */
 retrospec.findAngularModules = function(filePath, encoding, callback) {
-	var deferred = Q.defer();
-
-	// array of found modules
-	var modules = [];
+	var deferred = Q.defer(), modules = [];
 
 	readFile(filePath, encoding).then(
 		function success(text) {
 			var ast = esprima.parse(text);
 
 			estraverse.traverse(ast, {
-					enter: function (node, parent) {
-						if(node.type === 'ExpressionStatement' &&
-						   node.expression.type === 'CallExpression' &&
-						   node.expression.callee.type === 'MemberExpression' &&
-						   node.expression.callee.object.name === 'angular' &&
-						   node.expression.callee.property.name === 'module' &&
-						   node.expression.arguments[1].elements.length > 0) {
-							
-							modules.push({
-								name: node.expression.arguments[0].value,
-								deps: node.expression.arguments[1].elements
-							});
-						}
+				enter: function (node, parent) {
+					if(isAngularModuleExpression(node)) {
+						modules.push(new AngularModule(node.expression.arguments));
 					}
+				}
 			});
 
 			deferred.resolve(modules);
@@ -196,3 +185,97 @@ retrospec.findAngularModules = function(filePath, encoding, callback) {
 	deferred.promise.nodeify(callback);
 	return deferred.promise;
 };
+
+/**
+ * Checks if the specified JavaScript AST node represents an 'angular.module("",[])' statement.
+ * 
+ * @param {Object} node - the JavaScript AST node to check 
+ * 
+ * @returns {Boolean} True if the node represents an 'angular.module("",[])' statement. False otherwise.
+ */
+function isAngularModuleExpression(node) {
+	       // AST node must have the following structure
+	return isExpressionStatement(node) &&
+         isCallExpression(node.expression) &&
+         isMemberExpression(node.expression.callee) &&
+         // CallExpression must === 'angular.module'
+         node.expression.callee.object.name === 'angular' &&
+         node.expression.callee.property.name === 'module' &&
+         // argument 1 must === non-empty string
+         typeof node.expression.arguments[0].value === 'string' &&
+         node.expression.arguments[0].value.length > 0 &&
+         // argument 2 must be an array
+         isArrayExpression(node.expression.arguments[1]);
+};
+
+/**
+ * Checks if the specified JavaScript AST node represents a MemberExpression.
+ * 
+ * @param  {Object}  node - the JavaScript AST node to check
+ * 
+ * @return {Boolean} True if the node is a MemberExpression. False otherwise.
+ */
+function isMemberExpression(node) {
+	return node && node.type === 'MemberExpression';
+};
+
+/**
+ * Checks if the specified JavaScript AST node represents a CallExpression.
+ * 
+ * @param  {Object}  node - the JavaScript AST node to check
+ * 
+ * @return {Boolean} True if the node is a CallExpression. False otherwise.
+ */
+function isCallExpression(node) {
+	return node && node.type === 'CallExpression';
+}
+
+/**
+ * Checks if the specified JavaScript AST node represents an ArrayExpression.
+ * 
+ * @param  {Object}  node - the JavaScript AST node to check
+ * 
+ * @return {Boolean} True if the node is an ArrayExpression. False otherwise.
+ */
+function isArrayExpression(node) {
+	return node && node.type === 'ArrayExpression';
+}
+
+/**
+ * Checks if the specified JavaScript AST node represents an ExpressionStatement.
+ * 
+ * @param  {Object}  node - the JavaScript AST node to check
+ * 
+ * @return {Boolean} True if the node is an ExpressionStatement. False otherwise.
+ */
+function isExpressionStatement(node) {
+	return node && node.type === 'ExpressionStatement';
+}
+
+/**
+ * Constructs an object that represents an AngularJS module, containing both
+ * the module's name and the names of its dependencies.
+ * 
+ * @param {Object} argsNode - CallExpression 'arguments' node for 'angular.module("",[])'
+ */
+function AngularModule(argsNode) {
+	// make sure that this function is invoked with the 'new' operator
+	if(this instanceof AngularModule) {
+		// module name
+		this.name = argsNode[0].value;
+		// module dependencies
+		this.dependencies = [];
+		for(var i = 0, iEnd = argsNode[1].elements.length; i < iEnd; i++) {
+			var dependency = argsNode[1].elements[i].value;
+			if(typeof dependency === 'string' && dependency.length > 0) {
+				this.dependencies.push(dependency);
+			} else {
+				console.log('[warn] non-string dependency encountered for angular module: ' + this.name);
+			}
+		}
+	} 
+	else {
+		console.log('[warn] forgot to use "new" operator with AngularModule: ' + this.name);
+		return new AngularModule(argsNode);
+	}
+}
