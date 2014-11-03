@@ -29,7 +29,7 @@ var retrospec = module.exports = {};
  * @param {String} encoding - the file encoding (e.g. "utf-8")
  * @param {Function} callback - optional callback to invoke  
  *
- * @returns {Object} a promise to produce an Abstract Syntax Tree (AST).
+ * @returns {Object} A promise to produce an Abstract Syntax Tree (AST).
  */
 retrospec.parseJS = function(filePath, encoding, callback) {
 	var deferred = Q.defer();
@@ -54,7 +54,7 @@ retrospec.parseJS = function(filePath, encoding, callback) {
  * @param {String} encoding - the file encoding (e.g. "utf-8")
  * @param {Function} callback - optional callback to invoke  
  *
- * @returns {Object} a promise to produce an array of dependency strings.
+ * @returns {Object} A promise to produce an array of dependency strings.
  */
 retrospec.findDependencies = function(filePath, encoding, callback) {
 	var deferred = Q.defer();
