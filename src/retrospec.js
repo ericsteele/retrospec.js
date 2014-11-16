@@ -14,6 +14,7 @@ var esprima = require('esprima'),          // js parser
     parse = require('../lib/r.js/parse'),  // r.js parse lib
     Q = require('q'),                      // promises
     glob = require('glob'),                // file globbing
+    path = require('path'),                // handling file paths
     estraverse = require('estraverse');    // ast traversal
 
 // add Q promise support to FS.readile
@@ -171,11 +172,10 @@ retrospec.findAngularModules = function(filePath, encoding, callback) {
 			estraverse.traverse(ast, {
 				enter: function (node, parent) {
 					if(isAngularModuleExpression(node)) {
-						modules.push(new AngularModule(node.expression.arguments));
+						modules.push(new AngularModule(node.arguments));
 					}
 				}
 			});
-
 			deferred.resolve(modules);
 		},
 		function failure(error) {
@@ -187,6 +187,47 @@ retrospec.findAngularModules = function(filePath, encoding, callback) {
 };
 
 /**
+ * finds all angular modules below a directory
+ *
+ * @param {String} filePath - absolute path of the JavaSript file
+ * @param {String} encoding - the file encoding (e.g. "utf-8")
+ * @param {Function} callback - optional callback to invoke  
+ *
+ * @returns {Promise} A promise to produce an array of matched modules.
+ */
+retrospec.findAngularModulesInDir = function(filePath, encoding, callback, globPattern) {
+	var deferred = Q.defer();
+	var allModules = [];
+
+	globPattern = globPattern || "**/*.js";
+	retrospec.glob(filePath + globPattern, encoding).then(
+		function(files) {
+			var count = 0;
+			for (var i = 0; i < files.length; i++) {
+				var f = files[i];
+				retrospec.findAngularModules(f, encoding, callback).then(
+					function(modules) {
+						count++;
+						allModules = allModules.concat(modules);
+						if (count == files.length) {
+							deferred.resolve(allModules);
+						}
+					},
+					function(err) {
+						deferred.reject(err);
+					}
+				)
+			}
+		},
+		function(error) {
+			deferred.reject(error);
+		}
+	);
+
+	return deferred.promise;
+}
+
+/**
  * Checks if the specified JavaScript AST node represents an 'angular.module("",[])' statement.
  * 
  * @param {Object} node - the JavaScript AST node to check 
@@ -194,18 +235,16 @@ retrospec.findAngularModules = function(filePath, encoding, callback) {
  * @returns {Boolean} True if the node represents an 'angular.module("",[])' statement. False otherwise.
  */
 function isAngularModuleExpression(node) {
-	       // AST node must have the following structure
-	return isExpressionStatement(node) &&
-         isCallExpression(node.expression) &&
-         isMemberExpression(node.expression.callee) &&
-         // CallExpression must === 'angular.module'
-         node.expression.callee.object.name === 'angular' &&
-         node.expression.callee.property.name === 'module' &&
-         // argument 1 must === non-empty string
-         typeof node.expression.arguments[0].value === 'string' &&
-         node.expression.arguments[0].value.length > 0 &&
-         // argument 2 must be an array
-         isArrayExpression(node.expression.arguments[1]);
+	// AST node must have the following structure
+    return node && node.callee && node.callee.object &&
+           node.callee.property && node.arguments && 
+           isCallExpression(node) &&
+           isMemberExpression(node.callee) &&
+           node.callee.object.name === 'angular' &&
+           node.callee.property.name === 'module' &&
+           typeof node.arguments[0].value === 'string' &&
+           node.arguments[0].value.length > 0 &&
+           isArrayExpression(node.arguments[1]);
 };
 
 /**
@@ -273,7 +312,7 @@ function AngularModule(argsNode) {
 				console.log('[warn] non-string dependency encountered for angular module: ' + this.name);
 			}
 		}
-	} 
+	}
 	else {
 		console.log('[warn] forgot to use "new" operator with AngularModule: ' + this.name);
 		return new AngularModule(argsNode);

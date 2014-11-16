@@ -41,6 +41,12 @@ var files = {
 		modules: [
 			{ name: 'test', dependencies: ['a', 'b', 'c'] }
 		]
+	},
+	uiBootstrapExample: {
+		path: path.resolve(__dirname, 'input/angular/ui-bootstrap-example.js'),
+		modules: [
+			{ name: 'ui.bootstrap.accordion', dependencies: ['ui.bootstrap.collapse'] }
+		]
 	}
 };
 
@@ -69,6 +75,13 @@ describe('retrospec [angular]', function() {
 			it('should find 3 modules, each with 3 dependencies', function(done) {
 				var promise = retrospec.findAngularModules(files.multipleModules.path, 'utf-8');
 				promise.should.eventually.eql(files.multipleModules.modules).notify(done);
+			});
+		});
+
+		describe('ui-bootstrap-example.js', function() {
+			it('should find 1 module, with 1 dependency', function(done) {
+				var promise = retrospec.findAngularModules(files.uiBootstrapExample.path, 'utf-8');
+				promise.should.eventually.eql(files.uiBootstrapExample.modules).notify(done);
 			});
 		});
 

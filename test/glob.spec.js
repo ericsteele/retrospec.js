@@ -31,5 +31,4 @@ describe('retrospec [glob]', function() {
 			promise.should.eventually.have.length(4).notify(done);
 		})
 	})
-
 })
