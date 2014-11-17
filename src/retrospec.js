@@ -172,7 +172,10 @@ retrospec.findAngularModules = function(filePath, encoding, callback) {
 			estraverse.traverse(ast, {
 				enter: function (node, parent) {
 					if(isAngularModuleExpression(node)) {
-						modules.push(new AngularModule(node.arguments));
+						var module = new AngularModule(node.arguments);
+						if (!alreadyInModuleArray(modules, module)) {
+							modules.push(module);
+						}
 					}
 				}
 			});
@@ -208,7 +211,7 @@ retrospec.findAngularModulesInDir = function(filePath, encoding, callback, globP
 				retrospec.findAngularModules(f, encoding, callback).then(
 					function(modules) {
 						count++;
-						allModules = allModules.concat(modules);
+						allModules = addAllUniqueModulesToList(allModules, modules);
 						if (count == files.length) {
 							deferred.resolve(allModules);
 						}
@@ -317,4 +320,47 @@ function AngularModule(argsNode) {
 		console.log('[warn] forgot to use "new" operator with AngularModule: ' + this.name);
 		return new AngularModule(argsNode);
 	}
+}
+
+/**
+ * Checks if the module is already in the list
+ *
+ * @param {Array} list - The list to check for module
+ * @param {Object} module - The module to check for
+ *
+ * @return {Boolean} Whether or not the module is already in the list
+ */
+function alreadyInModuleArray(list, module) {
+	for (var i = 0; i < list.length; i++) {
+		if (list[i].name === module.name) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Combines the two lists and returns a combined, unique list
+ *
+ * @param {Array} master - The list to be combined into (won't be changed)
+ * @param {Array} list - The list from which modules are taken
+ *
+ * @return master plus all unique entries in list not already in master
+ */
+function addAllUniqueModulesToList(master, list) {
+	for (var i = 0; i < list.length; i++) {
+		var candidateModule = list[i];
+		var found = false;
+		for (var j = 0; j < master.length; j++)  {
+			if (master[j].name === candidateModule.name) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			master.push(candidateModule);
+		}
+	}
+	return master;
 }

@@ -29,34 +29,26 @@ var path = require('path');
 var retrospec = require('../src/retrospec');
 
 var expected = [
-	{ name: 'ui.bootstrap.accordion', dependencies: [ 'ui.bootstrap.collapse' ] },
-	{ name: 'ui.bootstrap.alert', dependencies: [] },
-	{ name: 'ui.bootstrap.buttons', dependencies: [] },
-	{ name: 'ui.bootstrap.carousel', dependencies: [ 'ui.bootstrap.transition' ] },
-	{ name: 'ui.bootstrap.bindHtml', dependencies: [] },
-	{ name: 'ui.bootstrap.collapse', dependencies: [ 'ui.bootstrap.transition' ] },
-	{ name: 'ui.bootstrap.dateparser', dependencies: [] },
-	{ name: 'ui.bootstrap.datepicker', dependencies: [ 'ui.bootstrap.dateparser', 'ui.bootstrap.position' ] },
-	{ name: 'ui.bootstrap.dropdown', dependencies: [] },
-	{ name: 'ui.bootstrap.modal', dependencies: [ 'ui.bootstrap.transition' ] },
-	{ name: 'ui.bootstrap.pagination', dependencies: [] },
-	{ name: 'ui.bootstrap.position', dependencies: [] },
-	{ name: 'ui.bootstrap.popover', dependencies: [ 'ui.bootstrap.tooltip' ] },
-	{ name: 'ui.bootstrap.progressbar', dependencies: [] },
-	{ name: 'ui.bootstrap.rating', dependencies: [] },
-	{ name: 'ui.bootstrap.tabs', dependencies: [] },
-	{ name: 'ui.bootstrap.timepicker', dependencies: [] },
-	{ name: 'ui.bootstrap.transition', dependencies: [] },
-	{ name: 'ui.bootstrap.tooltip', dependencies: [ 'ui.bootstrap.position', 'ui.bootstrap.bindHtml' ] },
-	{ name: 'ui.bootstrap.typeahead', dependencies: [ 'ui.bootstrap.position', 'ui.bootstrap.bindHtml' ] }
-]
+	{ name: 'ngAria', dependencies: [ 'ng' ] },
+	{ name: 'ngCookies', dependencies: [ 'ng' ] },
+	{ name: 'ngLocale', dependencies: [] },
+	{ name: 'ngAnimate', dependencies: [ 'ng' ] },
+	{ name: 'ngMessages', dependencies: [] },
+	{ name: 'ngResource', dependencies: [ 'ng' ] },
+	{ name: 'ngAnimateMock', dependencies: [ 'ng' ] },
+	{ name: 'ngMock', dependencies: [ 'ng' ] },
+	{ name: 'ngMockE2E', dependencies: [ 'ng' ] },
+	{ name: 'ngRoute', dependencies: [ 'ng' ] },
+	{ name: 'ngSanitize', dependencies: [] },
+	{ name: 'ngTouch', dependencies: [] }
+];
 
 /*****************************************************/
 /* To successfully run this test, you must checkout  */
-/* ui-bootstrap into the directory:                  */
+/* angular.js into the directory:                    */
 /*   retrospec.js/x/                                 */
 /*****************************************************/
-describe('ui-bootstrap', function() {
+describe('angular.js', function() {
 	// TODO: If this fails, it will just hang until timeout.  Not sure how to fix.
 	xit('should find 20 modules', function(done) {
 		var p = path.resolve(__dirname, '../x/src/');
@@ -67,6 +59,7 @@ describe('ui-bootstrap', function() {
 				expect(d).to.include(expected[i]);
 			}
 			done();
+			console.log(d);
 		}, function(err) {
 			console.log(err);
 		});
