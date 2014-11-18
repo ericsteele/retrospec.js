@@ -23,12 +23,49 @@ var assert = chai.assert,
 // Module under test
 var retrospec = require('../src/retrospec');
 
+// Test project directory paths
+var testInputDirPath = process.cwd() + '\\test\\input',
+    jqueryMobileDirPath = testInputDirPath + '\\jquery-mobile\\js';
+
 describe('retrospec [glob]', function() {
 	
 	describe('.glob(pattern)', function() {
 		it('should glob 5 files from the /test/input/requirejs directory', function(done) {
 			var promise = retrospec.glob("test/input/requirejs/*.js", 'utf-8');
 			promise.should.eventually.have.length(4).notify(done);
-		})
-	})
-})
+		});
+	});
+  
+  describe('.locateFiles(patterns, cwd)', function() {
+  
+    describe('patterns = ["*.js"])', function() {
+      it('should locate 29 files in the "/jquery-mobile/js" directory', function(done) {
+        var promise = retrospec.locateFiles(['*.js'], jqueryMobileDirPath);
+        promise.should.eventually.have.length(29).notify(done);
+      });
+    });
+  
+    describe('patterns = ["**/*.js"])', function() {
+      it('should locate 72 files in the "/jquery-mobile/js" directory', function(done) {
+        var promise = retrospec.locateFiles(['**/*.js'], jqueryMobileDirPath);
+        promise.should.eventually.have.length(72).notify(done);
+      });
+    });
+  
+    describe('patterns = ["*.js", "**/*.js"])', function() {
+      it('should locate 72 files in the "/jquery-mobile/js" directory', function(done) {
+        var promise = retrospec.locateFiles(['*.js', '**/*.js'], jqueryMobileDirPath);
+        promise.should.eventually.have.length(72).notify(done);
+      });
+    });
+  
+    describe('patterns = ["**/*.js", "**/*.js"])', function() {
+      it('should locate 72 files in the "/jquery-mobile/js" directory', function(done) {
+        var promise = retrospec.locateFiles(['*.js', '**/*.js'], jqueryMobileDirPath);
+        promise.should.eventually.have.length(72).notify(done);
+      });
+    });
+
+  });
+
+});

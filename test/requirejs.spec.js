@@ -50,6 +50,9 @@ var files = {
 	}
 };
 
+// Test project directory paths
+var jqueryMobileDirPath = path.resolve(__dirname, 'input/jquery-mobile/js');
+
 // Module under test
 var retrospec = require('../src/retrospec');
 
@@ -127,6 +130,17 @@ describe('retrospec [requirejs]', function() {
 			var promise = retrospec.findConfig(files.requirejsConfig.path, 'utf-8');
 			promise.should.eventually.be.an('object').notify(done);
 		})
+	})
+
+	describe('.findRequireModules(patterns, cwd)', function() {
+  
+		describe('patterns = ["**/*.js"])', function() {
+			it('should find 72 modules in the "/jquery-mobile/js" directory', function(done) {
+	        		var promise = retrospec.findRequireModulesInDir(['**/*.js'], jqueryMobileDirPath);
+	        		promise.should.eventually.have.length(72).notify(done);
+			})
+		})
+
 	})
 
 })

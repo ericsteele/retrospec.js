@@ -11,6 +11,7 @@
 // libs
 var esprima = require('esprima'),          // js parser
     FS = require('fs'),                    // file system
+    OS = require('os'),                    // operating system info
     parse = require('../lib/r.js/parse'),  // r.js parse lib
     Q = require('q'),                      // promises
     glob = require('glob'),                // file globbing
@@ -58,11 +59,13 @@ retrospec.parseJS = function(filePath, encoding, callback) {
  * @returns {Object} A promise to produce an array of dependency strings.
  */
 retrospec.findDependencies = function(filePath, encoding, callback) {
-	var deferred = Q.defer();
+	var deferred = Q.defer(),
+	    encoding = encoding || 'utf-8',
+	    fileName = filePath.replace(/^.*[\\\/]/, '');
 
 	readFile(filePath, encoding).then(
 		function success(text) {
-			var deps = parse.findDependencies('', text);
+			var deps = parse.findDependencies(fileName, text);
 			deferred.resolve(deps);
 		},
 		function failure(error) {
@@ -133,27 +136,6 @@ retrospec.findConfig = function(filePath, encoding, callback) {
 };
 
 /**
- * Match files using the patterns the shell uses, like stars and stuff.
- *
- * @param {String} pattern
- * @param {Object} options
- * @param {Function} callback
- *
- * @returns {Promise} A promise to produce an array of matched files.
- */
-retrospec.glob = function(pattern, options, callback) {
-	var deferred = Q.defer();
-
-	glob(pattern, options, function (error, files) {
-		if(error) deferred.reject(error);
-		deferred.resolve(files);
-	});
-
-	deferred.promise.nodeify(callback);
-	return deferred.promise;
-};
-
-/**
  * Finds 'angular.module("",[])' statements in the specified file,
  *
  * @param {String} filePath - absolute path of the JavaSript file
@@ -179,6 +161,7 @@ retrospec.findAngularModules = function(filePath, encoding, callback) {
 					}
 				}
 			});
+
 			deferred.resolve(modules);
 		},
 		function failure(error) {
@@ -259,7 +242,7 @@ function isAngularModuleExpression(node) {
  */
 function isMemberExpression(node) {
 	return node && node.type === 'MemberExpression';
-};
+}
 
 /**
  * Checks if the specified JavaScript AST node represents a CallExpression.
@@ -320,6 +303,167 @@ function AngularModule(argsNode) {
 		console.log('[warn] forgot to use "new" operator with AngularModule: ' + this.name);
 		return new AngularModule(argsNode);
 	}
+}
+
+/**
+ * Match file names using the patterns the shell uses, like stars and stuff.
+ *
+ * @param {String} pattern
+ * @param {Object} options
+ * @param {Function} callback
+ *
+ * @returns {Promise} A promise to produce an array of matched file names.
+ */
+retrospec.glob = function(pattern, options, callback) {
+	var deferred = Q.defer();
+
+	glob(pattern, options, function (error, files) {
+		if(error) deferred.reject(error);
+		deferred.resolve(files);
+	});
+
+	deferred.promise.nodeify(callback);
+	return deferred.promise;
+};
+
+function RequireJsModule(path, dependencies) {
+	// make sure that this function is invoked with the 'new' operator
+	if(this instanceof RequireJsModule) {
+		this.path = path || '';
+		this.name = path.replace(/^.*[\\\/]/, '').slice(0, -3) || '';
+		this.dependencies = dependencies || [];
+	} 
+	else {
+		console.log('[warn] forgot to use "new" operator with RequireJsModule: ' + this.name);
+		return new AngularModule(argsNode);
+	}
+}
+
+retrospec.findRequireModulesInDir = function(patterns, cwd) {
+	var deferred = Q.defer(),
+			promises = [],
+	    patterns = patterns || ['*'],
+	    cwd      = cwd      || process.cwd();
+	
+	// get the paths of all files that match the provided patterns
+	retrospec.locateFiles(patterns, cwd).then(
+		function success(filePaths) {
+			filePaths.forEach(function(path) {
+				var promise = retrospec.findDependencies(path).then(
+					function success(deps) {
+						return new RequireJsModule(path, deps);
+					});
+
+				promises.push(promise);
+			});
+
+			Q.all(promises).then(
+				function success(modules) {
+					deferred.resolve(modules);
+				},
+				function failure(error) {
+					deferred.reject(error);
+				});
+
+		},
+		function failure(error) {
+			deferred.reject(error);
+		});
+
+	return deferred.promise;
+
+};
+
+/**
+ * Gets the absolute paths of all files in a directory that match one or more glob patterns.
+ * 
+ * @param  {Array}  patterns - Array of glob patterns that will be used to match/locate files
+ * @param  {String} cwd - Absolute path of the directory to search in (defaults to process.cwd())
+ * 
+ * @returns {Promise} A promise to produce an array of absolute file paths (one path per matched file).
+ */
+retrospec.locateFiles = function(patterns, cwd) {
+	var promises = [], filePaths = [];
+
+	// set `cwd` to default value if not provided
+	cwd = cwd || process.cwd();
+
+	// initiate the search for files
+	for(var i = 0, iEnd = patterns.length; i < iEnd; i++) {
+		var promise = retrospec.glob(patterns[i], { cwd: cwd });
+		promises.push(promise);
+	}
+
+	return Q.all(promises)		// combine promises
+	        .then(flatten)		// flatten promise results into a single array
+	        .then(getUnique)	// remove duplicate file paths (i.e. those matched by more than one glob pattern)
+	        .then(makeFilePathsAbsolute)
+	        .then(fixFilePathsForOS);
+
+	// Prepends `cwd` to the relative paths
+	function makeFilePathsAbsolute(relativePaths) {
+		var absolutePaths = [];
+		for(var i = 0, iEnd = relativePaths.length; i < iEnd; i++) {
+			absolutePaths.push(cwd + '/' + relativePaths[i]);
+		}
+		return absolutePaths;
+	} 		
+
+	// Converts the POSIX paths output by node-glob into UNC paths if using a Windows OS 
+	function fixFilePathsForOS(absolutePaths) {
+		if(OS.type().indexOf('Windows') > -1) {
+			for(var i = 0, iEnd = absolutePaths.length; i < iEnd; i++) {
+				absolutePaths[i] = absolutePaths[i].replace(/\//g,'\\');
+			}
+		}
+		return absolutePaths;
+	}		
+};
+
+/**
+ * Takes an array, whose elements may or may not be arrays, and flattens it into a single array.
+ * 
+ * @param  {Array} array - The array to flatten
+ * 
+ * @return {Array} The flattened array.
+ */
+function flatten(array) {
+  var flattened = [];
+  for(var i = 0, iEnd = array.length; i < iEnd; i++) {
+    if(Array.isArray(array[i]) === false) {
+      flattened.push(array[i]);
+    }
+    else {
+      var temp = flatten(array[i]);
+  		for(var j = 0, jEnd = temp.length; j < jEnd; j++) {
+        flattened.push(temp[j]);
+      }
+    }
+  }
+  return flattened;
+}
+
+/**
+ * Gets an array containing all unique values in the provided array.
+ * 
+ * @param  {Array} array - An array that may contain duplicate values
+ * 
+ * @return {Array} An array containing all unique values found in `array`
+ */
+function getUnique(array) {
+	var unique = [];
+
+	for(var i = 0, iEnd = array.length; i < iEnd; i++) {
+		for(var j = i + 1; j < iEnd; j++) {
+			// skip array[i] if it is found later in the array
+			if(array[i] === array[j]) {
+				j = ++i;
+			}
+		}
+		unique.push(array[i]);
+	}
+
+	return unique;
 }
 
 /**
