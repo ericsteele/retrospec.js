@@ -1,5 +1,5 @@
 /*
- * code-module-extractor.js
+ * file-content-extractor.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele
@@ -13,68 +13,74 @@ var FS          = require('fs'),                    // file system
     Q           = require('q'),                     // `kriskowal/q` promises
     path        = require('path'),                  // utils for resolving file paths
     arrayHelper = require('../misc/array-helper'),  // array helper methods
-    astHelper   = require('../misc/ast-helper'),    // AST helper methods
-    fsHelper    = require('../misc/fs-helper'),     // file system helper methods
-    CodeModule  = require('../models/code-module'); // represents a "module" of code
-
-// exports
-module.exports = CodeModuleExtractor;
+    fsHelper    = require('../misc/fs-helper');     // file system helper methods
 
 // aliases
 var readFile = Q.nfbind(FS.readFile),  // add Q promise support to FS.readile
     isArray  = Array.isArray;
 
+// exports
+module.exports = FileContentExtractor;
+
 /**
- * Constructs an object that provides methods for extracting code modules from JavaScript text. 
+ * Constructs an object that provides methods for extracting content from a file's text. 
  * 
- * @param {String}   types    - array of supported module loaders (e.g. AngularJS, RequireJS, CommonJS)
- * @param {Function} fromText - function that extracts code modules from text
+ * @param {String}   id          - a unique identifier for the extractor
+ * @param {Function} extractorFn - function that extracts content from a file's text
  */
-function CodeModuleExtractor(types, fromText) {
+function FileContentExtractor(id, extractorFn) {
 
   // ensure that this function is invoked with the 'new' operator
-  if(this instanceof CodeModuleExtractor === false) {
-    console.log('[warn] forgot to use "new" operator when invoking CodeModuleExtractor(): ' + types);
-    return new CodeModuleExtractor(types, fromText);
+  if(this instanceof FileContentExtractor === false) {
+    console.log('[warn] forgot to use "new" operator when invoking FileContentExtractor(): ' + id);
+    return new FileContentExtractor(id, extractorFn);
   }
 
   // validate arguments
-  if(!isArray(types))       throw new Error('[error] invalid argument "types" = ' + types);
-  if(!isFunction(fromText)) throw new Error('[error] invalid argument "fromText"     = ' + fromText);
+  if(!isString(id))            throw new Error('invalid argument "id" = ' + id);
+  if(!isFunction(extractorFn)) throw new Error('invalid argument "extractorFn" = ' + extractorFn);
 
   // maintain a reference to `this`
   var self = this;
 
+  // store arguments
+  self.id          = id;
+  self.extractorFn = extractorFn;
+
   /**
-   * Parses JavaScript text and produces an array of `CodeModule` objects, one for each module defined in the text.
+   * Parses a file's text and produces an array of objects containing data extracted from the text.
    * 
-   * @param {String} filePath     - relative path of the JavaScript file
-   * @param {String} fileContents - the JavaScript text
+   * @param {String} fileContents - the file's text content
+   * @param {String} filePath     - relative path of the file
+   * @param {String} cwd          - directory that `filePath` is relative to (defaults to process.cwd())
    * 
-   * @return {Array} An array of `CodeModule` objects.
+   * @return {Array} An array of objects containing data extracted from the text.
    */
-  this.fromText = function(filePath, fileContents) {
+  this.fromText = function(fileContents, filePath, cwd) {
     // validate arguments
-    if(!isString(filePath))     throw new Error('[error] invalid argument "filePath" = ' + filePath);
-    if(!isString(fileContents)) throw new Error('[error] invalid argument "text" = ' + fileContents);
+    if(!isString(filePath))     throw new Error('invalid argument "filePath" = ' + filePath);
+    if(!isString(fileContents)) throw new Error('invalid argument "text" = ' + fileContents);
+
+    // set optional arguments to default values (if not provided)
+    cwd = cwd || process.cwd();
 
     // invoke the client's extraction function
-    return fromText(filePath, fileContents);
+    return self.extractorFn(fileContents, filePath, cwd);
   };
 
   /**
-   * Parses a JavaScript file and produces an array of `CodeModule` objects, one for each module defined in the files.
+   * Reads a file and produces an array of objects containing data extracted from the file's text.
    *
-   * @param {String}   filePath - relative path of the JavaSript file to parse
+   * @param {String}   filePath - relative path of the file to read
    * @param {String}   cwd      - directory that `filePath` is relative to (defaults to process.cwd())
    * @param {String}   encoding - the file's encoding (e.g. "utf-8")
    * @param {Function} callback - (optional) callback to invoke with the final result
    *
-   * @return {Promise} A promise to produce an array of `CodeModule` objects.
+   * @return {Promise} A promise to produce an array of objects containing data extracted from the file's text.
    */
   this.fromFile = function(filePath, cwd, encoding, callback) {
     // validate arguments
-    if(!isString(filePath)) throw new Error('[error] invalid argument "filePath" = ' + filePath);
+    if(!isString(filePath)) throw new Error('invalid argument "filePath" = ' + filePath);
 
     // set optional arguments to default values (if not provided)
     cwd      = cwd      || process.cwd();
@@ -82,10 +88,10 @@ function CodeModuleExtractor(types, fromText) {
 
     // initiate module extraction
     var absolutePath = path.resolve(cwd, filePath),
-        promise      = readFile(absolutePath, encoding).then(extractCodeModules);
+        promise      = readFile(absolutePath, encoding).then(extractDataFromText);
 
-    function extractCodeModules(text) {
-      return self.fromText(filePath, text);
+    function extractDataFromText(text) {
+      return self.fromText(text, filePath, cwd);
     }
 
     // make this function work with both promises and nodejs callbacks
@@ -94,18 +100,18 @@ function CodeModuleExtractor(types, fromText) {
   };
 
   /**
-   * Parses JavaScript file(s) and produces an array of `CodeModule` objects, one for each module defined in the file(s).
+   * Reads multiple files and produces an array of objects containing data extracted from each file's text.
    *
-   * @param {Array}    filePaths - relative paths of the JavaSript file(s) to parse
+   * @param {Array}    filePaths - relative paths of the file(s) to read
    * @param {String}   cwd       - directory that `filePaths` are relative to (defaults to process.cwd())
-   * @param {String}   encoding  - the encoding of the files (defaults to "utf-8")
+   * @param {String}   encoding  - encoding of the files (defaults to "utf-8")
    * @param {Function} callback  - (optional) callback to invoke with the final result
    *
-   * @return {Promise} A promise to produce an array of `CodeModule` objects.
+   * @return {Promise} A promise to produce an array of objects containing data extracted from each file's text.
    */
   this.fromFiles = function(filePaths, cwd, encoding, callback) {
     // validate arguments
-    if(!isArray(filePaths)) throw new Error('[error] invalid argument "filePaths" = ' + filePaths);
+    if(!isArray(filePaths)) throw new Error('invalid argument "filePaths" = ' + filePaths);
 
     // set optional arguments to default values (if not provided)
     cwd      = cwd      || process.cwd();
@@ -126,15 +132,15 @@ function CodeModuleExtractor(types, fromText) {
   };
 
   /**
-   * Parses all files matched via the provided glob patterns in the specified directory and
-   * produces an array of `CodeModule` objects, one for each module defined in the files.
+   * Reads all files matched via the provided glob patterns in the specified directory and
+   * produces an array of objects containing data extracted from each file's text.
    *
-   * @param {Array}    patterns - an array of glob patterns for matching files
-   * @param {String}   cwd      - the directory to search in for files (defaults to process.cwd())
-   * @param {String}   encoding - the encoding of the files (e.g. "utf-8")
+   * @param {Array}    patterns - array of glob patterns used to match files
+   * @param {String}   cwd      - directory to search in for files (defaults to process.cwd())
+   * @param {String}   encoding - encoding of the files (e.g. "utf-8")
    * @param {Function} callback - (optional) callback to invoke with the final result
    *
-   * @return {Promise} A promise to produce an array of `CodeModule` objects.
+   * @return {Promise} A promise to produce an array of objects containing data extracted from each file's text.
    */
   this.fromDirectory = function(patterns, cwd, encoding, callback) {
     // set arguments to default values if not provided
@@ -143,10 +149,10 @@ function CodeModuleExtractor(types, fromText) {
     encoding = encoding || 'utf-8';
     
     // initiate module extraction
-    var promise = fsHelper.locateFiles(patterns, cwd).then(extractCodeModules);
+    var promise = fsHelper.locateFiles(patterns, cwd).then(extractDataFromFiles);
 
-    function extractCodeModules(filePaths) {
-      return self.fromFiles(filePaths, cwd, encoding);
+    function extractDataFromFiles(relativefilePaths) {
+      return self.fromFiles(relativefilePaths, cwd, encoding);
     }
 
     // make this function work with both promises and nodejs callbacks

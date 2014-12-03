@@ -30,7 +30,7 @@ module.exports = {
  */
 function locateFiles(patterns, cwd) {
   // validate arguments
-  if(!Array.isArray(patterns)) throw new Error('[error] invalid argument "patterns" = ' + patterns);
+  if(!Array.isArray(patterns)) throw new Error('invalid argument "patterns" = ' + patterns);
 
   // set `cwd` to default value if not provided
   cwd = cwd || process.cwd();

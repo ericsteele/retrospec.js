@@ -20,49 +20,40 @@ var assert = chai.assert,
     expect = chai.expect,
     should = chai.should(); // Note: should has to be executed
 
+// Load utilities for handling and transforming file paths
+var path = require('path');
+
+// Directory containing some real projects we can use for our tests
+var projectsDirectory     = path.resolve(__dirname, '../input/projects'),
+    jqueryMobileDirectory = path.resolve(projectsDirectory, 'jquery-mobile/js');
+
 // Module under test
 var fsHelper = require('../../src/misc/fs-helper');
 
-// Test project directory paths
-var testInputDirPath    = process.cwd()    + '\\test\\input',
-    jqueryMobileDirPath = testInputDirPath + '\\jquery-mobile\\js';
-
 describe('fsHelper', function() {
-  
-  describe('.locateFiles(patterns, cwd)', function() {
-  
-    describe('/jquery-mobile/js', function() {
 
-      describe('["*.js"]', function() {
-        it('should locate 29 files', function(done) {
-          var promise = fsHelper.locateFiles(['*.js'], jqueryMobileDirPath);
-          promise.should.eventually.have.length(29).notify(done);
-        });
-      });
-    
-      describe('["**/*.js"]', function() {
-        it('should locate 72 files', function(done) {
-          var promise = fsHelper.locateFiles(['**/*.js'], jqueryMobileDirPath);
-          promise.should.eventually.have.length(72).notify(done);
-        });
-      });
-    
-      describe('["*.js", "**/*.js"]', function() {
-        it('should locate 72 files', function(done) {
-          var promise = fsHelper.locateFiles(['*.js', '**/*.js'], jqueryMobileDirPath);
-          promise.should.eventually.have.length(72).notify(done);
-        });
-      });
-    
-      describe('["**/*.js", "**/*.js"]', function() {
-        it('should locate 72 files', function(done) {
-          var promise = fsHelper.locateFiles(['*.js', '**/*.js'], jqueryMobileDirPath);
-          promise.should.eventually.have.length(72).notify(done);
-        });
-      });
+	describe('.locateFiles(["*.js"], "jquery-mobile/js")', function() {
+		it('should locate 29 files', function(done) {
+			fsHelper.locateFiles(['*.js'], jqueryMobileDirectory)
+			        .should.eventually.have.length(29)
+			        .notify(done);
+		});
+	});
 
-    });
+	describe('.locateFiles(["**/*.js"], "jquery-mobile/js")', function() {
+		it('should locate 72 files', function(done) {
+			fsHelper.locateFiles(['**/*.js'], jqueryMobileDirectory)
+			        .should.eventually.have.length(72)
+			        .notify(done);
+		});
+	});
 
-  });
+	describe('.locateFiles(["*.js", "**/*.js"], "jquery-mobile/js")', function() {
+		it('should locate 72 files', function(done) {
+			fsHelper.locateFiles(['*.js', '**/*.js'], jqueryMobileDirectory)
+			        .should.eventually.have.length(72)
+			        .notify(done);
+		});
+	});
 
 });

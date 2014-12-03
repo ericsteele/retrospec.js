@@ -9,29 +9,29 @@
 'use strict';
 
 // libs
-var Q           = require('q'),                     // `kriskowal/q` promises
-    esprima     = require('esprima'),               // parses JS and produces an Abstract Syntax Tree (AST)
+var esprima     = require('esprima'),               // parses JS and produces an Abstract Syntax Tree (AST)
     estraverse  = require('estraverse'),            // simple interface for traversing the AST 
     AstHelper   = require('../misc/ast-helper'),    // abstract syntax tree (AST) helper methods
     CodeModule  = require('../models/code-module'); // loader-agnostic representation of a "module" of code
 
 // retrospec's interface for pluggable module extraction logic
-var CodeModuleExtractor = require('../models/code-module-extractor.js');
+var FileContentExtractor = require('../models/file-content-extractor.js');
 
 // export an AngularJS implementation
-module.exports = new CodeModuleExtractor(['AngularJS'], extractModulesFromText);
+module.exports = new FileContentExtractor('AngularJS Modules', extractModulesFromText);
 
 /**
  * Parses a JavaScript file's text and extracts AngularJS module definitions of 
  * the form 'angular.module("",[])'. The names and dependencies of all AngularJS 
  * modules found within are returned as an array of `CodeModule` objects.
  * 
- * @param {String} filePath     - relative path of the JavaScript file
- * @param {String} fileContents - the JavaScript text
+ * @param {String} fileContents - the file's text content
+ * @param {String} filePath     - relative path of the file
+ * @param {String} cwd          - directory that `filePath` is relative to
  * 
  * @return {Array} An array of `CodeModule` objects.
  */
-function extractModulesFromText(filePath, fileContents) {
+function extractModulesFromText(fileContents, filePath, cwd) {
 
 	// get the JavaScript's Abstact Syntax Tree (AST)
 	var ast = esprima.parse(fileContents);
@@ -54,7 +54,7 @@ function extractModulesFromText(filePath, fileContents) {
 
 	// check for duplicate module definitions
 	if(hasDuplicateCodeModules(modules)) {
-		throw new Error('[error] encountered duplicate AngularJS module definitions: ' + filePath);
+		throw new Error('encountered duplicate AngularJS module definitions: ' + filePath);
 	}
 
 	// remove duplicate module definitions

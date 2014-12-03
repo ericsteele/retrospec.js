@@ -41,7 +41,7 @@ function getCallExpressionArguments(node) {
  */
 function getNodeValue(node) {
   // validate arguments
-  if(!node) throw new Error('[error] invalid argument "node" = ' + node);
+  if(!node) throw new Error('invalid argument "node" = ' + node);
 
   // extract the node's value
   var value;

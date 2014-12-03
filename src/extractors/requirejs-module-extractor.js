@@ -9,41 +9,32 @@
 'use strict';
 
 // libs
-var FS          = require('fs'),                    // file system
-    Q           = require('q'),                     // `kriskowal/q` promises
-    parse       = require('../../lib/r.js/parse'),  // r.js parse lib
+var parse       = require('../../lib/r.js/parse'),  // r.js parse lib
     arrayHelper = require('../misc/array-helper'),  // array helper methods
-    fsHelper    = require('../misc/fs-helper'),     // file system helper methods
     CodeModule  = require('../models/code-module'); // represents a "module" of code
 
 // retrospec's interface for pluggable module extraction logic
-var CodeModuleExtractor = require('../models/code-module-extractor.js');
-
-// add Q promise support to FS.readile
-var readFile = Q.nfbind(FS.readFile);
+var FileContentExtractor = require('../models/file-content-extractor.js');
 
 // export a RequireJS implementation
-module.exports = new CodeModuleExtractor(['RequireJS'], extractModulesFromText);
+module.exports = new FileContentExtractor('RequireJS Modules', extractModulesFromText);
 
 /**
  * Parses JavaScript source code text and extracts RequireJS module definitions of 
  * the form 'angular.module("",[])'. The names and dependencies of all RequireJS 
  * modules found within are returned as an array of `CodeModule` objects.
  * 
- * @param {String} filePath - relative path of the file from which the text originated
- * @param {String} text     - the JavaScript text to parse
+ * @param {String} fileContents - the file's text content
+ * @param {String} filePath     - relative path of the file
+ * @param {String} cwd          - directory that `filePath` is relative to
  * 
  * @return {Array} An array of `CodeModule` objects.
  */
-function extractModulesFromText(filePath, text) {
-  // validate arguments
-  if(!filePath) throw new Error('[error] invalid argument "filePath" = ' + filePath);
-  if(!text)     throw new Error('[error] invalid argument "text" = ' + text);
-
+function extractModulesFromText(fileContents, filePath, cwd) {
   // extract module dependencies
   var fileName = filePath.replace(/^.*[\\\/]/, ''),
-      deps     = parse.findDependencies(fileName, text),
-      cjsDeps  = parse.findCjsDependencies(fileName, text);
+      deps     = parse.findDependencies(fileName, fileContents),
+      cjsDeps  = parse.findCjsDependencies(fileName, fileContents);
 
   // TODO: Implement my own module extraction using estraverse
   // If(hasName)
