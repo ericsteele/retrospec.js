@@ -1,5 +1,5 @@
 /*
- * angular.spec.js
+ * ui-bootstrap.spec.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele
@@ -10,8 +10,6 @@
 
 // Load the Chai Assertion Library
 var chai = require('chai');
-// Load utilities for handling and transforming file paths
-var path = require('path');
 
 // Extend Chai with assertions about promises
 var chaiAsPromised = require('chai-as-promised');
@@ -29,27 +27,27 @@ var path = require('path');
 var retrospec = require('../src/retrospec');
 
 var expected = [
-	{ name: 'ui.bootstrap.accordion', dependencies: [ 'ui.bootstrap.collapse' ] },
-	{ name: 'ui.bootstrap.alert', dependencies: [] },
-	{ name: 'ui.bootstrap.buttons', dependencies: [] },
-	{ name: 'ui.bootstrap.carousel', dependencies: [ 'ui.bootstrap.transition' ] },
-	{ name: 'ui.bootstrap.bindHtml', dependencies: [] },
-	{ name: 'ui.bootstrap.collapse', dependencies: [ 'ui.bootstrap.transition' ] },
-	{ name: 'ui.bootstrap.dateparser', dependencies: [] },
-	{ name: 'ui.bootstrap.datepicker', dependencies: [ 'ui.bootstrap.dateparser', 'ui.bootstrap.position' ] },
-	{ name: 'ui.bootstrap.dropdown', dependencies: [] },
-	{ name: 'ui.bootstrap.modal', dependencies: [ 'ui.bootstrap.transition' ] },
-	{ name: 'ui.bootstrap.pagination', dependencies: [] },
-	{ name: 'ui.bootstrap.position', dependencies: [] },
-	{ name: 'ui.bootstrap.popover', dependencies: [ 'ui.bootstrap.tooltip' ] },
+	{ name: 'ui.bootstrap.accordion',   dependencies: ['ui.bootstrap.collapse'] },
+	{ name: 'ui.bootstrap.alert',       dependencies: [] },
+	{ name: 'ui.bootstrap.buttons',     dependencies: [] },
+	{ name: 'ui.bootstrap.carousel',    dependencies: ['ui.bootstrap.transition'] },
+	{ name: 'ui.bootstrap.bindHtml',    dependencies: [] },
+	{ name: 'ui.bootstrap.collapse',    dependencies: ['ui.bootstrap.transition'] },
+	{ name: 'ui.bootstrap.dateparser',  dependencies: [] },
+	{ name: 'ui.bootstrap.datepicker',  dependencies: ['ui.bootstrap.dateparser', 'ui.bootstrap.position'] },
+	{ name: 'ui.bootstrap.dropdown',    dependencies: [] },
+	{ name: 'ui.bootstrap.modal',       dependencies: ['ui.bootstrap.transition'] },
+	{ name: 'ui.bootstrap.pagination',  dependencies: [] },
+	{ name: 'ui.bootstrap.position',    dependencies: [] },
+	{ name: 'ui.bootstrap.popover',     dependencies: ['ui.bootstrap.tooltip'] },
 	{ name: 'ui.bootstrap.progressbar', dependencies: [] },
-	{ name: 'ui.bootstrap.rating', dependencies: [] },
-	{ name: 'ui.bootstrap.tabs', dependencies: [] },
-	{ name: 'ui.bootstrap.timepicker', dependencies: [] },
-	{ name: 'ui.bootstrap.transition', dependencies: [] },
-	{ name: 'ui.bootstrap.tooltip', dependencies: [ 'ui.bootstrap.position', 'ui.bootstrap.bindHtml' ] },
-	{ name: 'ui.bootstrap.typeahead', dependencies: [ 'ui.bootstrap.position', 'ui.bootstrap.bindHtml' ] }
-]
+	{ name: 'ui.bootstrap.rating',      dependencies: [] },
+	{ name: 'ui.bootstrap.tabs',        dependencies: [] },
+	{ name: 'ui.bootstrap.timepicker',  dependencies: [] },
+	{ name: 'ui.bootstrap.transition',  dependencies: [] },
+	{ name: 'ui.bootstrap.tooltip',     dependencies: ['ui.bootstrap.position', 'ui.bootstrap.bindHtml'] },
+	{ name: 'ui.bootstrap.typeahead',   dependencies: ['ui.bootstrap.position', 'ui.bootstrap.bindHtml'] }
+];
 
 /*****************************************************/
 /* To successfully run this test, you must checkout  */
@@ -73,4 +71,4 @@ describe('ui-bootstrap', function() {
 
 		//promise.should.eventually.have.length(20).notify(done);
 	});
-})
+});

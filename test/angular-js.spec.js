@@ -10,8 +10,6 @@
 
 // Load the Chai Assertion Library
 var chai = require('chai');
-// Load utilities for handling and transforming file paths
-var path = require('path');
 
 // Extend Chai with assertions about promises
 var chaiAsPromised = require('chai-as-promised');
@@ -20,7 +18,7 @@ chai.use(chaiAsPromised);
 // Grab Chai's assert, expect, and should interfaces
 var assert = chai.assert,
     expect = chai.expect,
-    should = chai.should(); // Note that should has to be executed
+    should = chai.should(); // Note: should has to be executed
 
 // Load utilities for handling and transforming file paths
 var path = require('path');
@@ -66,4 +64,4 @@ describe('angular.js', function() {
 
 		//promise.should.eventually.have.length(20).notify(done);
 	});
-})
+});
