@@ -17,8 +17,8 @@ var esprima     = require('esprima'),               // parses JS and produces an
 // retrospec's interface for pluggable module extraction logic
 var FileContentExtractor = require('../models/file-content-extractor.js');
 
-// export an AngularJS implementation
-module.exports = new FileContentExtractor('AngularJS Modules', extractModulesFromText);
+// exports
+module.exports = new FileContentExtractor('angular-module-extractor', extractModulesFromText);
 
 /**
  * Parses a JavaScript file's text and extracts AngularJS module definitions of 

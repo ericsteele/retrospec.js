@@ -16,8 +16,8 @@ var parse       = require('../../lib/r.js/parse'),  // r.js parse lib
 // retrospec's interface for pluggable module extraction logic
 var FileContentExtractor = require('../models/file-content-extractor.js');
 
-// export a RequireJS implementation
-module.exports = new FileContentExtractor('RequireJS Modules', extractModulesFromText);
+// exports
+module.exports = new FileContentExtractor('requirejs-module-extractor', extractModulesFromText);
 
 /**
  * Parses JavaScript source code text and extracts RequireJS module definitions of 

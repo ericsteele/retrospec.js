@@ -14,8 +14,8 @@ var parse = require('../../lib/r.js/parse');  // r.js parse lib
 // retrospec's interface for pluggable module extraction logic
 var FileContentExtractor = require('../models/file-content-extractor.js');
 
-// export an AngularJS implementation
-module.exports = new FileContentExtractor('RequireJS Config', extractConfigFromText);
+// exports
+module.exports = new FileContentExtractor('requirejs-config-extractor', extractConfigFromText);
 
 /**
  * Parses a JavaScript file's text and extracts a RequireJS configuration object. This includes calls to:

@@ -1,5 +1,5 @@
 /*
- * angular.spec.js
+ * angular-module-extractor.spec.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele

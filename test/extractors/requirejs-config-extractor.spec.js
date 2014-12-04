@@ -1,5 +1,5 @@
 /*
- * requirejs.spec.js
+ * requirejs-config-extractor.spec.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele
