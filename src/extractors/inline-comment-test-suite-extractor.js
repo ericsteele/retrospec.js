@@ -1,5 +1,5 @@
 /*
- * test-suite-comment-extractor.js
+ * inline-comment-test-suite-extractor.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele
@@ -18,7 +18,7 @@ var esprima    = require('esprima'),              // parses JS and produces an A
 var FileContentExtractor = require('../models/file-content-extractor.js');
 
 // exports
-module.exports = new FileContentExtractor('test-suite-comment-extractor', extractTestSuites);
+module.exports = new FileContentExtractor('inline-comment-test-suite-extractor', extractTestSuites);
 
 /**
  * Parses a JavaScript file's text and extracts special inline comments that provide information 

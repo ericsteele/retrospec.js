@@ -1,5 +1,5 @@
 /*
- * test-suite-comment-extractor.spec.js
+ * inline-comment-test-suite-extractor.spec.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele
@@ -27,9 +27,9 @@ var path = require('path');
 var codeSnippetDirectory = path.resolve(__dirname, '../input/code-snippets');
 
 // Module under test
-var extractor = require('../../src/extractors/test-suite-comment-extractor');
+var extractor = require('../../src/extractors/inline-comment-test-suite-extractor');
 
-describe('test-suite-comment-extractor.js', function() {
+describe('inline-comment-test-suite-extractor.js', function() {
 
 	describe('.fromFile("empty.js")', function() {
 		it('should extract 0 test suites', function(done) {
