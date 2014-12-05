@@ -36,7 +36,7 @@ describe('requirejs-config-extractor.js', function() {
 		it('should extract 1 config object', function(done) {
 			var expected = { 
 				config: { paths: { a: './a', b: './b', c: './c' } },
-				range: [17, 77],
+				range: [17, 83],
 				quote: '"',
 				path:  'requirejs/requirejs-config.js' 
 			};
