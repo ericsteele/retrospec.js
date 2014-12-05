@@ -3,14 +3,9 @@
  */
 (function($){
 	var libName = 'jquery.mobile.page',
-		themedefault = $.mobile.page.prototype.options.theme,
-		keepNative = $.mobile.page.prototype.options.keepNative;
+		themedefault = $.mobile.page.prototype.options.theme;
 
-	module(libName, {
-		setup: function() {
-			$.mobile.page.prototype.options.keepNative = keepNative;
-		}
-	});
+	module(libName);
 
 	var eventStack = [],
 		etargets = [],
@@ -22,7 +17,7 @@
 		etargets.push( e.target );
 	});
 
-	$( "body" ).on("pagebeforecreate", "#c", function( e ){
+	$( document ).on("pagebeforecreate", "#c", function( e ){
 		cEvents.push( e.type );
 		cTargets.push( e.target );
 		return false;
@@ -52,14 +47,21 @@
 		ok( $( "#a" ).hasClass( "ui-page" ) );
 	});
 
-	test( "page element has default body theme when not overidden" , function(){
-		ok( $( "#a" ).hasClass( "ui-body-" + themedefault ) );
+	test( "page element has default page theme class when not overidden" , function(){
+		ok( $( "#a" ).hasClass( "ui-page-theme-" + themedefault ) );
+	});
+
+	test( "setting option 'theme' on page updates classes correctly", function() {
+		$( "#a" ).page( "option", "theme", "x" );
+		deepEqual( $( "#a" ).hasClass( "ui-page-theme-x" ), true, "After setting option 'theme' to 'x', the page has the new theme class" );
+		deepEqual( $( "#a" ).hasClass( "ui-page-theme-" + themedefault ), false, "After setting option 'theme', the page does not have default theme class" );
+		$( "#a" ).page( "option", "theme", themedefault );
 	});
 
 	test( "B page has non-default theme matching its data-theme attr" , function(){
 		$( "#b" ).page();
 		var btheme = $( "#b" ).jqmData( "theme" );
-		ok( $( "#b" ).hasClass( "ui-body-" + btheme ) );
+		ok( $( "#b" ).hasClass( "ui-page-theme-" + btheme ) );
 	});
 
 	test( "Binding to pagebeforecreate and returning false prevents pagecreate event from firing" , function(){
@@ -74,33 +76,6 @@
 
 		ok( !$( "#c" ).hasClass( "ui-body-" + themedefault ) );
 		ok( !$( "#c" ).hasClass( "ui-page" ) );
-	});
-
-	test( "keepNativeSelector returns the default where keepNative is not different", function() {
-		var pageProto = $.mobile.page.prototype;
-		pageProto.options.keepNative = pageProto.options.keepNativeDefault;
-
-		deepEqual(pageProto.keepNativeSelector(), pageProto.options.keepNativeDefault);
-	});
-
-	test( "keepNativeSelector returns the default where keepNative is empty, undefined, whitespace", function() {
-		var pageProto = $.mobile.page.prototype;
-
-		pageProto.options.keepNative = "";
-		deepEqual(pageProto.keepNativeSelector(), pageProto.options.keepNativeDefault);
-
-		pageProto.options.keepNative = undefined;
-		deepEqual(pageProto.keepNativeSelector(), pageProto.options.keepNativeDefault);
-
-		pageProto.options.keepNative = "  ";
-		deepEqual(pageProto.keepNativeSelector(), pageProto.options.keepNativeDefault);
-	});
-
-	test( "keepNativeSelector returns a selector joined with the default", function() {
-		var pageProto = $.mobile.page.prototype;
-
-		pageProto.options.keepNative = "foo, bar";
-		deepEqual(pageProto.keepNativeSelector(), "foo, bar, " + pageProto.options.keepNativeDefault);
 	});
 
 	test( "links inside an ignored container do not enhance", function() {

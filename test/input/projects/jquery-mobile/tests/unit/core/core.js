@@ -3,13 +3,13 @@
  */
 
 (function($){
-	var libName = "jquery.mobile.core",
-			setGradeA = function(value, version) {
-				$.support.mediaquery = value;
-				$.mobile.browser.ie = version;
-			},
-			extendFn = $.extend,
-			ns = $.mobile.ns;
+	var libName = "core",
+		setGradeA = function(value, version) {
+			$.support.mediaquery = value;
+			$.mobile.browser.ie = version;
+		},
+		extendFn = $.extend,
+		ns = $.mobile.ns;
 
 	module(libName, {
 		setup: function(){
@@ -107,7 +107,7 @@
 
 		data = $.extend( {}, $("body").data() );
 		delete data[ $.expando ]; //discard the expando for that test
-		deepEqual( data , { "nstestFoo": true }, "passing .data() no arguments returns a hash with all set properties" );
+		deepEqual( data.nstestFoo, true, "passing .data() no arguments returns a hash with all set properties" );
 
 		deepEqual( $("body").jqmData(), undefined, "passing no arguments returns undefined" );
 

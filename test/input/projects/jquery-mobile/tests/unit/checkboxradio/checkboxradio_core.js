@@ -3,28 +3,76 @@
  */
 (function($){
 	module( 'jquery.mobile.forms.checkboxradio.js' );
+	test( "Checkbox is made mini when ui-mini is among wrapper classes", function() {
+		var widget = $( "#wrapper-class-mini" );
 
-	test( "widget can be disabled and enabled", function(){
-		var input = $( "#checkbox-1" ),
-			button = input.parent().find( ".ui-btn" );
+		deepEqual( widget.checkboxradio( "option", "mini" ), false,
+			"Checkboxradio option mini is false" );
+		deepEqual( widget.parent().hasClass( "ui-mini" ),
+		true,
+		"Widget has class ui-mini" );
+	});
 
-		input.checkboxradio( "disable" );
-		input.checkboxradio( "enable" );
-		ok( !input.prop("disabled"), "start input as enabled" );
-		ok( !input.parent().hasClass( "ui-disabled" ), "no disabled styles" );
-		ok( !input.prop("checked"), "not checked before click" );
+	test( "Programmatic click on radio input correctly updates group", function() {
+		var first = $( "#programmatic-click-test input" ).eq( 0 ),
+			last = $( "#programmatic-click-test input" ).eq( 2 );
+
+		last.click().checkboxradio( "refresh" );
+		deepEqual( first.prop( "checked" ), false, "First checkboxradio prop is false" );
+		deepEqual( first.prev( "label" ).hasClass( "ui-radio-off" ), true,
+			"First label has class 'ui-radio-off'" );
+		deepEqual( first.prev( "label" ).hasClass( "ui-radio-on" ), false,
+			"First label does not have class 'ui-radio-on'" );
+		deepEqual( last.prop( "checked" ), true, "Last checkboxradio prop is true" );
+		deepEqual( last.prev( "label" ).hasClass( "ui-radio-off" ), false,
+			"Last label does not have class 'ui-radio-off'" );
+		deepEqual( last.prev( "label" ).hasClass( "ui-radio-on" ), true,
+			"First label has class 'ui-radio-on'" );
+	});
+
+	test( "widget with weird label is created successfully", function() {
+		var elem = $( "#chk\\[\\'3\\'\\]-1" );
+		ok( elem.parent().is( "div.ui-checkbox" ), "element has been wrapped in a div.ui-checkbox" );
+		ok( elem.siblings( "label[for='chk\\[\\'3\\'\\]-1']" ).length === 1, "element has exactly one sibling of the form label[for='chk[\'3\']-1']" );
+	});
+
+	function testEnableDisable( theInput, theMethod ) {
+		var button = theInput.parent().find( ".ui-btn" );
+
+		theMethod( theInput, true );
+		theMethod( theInput, false );
+		ok( !theInput.prop("disabled"), "start input as enabled" );
+		ok( !theInput.parent().hasClass( "ui-state-disabled" ), "no disabled styles" );
+		ok( !theInput.prop("checked"), "not checked before click" );
 		button.trigger( "click" );
-		ok( input.prop("checked"), "checked after click" );
+		ok( theInput.prop("checked"), "checked after click" );
 		ok( button.hasClass( "ui-checkbox-on" ), "active styles after click" );
 		button.trigger( "click" );
-
-		input.checkboxradio( "disable" );
-		ok( input.attr( "disabled" ), "input disabled" );
-		ok( input.parent().hasClass( "ui-disabled" ), "disabled styles" );
-		ok( !input.prop( "checked" ), "not checked before click" );
+		theMethod( theInput, true );
+		ok( theInput.prop( "disabled" ), "input disabled" );
+		ok( theInput.parent().hasClass( "ui-state-disabled" ), "disabled styles" );
+		ok( !theInput.prop( "checked" ), "not checked before click" );
 		button.trigger( "click" );
-		ok( !input.prop( "checked" ), "not checked after click" );
+		ok( !theInput.prop( "checked" ), "not checked after click" );
 		ok( !button.hasClass( "ui-checkbox-on" ), "no active styles after click" );
+	}
+
+	test( "widget can be disabled and enabled via enable()/disable() method", function(){
+		testEnableDisable( $( "#checkbox-disabled-test-1" ), function( theInput, isDisabled ) {
+			theInput.checkboxradio( isDisabled ? "disable" : "enable" );
+		});
+	});
+
+	test( "widget can be disabled and enabled via option 'disabled'", function(){
+		testEnableDisable( $( "#checkbox-disabled-test-2" ), function( theInput, isDisabled ) {
+			theInput.checkboxradio( "option", "disabled", isDisabled );
+		});
+	});
+
+	test( "widget can be disabled and enabled via prop + refresh()", function(){
+		testEnableDisable( $( "#checkbox-disabled-test-3" ), function( theInput, isDisabled ) {
+			theInput.prop( "disabled", isDisabled ).checkboxradio( "refresh" );
+		});
 	});
 
 	test( "clicking a checkbox within a controlgroup does not affect checkboxes with the same name in the same controlgroup", function(){
@@ -67,56 +115,6 @@
 		$checkboxLabel.trigger( "click" );
 	});
 
-	asyncTest( "radio button labels should update the active button class to last clicked and clear checked", function(){
-		var $radioBtns = $( '#radio-active-btn-test input' ),
-			singleActiveAndChecked = function(){
-				deepEqual( $( "#radio-active-btn-test .ui-radio-on" ).length, 1, "there should be only one active button" );
-				// Use the .checked property, not the checked attribute which is not dynamic
-				var numChecked = 0;
-				$( "#radio-active-btn-test input" ).each(function(i, e) {
-					if( e.checked ) {
-						numChecked++;
-					}
-				});
-				deepEqual( numChecked, 1, "there should be only one checked" );
-			};
-
-		$.testHelper.sequence([
-			function(){
-				$radioBtns.last().siblings( 'label' ).click();
-			},
-
-			function(){
-				ok( $radioBtns.last().prop( 'checked' ), "last input is checked" );
-				ok( $radioBtns.last().siblings( 'label' ).hasClass( 'ui-radio-on' ),
-					"last input label is an active button" );
-
-				ok( !$radioBtns.first().prop( 'checked' ), "first input label is not active" );
-				ok( !$radioBtns.first().siblings( 'label' ).hasClass( 'ui-radio-on' ),
-					"first input label is not active" );
-
-				singleActiveAndChecked();
-
-				$radioBtns.first().siblings( 'label' ).click();
-			},
-
-			function(){
-				ok( $radioBtns.first().prop( 'checked' ));
-				ok( $radioBtns.first().siblings( 'label' ).hasClass( 'ui-radio-on' ),
-					"first input label is an active button" );
-
-				ok( !$radioBtns.last().prop( 'checked' ));
-				ok( !$radioBtns.last().siblings( 'label' ).hasClass( 'ui-radio-on' ),
-					"last input label is not active" );
-
-				singleActiveAndChecked();
-
-				start();
-			}
-		], 500);
-
-	});
-
 	test( "checkboxradio controls will create when inside a container that receives a 'create' event", function(){
 		ok( !$("#enhancetest").appendTo(".ui-page-active").find(".ui-checkbox").length, "did not have enhancements applied" );
 		ok( $("#enhancetest").trigger("create").find(".ui-checkbox").length, "enhancements applied" );
@@ -140,132 +138,37 @@
 		ok( mini.getAttribute('data-nstest-mini'), "Original element has data attribute, enhanced version recieves .ui-mini." );
 	});
 
-	asyncTest( "clicking the label triggers a click on the element", function() {
-		var clicked = false;
-
-		expect( 1 );
-
-		$( "#checkbox-click-triggered" ).one('click', function() {
-			clicked = true;
-		});
-
-		$.testHelper.sequence([
-			function() {
-				$( "[for='checkbox-click-triggered']" ).click();
-			},
-
-			function() {
-				ok(clicked, "click was fired on input");
-				start();
-			}
-		], 2000);
-	});
-
-	asyncTest( "clicking the label triggers a change on the element", function() {
-		var changed = false;
-
-		expect( 1 );
-
-		$( "#checkbox-change-triggered" ).one('change', function() {
-			changed = true;
-		});
-
-		$.testHelper.sequence([
-			function() {
-				$( "[for='checkbox-change-triggered']" ).click();
-			},
-
-			function() {
-				ok(changed, "change was fired on input");
-				start();
-			}
-		], 2000);
-	});
-
-
 	test( "theme should be inherited", function() {
 		var $inherited = $( "#checkbox-inherit-theme" ),
 			$explicit = $( "#checkbox-explicit-theme" );
 
-		ok( $inherited.siblings("label").hasClass( "ui-btn-up-a" ), "should inherit from page" );
-		ok( $explicit.siblings("label").hasClass( "ui-btn-up-b" ), "should not inherit" );
+		deepEqual( $inherited.siblings("label").css( "background-color" ), "rgb(51, 51, 51)" ); /* The RGB value should match the background color we set for ui-btn-b in the default theme */
+		ok( $explicit.siblings("label").hasClass( "ui-btn-b" ), "should not inherit" );
 	});
 
-	asyncTest( "form submission should include radio button values", function() {
-		var $form = $( "#radio-form" ), $input = $form.find("input").first();
+	test( "nested label checkbox still renders", function () {
+		var $checkbox = $( "#checkbox-nested-label" );
 
-		$.testHelper.pageSequence([
-			function() {
-				$input.click();
-				$form.submit();
-			},
+		try {
+			$checkbox.checkboxradio();
+		} catch ( e ) {
+			ok( false, "checkboxradio exception raised: " + e.toString() );
+		}
 
-			function( timeout ){
-				var check = location.hash || location.search;
-
-				ok( check.indexOf("radio1=1") >= 0, "the radio was checked" );
-
-				// if the changepage in the previous function failed don't go back
-				if( !timeout ){
-					window.history.back();
-				}
-			},
-
-			function(){
-				start();
-			}
-		]);
+		ok( $checkbox.parent().hasClass( "ui-checkbox" ), "enhancement has occured" );
 	});
 
-	asyncTest( "form submission should include checkbox button values", function() {
-		var $form = $( "#check-form" ), $inputs = $form.find("input");
+	test( "nested label (no [for]) checkbox still renders", function () {
+		var $checkbox = $( "#checkbox-nested-label-no-for" );
 
-		$.testHelper.pageSequence([
-			function() {
-				$inputs.click();
-				$form.submit();
-			},
+		try {
+			$checkbox.checkboxradio();
+		} catch ( e ) {
+			ok( false, "checkboxradio exception raised: " + e.toString() );
+		}
 
-			function( timeout ){
-				var check = location.hash || location.search;
-
-				ok( check.indexOf("checkbox-form=on") >= 0, "the first checkbox was checked" );
-				ok( check.indexOf("checkbox-form-2=on") >= 0, "the second checkbox was checked" );
-				// if the changepage in the previous function failed don't go back
-				if( !timeout ){
-					window.history.back();
-				}
-			},
-
-			function(){
-				start();
-			}
-		]);
+		ok( $checkbox.parent().hasClass( "ui-checkbox" ), "enhancement has occured" );
 	});
-
-  test( "nested label checkbox still renders", function() {
-    var $checkbox = $( "#checkbox-nested-label" );
-
-    try {
-      $checkbox.checkboxradio();
-    } catch (e) {
-      ok( false, "checkboxradio exception raised: " + e.toString());
-    }
-
-    ok( $checkbox.parent().hasClass("ui-checkbox"), "enhancement has occured");
-  });
-
-  test( "nested label (no [for]) checkbox still renders", function() {
-    var $checkbox = $( "#checkbox-nested-label-no-for" );
-
-    try {
-      $checkbox.checkboxradio();
-    } catch (e) {
-      ok( false, "checkboxradio exception raised: " + e.toString());
-    }
-
-    ok( $checkbox.parent().hasClass("ui-checkbox"), "enhancement has occured");
-  });
 
 	test( "Icon positioning", function() {
 		var bottomicon = $("[for='bottomicon']"),
@@ -273,5 +176,60 @@
 
 		ok( bottomicon.hasClass("ui-btn-icon-bottom"), "Icon position set on label adds the appropriate class." );
 		ok( topicon.hasClass("ui-btn-icon-top"), "Icon position set on input adds the appropriate class to the label." );
+	});
+
+	test( "Converting from horizontal to vertical controlgroup causes icons to appear", function() {
+		var controlgroup = $( "#set-vertical-group" ),
+			checkbox = $( "#set-vertical-group-1" );
+
+		controlgroup.controlgroup( "option", "type", "vertical" );
+
+		deepEqual( checkbox.prev().hasClass( "ui-btn-icon-left" ), true,
+			"After converting from a horizontal controlgroup to a vertical controlgroup the checkbox inside has an icon position class" );
+	});
+
+	test( "Runtime generation of a horizontal controlgroup does not cause checkboxes inside to have space set aside for icons", function() {
+		var controlgroup = $( "<div>" +
+			"<label for='dynamic-horizontal-checkbox1'>Checkbox 1</label>" +
+			"<input type='checkbox' id='dynamic-horizontal-checkbox1'></input>" +
+			"</div>" ).appendTo( "#the-content" ).controlgroup({ type: "horizontal" });
+
+		deepEqual( controlgroup.find( ":mobile-checkboxradio" ).prev().hasClass( "ui-btn-icon-left" ), false,
+			"Dynamically created horizontal controlgroup checkboxes do not have icon position classes" );
+
+		controlgroup.remove();
+	});
+
+	test( "Manual value update", function() {
+		var h = $( "#manual-set-horizontal-1" ),
+			v = $( "#manual-set-vertical-1" );
+
+		h[ 0 ].checked = true;
+		h.checkboxradio( "refresh" );
+		deepEqual( h.prev().hasClass( $.mobile.activeBtnClass ), true, "Horizontal: After checking and refreshing, the active class is present." );
+		deepEqual( h.prev().hasClass( "ui-btn-icon-left" ), false, "Horizontal: After checking and refreshing, the icon position class is not present." );
+		deepEqual( h.prev().hasClass( "ui-checkbox-on" ), true, "Horizontal: After checking and refreshing, the label has the ui-checkbox-on class" );
+		deepEqual( h.prev().hasClass( "ui-checkbox-off" ), false, "Horizontal: After checking and refreshing, the label does not have the ui-checkbox-off class" );
+
+		h[ 0 ].checked = false;
+		h.checkboxradio( "refresh" );
+		deepEqual( h.prev().hasClass( $.mobile.activeBtnClass ), false, "Horizontal: After unchecking and refreshing, the active class is not present." );
+		deepEqual( h.prev().hasClass( "ui-btn-icon-left" ), false, "Horizontal: After unchecking and refreshing, the icon position class is not present." );
+		deepEqual( h.prev().hasClass( "ui-checkbox-on" ), false, "Horizontal: After unchecking and refreshing, the label does not have the ui-checkbox-on class" );
+		deepEqual( h.prev().hasClass( "ui-checkbox-off" ), true, "Horizontal: After unchecking and refreshing, the label has the ui-checkbox-off class" );
+
+		v[ 0 ].checked = true;
+		v.checkboxradio( "refresh" );
+		deepEqual( v.prev().hasClass( $.mobile.activeBtnClass ), false, "Vertical: After checking and refreshing, the active class is not present." );
+		deepEqual( v.prev().hasClass( "ui-btn-icon-left" ), true, "Vertical: After checking and refreshing, the icon position class is not present." );
+		deepEqual( v.prev().hasClass( "ui-checkbox-on" ), true, "Vertical: After checking and refreshing, the label has the ui-checkbox-on class" );
+		deepEqual( v.prev().hasClass( "ui-checkbox-off" ), false, "Vertical: After checking and refreshing, the label does not have the ui-checkbox-off class" );
+
+		v[ 0 ].checked = false;
+		v.checkboxradio( "refresh" );
+		deepEqual( v.prev().hasClass( $.mobile.activeBtnClass ), false, "Vertical: After unchecking and refreshing, the active class is not present." );
+		deepEqual( v.prev().hasClass( "ui-btn-icon-left" ), true, "Vertical: After unchecking and refreshing, the icon position class is not present." );
+		deepEqual( v.prev().hasClass( "ui-checkbox-on" ), false, "Vertical: After unchecking and refreshing, the label does not have the ui-checkbox-on class" );
+		deepEqual( v.prev().hasClass( "ui-checkbox-off" ), true, "Vertical: After unchecking and refreshing, the label has the ui-checkbox-off class" );
 	});
 })(jQuery);

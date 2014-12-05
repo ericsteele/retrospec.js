@@ -375,7 +375,7 @@
 	});
 
 	asyncTest( "drag should start only when clicked with left button", function(){
-		expect( 4 );
+		expect( 5 );
 
 		var control = $( "#mousedown-which-events" ),
 			widget = control.data( "mobile-slider" ),
@@ -404,6 +404,15 @@
 			},
 			function( result ) {
 				deepEqual( result.slidestart.timedOut, false, "slider did emit 'slidestart' event upon left button press" );
+				event = $.Event( "mousedown", { target: handle[ 0 ] } );
+				event.which = undefined;
+				slider.trigger( event );
+			},
+			{
+				slidestart: { src: control, event: "slidestart" + eventNs + "1" }
+			},
+			function( result ) {
+				deepEqual( result.slidestart.timedOut, false, "slider did emit 'slidestart' event upon undefined button press" );
 				event = $.Event( "mousedown", { target: handle[ 0 ] } );
 				event.which = 2;
 				slider.trigger( event );
@@ -448,6 +457,32 @@
 				start();
 			}
 		], 500);
+	});
+
+	test( "mouse move only triggers the change event when the value changes", function() {
+		var control = $( "#slider-change-event" ),
+			widget = control.data( "mobile-slider" ),
+			slider = widget.slider,
+			handle = widget.handle,
+			changeCount = 0,
+			actualChanges = 0,
+			changeFunc = function( e ) {
+				++changeCount;
+				if ( control.val() !== currentValue ) {
+					++actualChanges;
+				}
+			},
+			offset = handle.offset(),
+			currentValue = control.val();
+
+		control.bind( "change", changeFunc );
+
+		slider.trigger( createEvent( "mousedown", handle[ 0 ], offset.left + 10, offset.top + 10 ) );
+		slider.trigger( createEvent( "mouseup", handle[ 0 ], offset.left + 10, offset.top + 10 ) );
+
+		control.unbind( "change", changeFunc );
+
+		strictEqual( actualChanges, changeCount, "change events match actual changes in value" );
 	});
 
 	// NOTE this test isn't run because the event data isn't easily accessible

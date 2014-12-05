@@ -66,15 +66,50 @@
 	test( "slider input is not wrapped in div.ui-input-text", function() {
 		ok( ! $( "#textinput-test" ).parents().is( "div.ui-input-text" ), "slider input is not wrapped in div.ui-input-text" );
 	});
-	
-	test( "refresh is triggered on mouseup", function() {
-		expect( 1 );
-		var slider = $( "#mouseup-refresh" );
 
-		slider.val( parseInt(slider.val(), 10) +  10 );
-		slider.change(function() {
-			ok( true, "slider changed" );
-		});
-		slider.trigger( "mouseup" );
+	test( "slider tooltip", function() {
+		var tooltip = $( "#tooltip-test" ).siblings( "div.ui-slider-popup" );
+
+		deepEqual( tooltip.length, 1, "is present" );
+		deepEqual( tooltip.is( ":visible" ), false, "is initially hidden" );
 	});
+
+	test( "slider is enabled/disabled correctly", function() {
+		var slider = $( "#disable-test" ),
+			track = slider.siblings( "div" );
+
+			testDisabled = function( prefix, expectedDisabled ) {
+				deepEqual( !!track.attr( "aria-disabled" ), expectedDisabled,
+					prefix + "'aria-disabled' is " + expectedDisabled );
+				deepEqual( !!slider.attr( "disabled" ), expectedDisabled,
+					prefix + "'disabled' property is " + expectedDisabled );
+				deepEqual( track.hasClass( "ui-state-disabled" ), expectedDisabled,
+					prefix + "track class 'ui-state-disabled' is " +
+						( expectedDisabled ? "on" : "off" ) );
+			};
+
+		testDisabled( "Initially: ", false );
+		slider.slider( "option", "disabled", true );
+		testDisabled( "After setting option 'disabled' to true: ", true );
+		slider.slider( "option", "disabled", true );
+		testDisabled( "After setting option 'disabled' to true a second time: ", true );
+	});
+
+	test( "slider tooltip & button values should match after input value changes", function() {
+		var slider = $("#tooltip-test-both");
+		var sliderHandle = slider.siblings(".ui-slider-track").children(".ui-slider-handle");
+
+		slider.val( "9" ).blur();
+
+		ok( slider.val() === sliderHandle.text(), "slider text should match handle text");
+	});
+
+	test( "slider input is disabled correctly", function() {
+		var slider = $( "#disable-input-test" );
+
+		slider.slider( "disable" );
+
+		ok( slider.hasClass( "ui-state-disabled" ), "disabling slider also disables the input" );
+	});
+
 })( jQuery );

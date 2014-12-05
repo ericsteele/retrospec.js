@@ -2,12 +2,10 @@
 //>>description: Manages a stack of history entries. Used exclusively by the Navigation Manager
 //>>label: History Manager
 //>>group: Navigation
-define([ "jquery", "./../jquery.mobile.ns", "./path" ], function( jQuery ) {
+define([ "jquery", "./../ns", "./path" ], function( jQuery ) {
 //>>excludeEnd("jqmBuildExclude");
 
 (function( $, undefined ) {
-	var path = $.mobile.path;
-
 	$.mobile.History = function( stack, index ) {
 		this.stack = stack || [];
 		this.activeIndex = index || 0;
@@ -31,7 +29,7 @@ define([ "jquery", "./../jquery.mobile.ns", "./path" ], function( jQuery ) {
 		},
 
 		// addNew is used whenever a new page is added
-		add: function( url, data ){
+		add: function( url, data ) {
 			data = data || {};
 
 			//if there's forward history, wipe it
@@ -41,7 +39,7 @@ define([ "jquery", "./../jquery.mobile.ns", "./path" ], function( jQuery ) {
 
 			// if the hash is included in the data make sure the shape
 			// is consistent for comparison
-			if( data.hash && data.hash.indexOf( "#" ) === -1) {
+			if ( data.hash && data.hash.indexOf( "#" ) === -1) {
 				data.hash = "#" + data.hash;
 			}
 
@@ -67,7 +65,7 @@ define([ "jquery", "./../jquery.mobile.ns", "./path" ], function( jQuery ) {
 					decodeURIComponent(url) === decodeURIComponent(entry.hash) ) {
 					index = i;
 
-					if( earlyReturn ) {
+					if ( earlyReturn ) {
 						return index;
 					}
 				}
@@ -76,10 +74,29 @@ define([ "jquery", "./../jquery.mobile.ns", "./path" ], function( jQuery ) {
 			return index;
 		},
 
-		closest: function( url ) {
-			var closest, a = this.activeIndex;
+		_findById: function( id ) {
+			var stackIndex,
+				stackLength = this.stack.length;
 
-			// First, take the slice of the history stack before the current index and search
+			for ( stackIndex = 0 ; stackIndex < stackLength ; stackIndex++ ) {
+				if ( this.stack[ stackIndex ].id === id ) {
+					break;
+				}
+			}
+
+			return ( stackIndex < stackLength ? stackIndex : undefined );
+		},
+
+		closest: function( url, id ) {
+			var closest = ( id === undefined ? undefined : this._findById( id ) ),
+				a = this.activeIndex;
+
+			// First, we check whether we've found an entry by id. If so, we're done.
+			if ( closest !== undefined ) {
+				return closest;
+			}
+
+			// Failing that take the slice of the history stack before the current index and search
 			// for a url match. If one is found, we'll avoid avoid looking through forward history
 			// NOTE the preference for backward history movement is driven by the fact that
 			//      most mobile browsers only have a dedicated back button, and users rarely use
@@ -93,7 +110,7 @@ define([ "jquery", "./../jquery.mobile.ns", "./path" ], function( jQuery ) {
 			// in the original history stack :( :(
 			//
 			// TODO this is hyper confusing and should be cleaned up (ugh so bad)
-			if( closest === undefined ) {
+			if ( closest === undefined ) {
 				closest = this.find( url, this.stack.slice(a), true );
 				closest = closest === undefined ? closest : closest + a;
 			}
@@ -102,11 +119,11 @@ define([ "jquery", "./../jquery.mobile.ns", "./path" ], function( jQuery ) {
 		},
 
 		direct: function( opts ) {
-			var newActiveIndex = this.closest( opts.url ), a = this.activeIndex;
+			var newActiveIndex = this.closest( opts.url, opts.id ), a = this.activeIndex;
 
 			// save new page index, null check to prevent falsey 0 result
 			// record the previous index for reference
-			if( newActiveIndex !== undefined ) {
+			if ( newActiveIndex !== undefined ) {
 				this.activeIndex = newActiveIndex;
 				this.previousIndex = a;
 			}
@@ -115,10 +132,10 @@ define([ "jquery", "./../jquery.mobile.ns", "./path" ], function( jQuery ) {
 			//
 			// TODO this is also convoluted and confusing
 			if ( newActiveIndex < a ) {
-				( opts.present || opts.back || $.noop )( this.getActive(), 'back' );
+				( opts.present || opts.back || $.noop )( this.getActive(), "back" );
 			} else if ( newActiveIndex > a ) {
-				( opts.present || opts.forward || $.noop )( this.getActive(), 'forward' );
-			} else if ( newActiveIndex === undefined && opts.missing ){
+				( opts.present || opts.forward || $.noop )( this.getActive(), "forward" );
+			} else if ( newActiveIndex === undefined && opts.missing ) {
 				opts.missing( this.getActive() );
 			}
 		}

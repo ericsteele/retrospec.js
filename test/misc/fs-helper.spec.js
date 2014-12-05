@@ -33,25 +33,25 @@ var fsHelper = require('../../src/misc/fs-helper');
 describe('fsHelper', function() {
 
 	describe('.locateFiles(["*.js"], "jquery-mobile/js")', function() {
-		it('should locate 29 files', function(done) {
+		it('should locate 24 files', function(done) {
 			fsHelper.locateFiles(['*.js'], jqueryMobileDirectory)
-			        .should.eventually.have.length(29)
+			        .should.eventually.have.length(24)
 			        .notify(done);
 		});
 	});
 
 	describe('.locateFiles(["**/*.js"], "jquery-mobile/js")', function() {
-		it('should locate 72 files', function(done) {
+		it('should locate 86 files', function(done) {
 			fsHelper.locateFiles(['**/*.js'], jqueryMobileDirectory)
-			        .should.eventually.have.length(72)
+			        .should.eventually.have.length(86)
 			        .notify(done);
 		});
 	});
 
 	describe('.locateFiles(["*.js", "**/*.js"], "jquery-mobile/js")', function() {
-		it('should locate 72 files', function(done) {
+		it('should locate 86 files', function(done) {
 			fsHelper.locateFiles(['*.js', '**/*.js'], jqueryMobileDirectory)
-			        .should.eventually.have.length(72)
+			        .should.eventually.have.length(86)
 			        .notify(done);
 		});
 	});

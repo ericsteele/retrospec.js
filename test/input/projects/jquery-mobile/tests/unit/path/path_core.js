@@ -29,12 +29,8 @@
 		ok($.mobile.path.isPath('/'), "anything with a slash is a path");
 	});
 
-	test( "path.getFilePath method is working properly", function(){
-		deepEqual($.mobile.path.getFilePath("foo.html" + "&" + $.mobile.subPageUrlKey ), "foo.html", "returns path without sub page key");
-	});
-
 	test( "path.set method is working properly", function(){
-		$.mobile.urlHistory.ignoreNextHashChange = false;
+		$.mobile.navigate.history.ignoreNextHashChange = false;
 		$.mobile.path.set("foo");
 		deepEqual("foo", window.location.hash.replace(/^#/,""), "sets location.hash properly");
 	});
@@ -239,9 +235,11 @@
 
 	test( "path.getLocation works properly", function() {
 		equal( $.mobile.path.getLocation("http://example.com/"), "http://example.com/" );
-		equal( $.mobile.path.getLocation("http://foo@example.com"), "http://example.com" );
-		equal( $.mobile.path.getLocation("http://foo:bar@example.com"), "http://example.com" );
-		equal( $.mobile.path.getLocation("http://<foo<:bar@example.com"), "http://example.com" );
+		equal( $.mobile.path.getLocation("http://foo@example.com/"), "http://example.com/" );
+		equal( $.mobile.path.getLocation("http://foo:bar@example.com/"), "http://example.com/" );
+		equal( $.mobile.path.getLocation("http://<foo<:bar@example.com/"), "http://example.com/" );
+		equal( $.mobile.path.getLocation("x-wmapp0:www/index.html" ), "x-wmapp0:/www/index.html" );
+		equal( $.mobile.path.getLocation("qrc:/index.html" ), "qrc:/index.html" );
 
 		var allUriParts = "http://jblas:password@mycompany.com:8080/mail/inbox?msg=1234&type=unread#msg-content";
 
@@ -293,4 +291,34 @@
 		equal( squash("#foo", "http://example.com/?foo=bar&baz=bak"), "http://example.com/?foo=bar&baz=bak#foo", "ui-state keys attached to simple string hashes are preserved" );
 
 	});
+
+	test( "isSameDomain() compares domains case-insensitively", function() {
+		deepEqual(
+			$.mobile.path.isSameDomain(
+				"http://example.com/path/to/filename.html",
+				"http://EXAmPLE.cOm/path/to/filename.html" ),
+			true,
+			"Domain comparison was case-insensitive" );
+	});
+
+( function() {
+
+	var originalDocumentUrl,
+		path = $.mobile.path;
+
+	module( "$.mobile.path.isExternal()", {
+		setup: function() {
+			originalDocumentUrl = path.documentUrl;
+			path.documentUrl = path.parseUrl( "http://example.com/path/to/filename.html" );
+		},
+		teardown: function() {
+			path.documentUrl = originalDocumentUrl;
+		}
+	});
+
+	test( "$.mobile.path.isExternal() compares domains case-insensitively", function() {
+		deepEqual( path.isExternal( "http://EXAmPLE.CoM/path/to/other-filename.html" ), false,
+			"Domain comparison was case-insensitive" );
+	});
+})();
 })(jQuery);

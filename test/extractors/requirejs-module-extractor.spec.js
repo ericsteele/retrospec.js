@@ -86,11 +86,11 @@ describe('requirejs-module-extractor.js', function() {
 
 	describe('.fromDirectory(["**/*.js"], "jquery-mobile/js")', function() {
 
-		it('should extract 66 modules', function(done) {
+		it('should extract 83 modules', function(done) {
 			var cwd = path.resolve(projectsDirectory, 'jquery-mobile/js');
 
 			extractor.fromDirectory(['**/*.js'], cwd)
-			         .should.eventually.have.length(66)
+			         .should.eventually.have.length(83)
 			         .notify(done);
 		});
 
