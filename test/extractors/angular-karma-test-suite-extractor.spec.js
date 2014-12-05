@@ -24,7 +24,7 @@ var assert = chai.assert,
 var path = require('path');
 
 // Directory containing some real projects we can use for our tests
-var projectDirectory = path.resolve(__dirname, '../../x');
+var projectsDirectory = path.resolve(__dirname, '../input/projects/');
 
 // Module under test
 var extractor = require('../../src/extractors/angular-karma-test-suite-extractor');
@@ -33,7 +33,7 @@ describe('angular-karma-test-suite-extractor.js', function() {
 
 	describe('.fromFile("ngCookies/cookiesSpec.js")', function() {
 		it('should extract 1 test suite', function(done) {
-			var cwd = path.resolve(projectDirectory, 'test'),
+			var cwd = path.resolve(projectsDirectory, 'angular.js/test'),
 				expected = [{ 
 					path: 'ngCookies/cookiesSpec.js', 
 					dependencies: [ 
@@ -49,16 +49,11 @@ describe('angular-karma-test-suite-extractor.js', function() {
 
 	describe('.fromDirectory(["**/*Spec.js"], "test")', function() {
 		it('should extract 25 test suites', function(done) {
-			var cwd = path.resolve(projectDirectory, 'test');
+			var cwd = path.resolve(projectsDirectory, 'angular.js/test');
 
 			var promise = extractor.fromDirectory(['**/*Spec.js'], cwd);
-			promise.then(function(d) {
-				console.log(d);
-			})
-
 			promise.should.eventually.have.length(25)
                .notify(done);
 		});
-
 	});
 });

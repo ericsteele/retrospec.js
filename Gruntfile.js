@@ -13,7 +13,7 @@ module.exports = function(grunt) {
 					quiet: false, // Optionally suppress output to standard out (defaults to false)
 					timeout: 10000
 				},
-				src: ['test/**/*.spec.js']
+				src: ['test/**/*.spec.js', '!test/input/**/*.spec.js']
 			}
 		}
 		// retrospec: {

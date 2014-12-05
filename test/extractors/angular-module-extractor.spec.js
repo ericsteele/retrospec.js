@@ -26,6 +26,9 @@ var path = require('path');
 // Directory containing code snippets used in our tests
 var codeSnippetDirectory = path.resolve(__dirname, '../input/code-snippets');
 
+// Directory containing some real projects we can use for our tests
+var projectsDirectory = path.resolve(__dirname, '../input/projects');
+
 // Module under test
 var extractor = require('../../src/extractors/angular-module-extractor');
 
@@ -75,6 +78,22 @@ describe('angular-module-extractor.js', function() {
 
 			extractor.fromFile('angular/ui-bootstrap-example.js', codeSnippetDirectory)
 			         .should.eventually.eql(expected)
+			         .notify(done);
+		});
+	});
+
+	describe('get modules from real projects', function() {
+		it('angular.js: should find 754 modules', function(done) {
+			var p = path.resolve(projectsDirectory, 'angular.js/src');
+			extractor.fromDirectory(['*/*.js'], p)
+			         .should.eventually.have.length(754)
+			         .notify(done);
+		});
+
+		it('ui-bootstrap: should find 20 modules', function(done) {
+			var p = path.resolve(projectsDirectory, 'ui-bootstrap/src');
+			extractor.fromDirectory(['*/*.js'], p)
+			         .should.eventually.have.length(20)
 			         .notify(done);
 		});
 	});
