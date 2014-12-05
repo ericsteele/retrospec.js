@@ -30,7 +30,7 @@ module.exports = FileContentExtractor;
  */
 function FileContentExtractor(id, extractorFn) {
 
-  // this is a special object and it deserves to be called with "new" dammit!
+  // this is a special object and it deserves to be called with "new" damn it!
   if(this instanceof FileContentExtractor === false) {
     console.log('[warn] forgot to use "new" operator when invoking FileContentExtractor(): ' + id);
     return new FileContentExtractor(id, extractorFn);
