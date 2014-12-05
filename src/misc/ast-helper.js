@@ -52,8 +52,12 @@ function getNodeValue(node) {
     case 'ArrayExpression':
       value = [];
       node.elements.forEach(function(elementNode) {
-        value.push(getNodeValue(elementNode));
+        var nodeValueRet = getNodeValue(elementNode);
+        if (nodeValueRet)
+          value.push(getNodeValue(elementNode));
       });
+      break;
+    case 'FunctionExpression':
       break;
     default:
       console.log('[warn] unexpected node type: ' + node.type);

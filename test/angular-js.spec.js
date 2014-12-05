@@ -24,22 +24,8 @@ var assert = chai.assert,
 var path = require('path');
 
 // Module under test
-var retrospec = require('../src/retrospec');
-
-var expected = [
-	{ name: 'ngAria', dependencies: [ 'ng' ] },
-	{ name: 'ngCookies', dependencies: [ 'ng' ] },
-	{ name: 'ngLocale', dependencies: [] },
-	{ name: 'ngAnimate', dependencies: [ 'ng' ] },
-	{ name: 'ngMessages', dependencies: [] },
-	{ name: 'ngResource', dependencies: [ 'ng' ] },
-	{ name: 'ngAnimateMock', dependencies: [ 'ng' ] },
-	{ name: 'ngMock', dependencies: [ 'ng' ] },
-	{ name: 'ngMockE2E', dependencies: [ 'ng' ] },
-	{ name: 'ngRoute', dependencies: [ 'ng' ] },
-	{ name: 'ngSanitize', dependencies: [] },
-	{ name: 'ngTouch', dependencies: [] }
-];
+//var retrospec = require('../src/retrospec');
+var extractor = require('../src/extractors/angular-module-extractor');
 
 /*****************************************************/
 /* To successfully run this test, you must checkout  */
@@ -47,21 +33,10 @@ var expected = [
 /*   retrospec.js/x/                                 */
 /*****************************************************/
 describe('angular.js', function() {
-	// TODO: If this fails, it will just hang until timeout.  Not sure how to fix.
-	xit('should find 20 modules', function(done) {
+	it('should find 12 modules', function(done) {
 		var p = path.resolve(__dirname, '../x/src/');
-		var promise = retrospec.findAngularModulesInDir(p, 'utf-8', null, '/*/*.js');
-		promise.then(function(d) {
-			expect(d.length).to.equal(expected.length);
-			for (var i = 0; i < expected.length; i++) {
-				expect(d).to.include(expected[i]);
-			}
-			done();
-			console.log(d);
-		}, function(err) {
-			console.log(err);
-		});
-
-		//promise.should.eventually.have.length(20).notify(done);
+		extractor.fromDirectory(['*/*.js'], p)
+		         .should.eventually.have.length(754)
+		         .notify(done);
 	});
 });
