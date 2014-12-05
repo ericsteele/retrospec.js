@@ -14,15 +14,16 @@ var esprima    = require('esprima'),              // parses JS and produces an A
     AstHelper  = require('../misc/ast-helper'),   // abstract syntax tree (AST) helper methods
     TestSuite  = require('../models/test-suite'); // generic representation of a test suite
 
-// retrospec's interface for pluggable module extraction logic
+// retrospec's interface for pluggable extraction logic
 var FileContentExtractor = require('../models/file-content-extractor.js');
 
 // exports
 module.exports = new FileContentExtractor('jquery-mobile-test-suite-extractor', extractTestSuites);
 
 /**
- * Parses a JavaScript file's text and extracts [TODO]. The test suite information is returned as an array
- * of `TestSuite` objects.
+ * Parses an HTML file's text and extracts test suite information from within. This extractor was created
+ * specifically for the 'jQuery Mobile' project because of the non-standard way in which it loads
+ * test dependencies. The test suite information is returned as an array of `TestSuite` objects.
  * 
  * @param {String} fileContents - the file's text content
  * @param {String} filePath     - relative path of the file
@@ -45,6 +46,14 @@ function extractTestSuites(fileContents, filePath, cwd) {
   return testSuites;
 }
 
+/**
+ * Parses an HTML file's text and extracts test dependencies from
+ * any '$.testHelper.asyncLoad([])' statements found within.
+ * 
+ * @param {String} fileContents - the file's text content
+ * 
+ * @return {Array} An array of test dependency names (i.e. strings).
+ */
 function getTestHelperDependencies(fileContents) {
   var dependencies   = [],
       testHelperStmt = getTestHelperStatement(fileContents),
@@ -64,6 +73,14 @@ function getTestHelperDependencies(fileContents) {
   return dependencies;
 }
 
+/**
+ * Parses an HTML file's text and extracts the first 
+ * '$.testHelper.asyncLoad([])' statement that is encountered.
+ * 
+ * @param {String} fileContents - the file's text content
+ * 
+ * @return {String} A '$.testHelper.asyncLoad([])' statement.
+ */
 function getTestHelperStatement(fileContents) {
   var iStart = fileContents.indexOf('$.testHelper.asyncLoad'),
       iEnd   = fileContents.indexOf('</script>', iStart);
@@ -71,6 +88,13 @@ function getTestHelperStatement(fileContents) {
   return fileContents.substring(iStart, iEnd);
 }
 
+/**
+ * Checks if the specified JavaScript AST node represents a '$.testHelper.asyncLoad([])' call expression.
+ * 
+ * @param {Object} node - the JavaScript AST node to check 
+ * 
+ * @return {Boolean} True if the node represents an '$.testHelper.asyncLoad([])' call expression. False otherwise.
+ */
 function isTestHelperAsyncLoad(node) {
   return node && 
          node.callee && 
@@ -86,74 +110,4 @@ function isTestHelperAsyncLoad(node) {
          node.callee.property.name        === 'asyncLoad' &&
          node.arguments.length            === 1 &&
          node.arguments[0].type           === 'ArrayExpression';
-}
-
-/**
- */
-function extractTestSuitesOld(fileContents, filePath, cwd) {
-  // extract the content of comments that contain "retrospec.testSuite("
-  var comments = getPossibleTestSuiteComments(fileContents);
-
-  var testSuites = [];
-  comments.forEach(function(comment) {
-    // get the comment's Abstact Syntax Tree (AST)
-    var ast = esprima.parse(comment);
-    // traverse the AST and extract comment data
-    estraverse.traverse(ast, {
-      enter: function (node, parent) {
-        // if this node is a module
-        if(isTestSuiteDefinition(node)) {
-          // extract module data
-          var args = AstHelper.getCallExpressionArguments(node);
-          // create a new code module
-          testSuites.push(new TestSuite(args[0], filePath));
-          // skip this node's children
-          this.skip();
-        }
-      }
-    });
-  });
-
-  return testSuites;
-}
-
-/**
- * Parses a JavaScript file's contents and extracts the contents of any comments that contain "retrospec.testSuite(".
- * 
- * @param {String} fileContents - the file's text content
- * 
- * @return {Array} An array of comment strings which may contain valid 'retrospec.testSuite([])' call expressions.
- */
-function getPossibleTestSuiteComments(fileContents) {
-  var comments = [];
-
-  // get the JavaScript's Abstact Syntax Tree (AST) with comments
-  var ast = esprima.parse(fileContents, { comment: true });
-
-  // extract comments that contain "retrospec.testSuite("
-  if(ast.comments && ast.comments.length > 0) {
-    ast.comments.forEach(function(comment) {
-      if(comment.value.indexOf('retrospec.testSuite(') !== -1) {
-        comments.push(comment.value);
-      }
-    });
-  }
-
-  return comments;
-}
-
-/**
- * Checks if the specified JavaScript AST node represents an 'retrospec.testSuite([])' call expression.
- * 
- * @param {Object} node - the JavaScript AST node to check 
- * 
- * @return {Boolean} True if the node represents an 'retrospec.testSuite([])' call expression. False otherwise.
- */
-function isTestSuiteDefinition(node) {
-  return node && node.callee  && node.callee.object && node.callee.property && node.arguments && node.arguments.length === 1 &&
-         node.type                      === 'CallExpression' &&
-         node.callee.type               === 'MemberExpression' &&
-         node.callee.object.name        === 'retrospec' &&
-         node.callee.property.name      === 'testSuite' &&
-         node.arguments[0].type         === 'ArrayExpression';
 }
