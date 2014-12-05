@@ -13,11 +13,11 @@ var parse       = require('../../lib/r.js/parse'),  // r.js parse lib
     arrayHelper = require('../misc/array-helper'),  // array helper methods
     CodeModule  = require('../models/code-module'); // represents a "module" of code
 
-// retrospec's interface for pluggable module extraction logic
-var FileContentExtractor = require('../models/file-content-extractor.js');
+// retrospec's interface for pluggable extraction logic
+var FileContentExtractor = require('./file-content-extractor.js');
 
 // exports
-module.exports = new FileContentExtractor('requirejs-module-extractor', extractModulesFromText);
+module.exports = new FileContentExtractor('requirejs-module-extractor', extractModules);
 
 /**
  * Parses JavaScript source code text and extracts RequireJS module definitions of 
@@ -30,16 +30,16 @@ module.exports = new FileContentExtractor('requirejs-module-extractor', extractM
  * 
  * @return {Array} An array of `CodeModule` objects.
  */
-function extractModulesFromText(fileContents, filePath, cwd) {
+function extractModules(fileContents, filePath, cwd) {
   // extract module dependencies
   var fileName = filePath.replace(/^.*[\\\/]/, ''),
       deps     = parse.findDependencies(fileName, fileContents),
       cjsDeps  = parse.findCjsDependencies(fileName, fileContents);
 
-  // TODO: Implement my own module extraction using estraverse
-  // If(hasName)
+  // TODO: Implement our own module extraction using estraverse
+  // if(hasName)
   //    addToListWithName
-  // Else
+  // else
   //    addToListWithFileName
 
   // combine dependencies & remove duplicates

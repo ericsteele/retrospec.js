@@ -33,7 +33,7 @@ var extractor = require('../src/extractors/angular-module-extractor');
 /*   retrospec.js/x/                                 */
 /*****************************************************/
 describe('angular.js', function() {
-	it('should find 12 modules', function(done) {
+	xit('should find 754 modules', function(done) {
 		var p = path.resolve(__dirname, '../x/src/');
 		extractor.fromDirectory(['*/*.js'], p)
 		         .should.eventually.have.length(754)

@@ -14,8 +14,8 @@ var esprima    = require('esprima'),              // parses JS and produces an A
     AstHelper  = require('../misc/ast-helper'),   // abstract syntax tree (AST) helper methods
     TestSuite  = require('../models/test-suite'); // generic representation of a test suite
 
-// retrospec's interface for pluggable module extraction logic
-var FileContentExtractor = require('../models/file-content-extractor.js');
+// retrospec's interface for pluggable extraction logic
+var FileContentExtractor = require('./file-content-extractor.js');
 
 // exports
 module.exports = new FileContentExtractor('inline-comment-test-suite-extractor', extractTestSuites);
@@ -50,22 +50,27 @@ function extractTestSuites(fileContents, filePath, cwd) {
 
   var testSuites = [];
   comments.forEach(function(comment) {
-    // get the comment's Abstact Syntax Tree (AST)
-    var ast = esprima.parse(comment);
-    // traverse the AST and extract comment data
-    estraverse.traverse(ast, {
-      enter: function (node, parent) {
-        // if this node is a module
-        if(isTestSuiteDefinition(node)) {
-          // extract module data
-          var args = AstHelper.getCallExpressionArguments(node);
-          // create a new code module
-          testSuites.push(new TestSuite(args[0], filePath));
-          // skip this node's children
-          this.skip();
+    try{ 
+      // get the comment's Abstact Syntax Tree (AST)
+      var ast = esprima.parse(comment);
+      // traverse the AST and extract comment data
+      estraverse.traverse(ast, {
+        enter: function (node, parent) {
+          // if this node is a module
+          if(isTestSuiteDefinition(node)) {
+            // extract module data
+            var args = AstHelper.getCallExpressionArguments(node);
+            // create a new code module
+            testSuites.push(new TestSuite(args[0], filePath));
+            // skip this node's children
+            this.skip();
+          }
         }
-      }
-    });
+      });
+    }
+    catch(error) {
+      console.log('[warn] malformed test suite defintion found in ' + filePath);
+    }
   });
 
   return testSuites;

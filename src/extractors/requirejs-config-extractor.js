@@ -12,10 +12,10 @@
 var parse = require('../../lib/r.js/parse');  // r.js parse lib
 
 // retrospec's interface for pluggable module extraction logic
-var FileContentExtractor = require('../models/file-content-extractor.js');
+var FileContentExtractor = require('./file-content-extractor.js');
 
 // exports
-module.exports = new FileContentExtractor('requirejs-config-extractor', extractConfigFromText);
+module.exports = new FileContentExtractor('requirejs-config-extractor', extractConfig);
 
 /**
  * Parses a JavaScript file's text and extracts a RequireJS configuration object. This includes calls to:
@@ -36,7 +36,7 @@ module.exports = new FileContentExtractor('requirejs-config-extractor', extractC
  *   - path:   {String} the relative path of the file in which the config object was found
  *   - range:  {Array}  the start index and end index in the contents where the config was found.
  */
-function extractConfigFromText(fileContents, filePath, cwd) {
+function extractConfig(fileContents, filePath, cwd) {
   var result = parse.findConfig(fileContents);
 
   if(result.config) {

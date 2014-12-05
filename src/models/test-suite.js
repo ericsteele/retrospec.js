@@ -18,7 +18,7 @@ module.exports = TestSuite;
  * @param {String} path             - relative path of the file that defines the test suite
  */
 function TestSuite(modulesUnderTest, path) {
-  // make sure that this function is invoked with the 'new' operator
+  // this is a special object and it deserves to be called with "new" damn it!
   if(this instanceof TestSuite === false) {
     console.log('[warn] forgot to use "new" operator when invoking TestSuite():' + path);
     return new TestSuite(modulesUnderTest, path);

@@ -19,7 +19,7 @@ module.exports = CodeModule;
  * @param {String} path - relative path of the file that defines the code module
  */
 function CodeModule(name, deps, path) {
-  // make sure that this function is invoked with the 'new' operator
+  // this is a special object and it deserves to be called with "new" damn it!
   if(this instanceof CodeModule === false) {
     console.log('[warn] forgot to use "new" operator when invoking CodeModule():' + name);
     return new CodeModule(name, deps, path);

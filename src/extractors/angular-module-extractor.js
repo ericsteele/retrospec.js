@@ -14,11 +14,11 @@ var esprima     = require('esprima'),               // parses JS and produces an
     AstHelper   = require('../misc/ast-helper'),    // abstract syntax tree (AST) helper methods
     CodeModule  = require('../models/code-module'); // loader-agnostic representation of a "module" of code
 
-// retrospec's interface for pluggable module extraction logic
-var FileContentExtractor = require('../models/file-content-extractor.js');
+// retrospec's interface for pluggable extraction logic
+var FileContentExtractor = require('./file-content-extractor.js');
 
 // exports
-module.exports = new FileContentExtractor('angular-module-extractor', extractModulesFromText);
+module.exports = new FileContentExtractor('angular-module-extractor', extractModules);
 
 /**
  * Parses a JavaScript file's text and extracts AngularJS module definitions of 
@@ -31,7 +31,7 @@ module.exports = new FileContentExtractor('angular-module-extractor', extractMod
  * 
  * @return {Array} An array of `CodeModule` objects.
  */
-function extractModulesFromText(fileContents, filePath, cwd) {
+function extractModules(fileContents, filePath, cwd) {
 
 	// get the JavaScript's Abstact Syntax Tree (AST)
 	var ast = esprima.parse(fileContents);
