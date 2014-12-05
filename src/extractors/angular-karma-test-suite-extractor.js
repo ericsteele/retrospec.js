@@ -15,7 +15,7 @@ var esprima    = require('esprima'),              // parses JS and produces an A
     TestSuite  = require('../models/test-suite'); // generic representation of a test suite
 
 // retrospec's interface for pluggable module extraction logic
-var FileContentExtractor = require('../models/file-content-extractor.js');
+var FileContentExtractor = require('./file-content-extractor.js');
 
 // exports
 module.exports = new FileContentExtractor('angular-karma-test-suite-extractor', extractTestSuites);
