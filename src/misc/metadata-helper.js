@@ -1,5 +1,7 @@
+
+
 /*
- * metadata-writer.js
+ * metadata-helper.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Peter Ingulli
@@ -9,46 +11,76 @@
 'use strict';
 
 // libs
-// libs
-var FS          = require('fs'),                    // file system
-    Q           = require('q'),                     // `kriskowal/q` promises
-    path        = require('path'),                  // utils for resolving file paths
-    CodeModule  = require('../models/code-module'), // generic representation of a code module
-    TestSuite   = require('../models/test-suite');  // generic representation of a test suite
+var FS         = require('fs'),                    // file system
+    Q          = require('q'),                     // `kriskowal/q` promises
+    path       = require('path'),                  // utils for resolving file paths
+    fsHelper   = require('../misc/fs-helper'),     // file system helper methods
+    CodeModule = require('../models/code-module'), // generic representation of a code module
+    TestSuite  = require('../models/test-suite');  // generic representation of a test suite
 
-// aliases
-var readFile = Q.nfbind(FS.readFile);  // add Q promise support to FS.readile
+// add Q promise support to FS operations
+var mkdir     = Q.nfbind(FS.mkdir),
+    openFile  = Q.nfbind(FS.open),
+    readFile  = Q.nfbind(FS.readFile),
+    writeFile = Q.fbind(FS.write);
 
 // exports
 module.exports = {
+  readMetadata:  readMetadata,
   writeMetadata: writeMetadata
-}
+};
 
-function writeMetadata(modules, testSuites, projectRootPath) {
-  var retrospecDir = path.resolve(projectRootPath, '.retrospec');
-  if (!FS.existsSync(retrospecDir)) {
-    FS.mkdirSync(retrospecDir);
+// constants
+var METADATA_DIRECTORY = '.retrospec',
+    METADATA_FILE      = 'project-snapshot.json'
+    
+/**
+ * Writes the provided project meta-data to '{projectPath}/.retrospec/project-snapshot.json'.
+ * 
+ * @param  {Object} modules     - an object map whose properties are the project's CodeModules
+ * @param  {Object} testSuites  - an object map whose properties are the project's TestSuites
+ * @param  {String} projectPath - absolute path of the project's root directory
+ * 
+ * @return {Promise} A promise to write the project's meta-data to file.
+ */
+function writeMetadata(modules, testSuites, projectPath) {
+  var metadataDirPath  = path.resolve(projectPath,     METADATA_DIRECTORY),
+      metadataFilePath = path.resolve(metadataDirPath, METADATA_FILE),
+      jsonStr          = JSON.stringify({ modules: modules, testSuites: testSuites });
+
+  return fsHelper.exists(metadataDirPath)
+                 .then(mkdirIfNeeded)
+                 .then(openMetadataFile)
+                 .then(writeJsonToFile);
+
+  function mkdirIfNeeded(exists) {
+    if(!exists) return mkdir(metadataDirPath);
   }
 
-  var filepath = path.resolve(retrospecDir, 'retrospec');
-  var file = FS.openSync(filepath, 'w+');
+  function openMetadataFile() {
+    return openFile(metadataFilePath, 'w+');
+  }
 
-  writeModules(modules, file);
-  writeToFile(file, ", \n")
-  writeTestSuites(testSuites, file);
+  function writeJsonToFile(file) {
+    return writeFile(file, jsonStr);
+  }
 }
 
-function writeModules(modules, file) {
-  var modulesJSON = "modules: " + JSON.stringify(modules);
-  writeToFile(file, modulesJSON, true);
-}
+/**
+ * Reads project meta-data from '{projectPath}/.retrospec/project-snapshot.json'
+ * 
+ * @param  {String} projectPath - absolute path of the project's root directory
+ * 
+ * @return {Promise} A promise to produce the project's meta-data.
+ */
+function readMetadata(projectPath) {
+  var filepath = path.resolve(projectPath, '.retrospec/project-snapshot.json');
 
-function writeTestSuites(testSuites, file) {
-  var testSuitesJSON = "testSuites: " + JSON.stringify(testSuites);
-  writeToFile(file, testSuitesJSON, true);
-}
+  return fsHelper.exists(filepath)
+                 .then(readMetadataFile)
+                 .then(JSON.parse);
 
-function writeToFile(file, str, append) {
-  var writeStartPos = append ? null : 0;
-  FS.writeSync(file, str);
+  function readMetadataFile(exists) {
+    return exists ? readFile(filepath, 'utf-8') : null;
+  }
 }

@@ -17,6 +17,7 @@ var FS          = require('fs'),             // file system
 
 // export the fs-helper module
 module.exports = {
+  exists:      exists,
   locateFiles: locateFiles
 };
 
@@ -69,24 +70,22 @@ function globWithPromises(pattern, options, callback) {
 }
 
 /**
- * Prepends `cwd` to the specified relative file paths.
+ * Checks if a file or directory exists.
  * 
- * @param  {[type]} relativePaths - The relative file paths
- * @param  {[type]} cwd           - The directory that the file paths are relative to
+ * @param  {String} path - the absolute path of the file or directory
  * 
- * @return {Array} An array of absolute file paths
+ * @return {Promise} A promise that will be resolved with true if the  
+ *                   file or directory exists. False otherwise.
  */
-// function cFilePathsAbsolute(relativePaths, cwd) {
-//   // set default values if not provided
-//   cwd = cwd || process.cwd();
+function exists(path) {
+  var deferred = Q.defer();
 
-//   var paths = [];
-//   for(var i = 0, iEnd = relativePaths.length; i < iEnd; i++) {
-//     paths.push(cwd + '/' + relativePaths[i]);
-//   }
-//   return fixFilePathsForOS(paths);
-// }  
+  FS.exists(path, function(exists) {
+    deferred.resolve(exists);
+  });
 
+  return deferred.promise;
+}
 
 // Converts the POSIX paths output by node-glob into UNC paths if using a Windows OS 
 function fixFilePathsForOS(paths) {

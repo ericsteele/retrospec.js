@@ -16,7 +16,7 @@ var FS          = require('fs'),                    // file system
     fsHelper    = require('../misc/fs-helper');     // file system helper methods
 
 // aliases
-var readFile = Q.nfbind(FS.readFile),  // add Q promise support to FS.readile
+var readFile = Q.nfbind(FS.readFile),  // add Q promise support to FS.readfile
     isArray  = Array.isArray;
 
 // exports

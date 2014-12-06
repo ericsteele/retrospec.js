@@ -82,15 +82,17 @@ describe('angular-module-extractor.js', function() {
 		});
 	});
 
-	describe('get modules from real projects', function() {
-		it('angular.js: should find 754 modules', function(done) {
+	describe('fromDirectory(["*/*.js", "angular.js/src")', function() {
+		it('should find 754 modules', function(done) {
 			var p = path.resolve(projectsDirectory, 'angular.js/src');
 			extractor.fromDirectory(['*/*.js'], p)
 			         .should.eventually.have.length(754)
 			         .notify(done);
 		});
+	});
 
-		it('ui-bootstrap: should find 20 modules', function(done) {
+	describe('fromDirectory(["*/*.js", "ui-bootstrap/src")', function() {
+		it('should find 20 modules', function(done) {
 			var p = path.resolve(projectsDirectory, 'ui-bootstrap/src');
 			extractor.fromDirectory(['*/*.js'], p)
 			         .should.eventually.have.length(20)
