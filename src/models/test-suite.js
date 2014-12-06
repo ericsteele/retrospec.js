@@ -8,6 +8,9 @@
  */
 'use strict';
 
+// libs
+var hashFile = require('../misc/hash-file');
+
 // module to be exported
 module.exports = TestSuite;
 
@@ -16,8 +19,9 @@ module.exports = TestSuite;
  * 
  * @param {Array}  modulesUnderTest - array of code module names that the test suite validates
  * @param {String} path             - relative path of the file that defines the test suite
+ * @param {String} fileContents     - the contents of the file
  */
-function TestSuite(modulesUnderTest, path) {
+function TestSuite(modulesUnderTest, path, fileContents) {
   // this is a special object and it deserves to be called with "new" damn it!
   if(this instanceof TestSuite === false) {
     console.log('[warn] forgot to use "new" operator when invoking TestSuite():' + path);
@@ -25,5 +29,6 @@ function TestSuite(modulesUnderTest, path) {
   }
 
   this.dependencies = modulesUnderTest || [];
-  this.path         = path             || '';
+  this.path         = path || '';
+  this.hash         = hashFile(fileContents);
 }

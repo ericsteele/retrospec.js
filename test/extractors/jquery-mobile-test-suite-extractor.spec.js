@@ -35,7 +35,8 @@ describe('jquery-mobile-test-suite-extractor.js', function() {
     it('should extract 1 test suite', function(done) {
       var cwd      = path.resolve(projectsDirectory, 'jquery-mobile/tests'),
           expected = [{ 
-            path: 'unit/button-markup/index.html', 
+            path: 'unit/button-markup/index.html',
+            hash: 'cb640b6466ec3f56e7f21b9c2e8476844e819c75', 
             dependencies: [ 
               'widgets/page', 'buttonMarkup', 'widgets/controlgroup', 
               'widgets/toolbar', 'widgets/fixedToolbar', 'widgets/forms/button',

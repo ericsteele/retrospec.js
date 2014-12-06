@@ -48,7 +48,7 @@ function extractModules(fileContents, filePath, cwd) {
   // currently, we consider a file to be a module if it has dependencies
   var codeModules = [];
   if(deps.length > 0) {
-    codeModules.push(new CodeModule(filePath, deps, filePath));
+    codeModules.push(new CodeModule(filePath, deps, filePath, fileContents));
   }
 
   return codeModules;

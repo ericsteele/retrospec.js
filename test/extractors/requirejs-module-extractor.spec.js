@@ -47,7 +47,8 @@ describe('requirejs-module-extractor.js', function() {
       var expected = [{
         name:         'requirejs/single-define.js',
         dependencies: ['a','b','c','x'],
-        path:         'requirejs/single-define.js'
+        path:         'requirejs/single-define.js',
+        hash:         '9e9bf24b9dfc549949f86ef1ff184d5606c431c0'
       }];
 
       extractor.fromFile('requirejs/single-define.js', codeSnippetDirectory)
@@ -61,7 +62,8 @@ describe('requirejs-module-extractor.js', function() {
       var expected = [{
         name:         'requirejs/multiple-defines.js',
         dependencies: ['a','b','c','d','e','f','g','h','i','x','y','z'],
-        path:         'requirejs/multiple-defines.js'
+        path:         'requirejs/multiple-defines.js',
+        hash:         'aa2c119ec94b1190da6d9cc6dea9c21621758d29'
       }];
 
       extractor.fromFile('requirejs/multiple-defines.js', codeSnippetDirectory)
@@ -75,7 +77,8 @@ describe('requirejs-module-extractor.js', function() {
       var expected = [{
         name:         'requirejs/nested-defines.js',
         dependencies: ['a','b','c','d','e','f','g','h','i','x','y','z'],
-        path:         'requirejs/nested-defines.js'
+        path:         'requirejs/nested-defines.js',
+        hash:         '1753180b6c4d49c6053dde13197112289cf12ded'
       }];
 
       extractor.fromFile('requirejs/nested-defines.js', codeSnippetDirectory)

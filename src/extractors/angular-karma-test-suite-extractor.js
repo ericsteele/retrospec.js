@@ -35,7 +35,7 @@ function extractTestSuites(fileContents, filePath, cwd) {
 
   var deps = getTestHelperDependencies(fileContents);
   if(deps.length > 0) {
-    testSuites.push(new TestSuite(deps, filePath));
+    testSuites.push(new TestSuite(deps, filePath, fileContents));
   }
 
   return testSuites;

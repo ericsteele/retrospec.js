@@ -38,7 +38,7 @@ function extractTestSuites(fileContents, filePath, cwd) {
     if(fileContents.indexOf('$.testHelper.asyncLoad') !== -1) {
       var deps = getTestHelperDependencies(fileContents);
       if(deps.length > 0) {
-        testSuites.push(new TestSuite(deps, filePath));
+        testSuites.push(new TestSuite(deps, filePath, fileContents));
       }
     }
   }

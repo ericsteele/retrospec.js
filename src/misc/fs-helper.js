@@ -1,5 +1,5 @@
 /*
- * misc/fs-helper.js
+ * fs-helper.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele
@@ -15,7 +15,7 @@ var FS          = require('fs'),             // file system
     glob        = require('glob'),           // file globbing
     arrayHelper = require('./array-helper'); // array helper methods
 
-// export the fs-helper module
+// exports
 module.exports = {
   exists:      exists,
   locateFiles: locateFiles

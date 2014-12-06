@@ -8,17 +8,21 @@
  */
 'use strict';
 
+// libs
+var hashFile = require('../misc/hash-file');
+
 // module to be exported
 module.exports = CodeModule;
 
 /**
  * Constructs an object that represents a piece of code defined using a module loader. 
  * 
- * @param {String} name - string that uniquely identifies the code module
- * @param {Array}  deps - array of code module names that the code module depends on
- * @param {String} path - relative path of the file that defines the code module
+ * @param {String} name         - string that uniquely identifies the code module
+ * @param {Array}  deps         - array of code module names that the code module depends on
+ * @param {String} path         - relative path of the file that defines the code module
+ * @param {String} fileContents - the contents of the file
  */
-function CodeModule(name, deps, path) {
+function CodeModule(name, deps, path, fileContents) {
   // this is a special object and it deserves to be called with "new" damn it!
   if(this instanceof CodeModule === false) {
     console.log('[warn] forgot to use "new" operator when invoking CodeModule():' + name);
@@ -28,4 +32,5 @@ function CodeModule(name, deps, path) {
   this.name         = name || '';
   this.dependencies = deps || [];
   this.path         = path || '';
+  this.hash         = hashFile(fileContents);
 }

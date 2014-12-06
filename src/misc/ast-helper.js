@@ -1,5 +1,5 @@
 /*
- * misc/ast-helper.js
+ * ast-helper.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele
@@ -8,7 +8,7 @@
  */
 'use strict';
 
-// export the ast-helper module
+// exports
 module.exports = {
   getCallExpressionArguments: getCallExpressionArguments,
   getNodeValue:               getNodeValue

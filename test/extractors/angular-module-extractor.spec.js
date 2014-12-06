@@ -44,9 +44,11 @@ describe('angular-module-extractor.js', function() {
 
   describe('.fromFile("single-module.js")', function() {
     it('should extract 1 module with 3 dependencies', function(done) {
-      var expected = [
-        { name: 'test', dependencies: ['a', 'b', 'c'], path: 'angular/single-module.js' }
-      ];
+      var expected = [{ 
+        name: 'test', dependencies: ['a', 'b', 'c'], 
+        path: 'angular/single-module.js',
+        hash: '4ec504b02e09484bc41e0314a4746bf13712faf4'
+      }];
 
       extractor.fromFile('angular/single-module.js', codeSnippetDirectory)
                .should.eventually.eql(expected)
@@ -57,9 +59,21 @@ describe('angular-module-extractor.js', function() {
   describe('.fromFile("multiple-modules.js")', function() {
     it('should extract 3 modules, each with 3 dependencies', function(done) {
       var expected = [
-        { name: 'test1', dependencies: ['a', 'b', 'c'], path: 'angular/multiple-modules.js' },
-        { name: 'test2', dependencies: ['d', 'e', 'f'], path: 'angular/multiple-modules.js' },
-        { name: 'test3', dependencies: ['g', 'h', 'i'], path: 'angular/multiple-modules.js' }
+        { 
+          name: 'test1', dependencies: ['a', 'b', 'c'], 
+          path: 'angular/multiple-modules.js',
+          hash: '11e66d7f4c3a75d1a25e591d2b5c58daaf5307bf' 
+        },
+        { 
+          name: 'test2', dependencies: ['d', 'e', 'f'], 
+          path: 'angular/multiple-modules.js',
+          hash: '11e66d7f4c3a75d1a25e591d2b5c58daaf5307bf'
+        },
+        { 
+          name: 'test3', dependencies: ['g', 'h', 'i'], 
+          path: 'angular/multiple-modules.js',
+          hash: '11e66d7f4c3a75d1a25e591d2b5c58daaf5307bf'
+        }
       ];
 
       extractor.fromFile('angular/multiple-modules.js', codeSnippetDirectory)
@@ -73,7 +87,8 @@ describe('angular-module-extractor.js', function() {
       var expected = [{ 
         name: 'ui.bootstrap.accordion', 
         dependencies: ['ui.bootstrap.collapse'], 
-        path: 'angular/ui-bootstrap-example.js' 
+        path: 'angular/ui-bootstrap-example.js',
+        hash: 'b45a37d401ed0fef5f70a0c30781fe77e06b53ac'
       }];
 
       extractor.fromFile('angular/ui-bootstrap-example.js', codeSnippetDirectory)
@@ -82,7 +97,7 @@ describe('angular-module-extractor.js', function() {
     });
   });
 
-  describe('fromDirectory(["*/*.js", "angular.js/src")', function() {
+  describe('.fromDirectory(["*/*.js", "angular.js/src")', function() {
     it('should find 754 modules', function(done) {
       var p = path.resolve(projectsDirectory, 'angular.js/src');
       extractor.fromDirectory(['*/*.js'], p)
@@ -91,7 +106,7 @@ describe('angular-module-extractor.js', function() {
     });
   });
 
-  describe('fromDirectory(["*/*.js", "ui-bootstrap/src")', function() {
+  describe('.fromDirectory(["*/*.js", "ui-bootstrap/src")', function() {
     it('should find 20 modules', function(done) {
       var p = path.resolve(projectsDirectory, 'ui-bootstrap/src');
       extractor.fromDirectory(['*/*.js'], p)

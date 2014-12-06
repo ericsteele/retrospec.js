@@ -61,7 +61,7 @@ function extractTestSuites(fileContents, filePath, cwd) {
             // extract module data
             var args = AstHelper.getCallExpressionArguments(node);
             // create a new code module
-            testSuites.push(new TestSuite(args[0], filePath));
+            testSuites.push(new TestSuite(args[0], filePath, fileContents));
             // skip this node's children
             this.skip();
           }

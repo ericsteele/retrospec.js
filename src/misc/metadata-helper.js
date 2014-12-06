@@ -1,5 +1,3 @@
-
-
 /*
  * metadata-helper.js
  * https://github.com/ericsteele/retrospec.js

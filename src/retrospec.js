@@ -84,8 +84,8 @@ function selectNewTests(diffs) {
 function selectRegressionTests(modules, testSuites, diffs) {
   var regressionTests = {};
 
-  diffs.modules.forEach(function(diff) {
-    if(diff.change === 'ADD' || diff.change === 'EDIT' || diff.change === 'MOVE') {
+  diffs.modules.forEach(function(module) {
+    if(module.change === 'ADD' || module.change === 'EDIT' || module.change === 'MOVE') {
       var module = modules[module.name];
           tests  = selectRegressionTestsForModule(module, modules, testSuites);
 

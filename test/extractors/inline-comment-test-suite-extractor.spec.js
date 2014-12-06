@@ -42,12 +42,12 @@ describe('inline-comment-test-suite-extractor.js', function() {
   describe('.fromFile("test-suite-comments.js")', function() {
     it('should extract 6 test suites', function(done) {
       var expected = [
-        { dependencies: [ 'a', 'b' ], path: 'misc/test-suite-comments.js' },
-        { dependencies: [ 'c', 'd' ], path: 'misc/test-suite-comments.js' },
-        { dependencies: [ 'e', 'f' ], path: 'misc/test-suite-comments.js' },
-        { dependencies: [ 'g', 'h' ], path: 'misc/test-suite-comments.js' },
-        { dependencies: [ 'i', 'j' ], path: 'misc/test-suite-comments.js' },
-        { dependencies: [ 'k', 'l' ], path: 'misc/test-suite-comments.js' } 
+        { dependencies: [ 'a', 'b' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' },
+        { dependencies: [ 'c', 'd' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' },
+        { dependencies: [ 'e', 'f' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' },
+        { dependencies: [ 'g', 'h' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' },
+        { dependencies: [ 'i', 'j' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' },
+        { dependencies: [ 'k', 'l' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' } 
       ];
 
       extractor.fromFile('misc/test-suite-comments.js', codeSnippetDirectory)

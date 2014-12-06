@@ -45,7 +45,7 @@ function extractModules(fileContents, filePath, cwd) {
         // extract module data
         var args = AstHelper.getCallExpressionArguments(node);
         // create a new code module
-        modules.push(new CodeModule(args[0], args[1], filePath));
+        modules.push(new CodeModule(args[0], args[1], filePath, fileContents));
         // skip this node's children
         this.skip();
       }

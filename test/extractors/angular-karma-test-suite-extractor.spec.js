@@ -36,9 +36,8 @@ describe('angular-karma-test-suite-extractor.js', function() {
       var cwd = path.resolve(projectsDirectory, 'angular.js/test'),
         expected = [{ 
           path: 'ngCookies/cookiesSpec.js', 
-          dependencies: [ 
-            'ngCookies' 
-          ]
+          hash: '9f61e268a21b2633ba814952390298829f71a6d3',
+          dependencies: ['ngCookies']
         }];
 
       extractor.fromFile('ngCookies/cookiesSpec.js', cwd)

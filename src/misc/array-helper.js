@@ -1,5 +1,5 @@
 /*
- * misc/array-helper.js
+ * array-helper.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele
@@ -8,7 +8,7 @@
  */
 'use strict';
 
-// export the array-helper module
+// exports
 module.exports = {
   flatten:     flatten,
   getUnique:   getUnique,
