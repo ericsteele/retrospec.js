@@ -33,10 +33,10 @@ module.exports = new FileContentExtractor('angular-karma-test-suite-extractor', 
 function extractTestSuites(fileContents, filePath, cwd) {
   var testSuites = [];
 
-	var deps = getTestHelperDependencies(fileContents);
-	if(deps.length > 0) {
-		testSuites.push(new TestSuite(deps, filePath));
-	}
+  var deps = getTestHelperDependencies(fileContents);
+  if(deps.length > 0) {
+    testSuites.push(new TestSuite(deps, filePath));
+  }
 
   return testSuites;
 }
@@ -50,7 +50,7 @@ function getTestHelperDependencies(fileContents) {
       if(isKarmaModuleStatement(node)) {
         var dep = AstHelper.getCallExpressionArguments(node)[0];
         if (dependencies.indexOf(dep) == -1)
-        	dependencies.push(dep);
+          dependencies.push(dep);
       }
     }
   });

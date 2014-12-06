@@ -17,8 +17,8 @@ chai.use(chaiAsPromised);
 
 // Grab Chai's assert, expect, and should interfaces
 var assert = chai.assert,
-		expect = chai.expect,
-		should = chai.should(); // Note that should has to be executed
+    expect = chai.expect,
+    should = chai.should(); // Note that should has to be executed
 
 // Load utilities for handling and transforming file paths
 var path = require('path');
@@ -31,34 +31,34 @@ var extractor = require('../../src/extractors/jquery-mobile-test-suite-extractor
 
 describe('jquery-mobile-test-suite-extractor.js', function() {
 
-	describe('.fromFile("unit/button-markup/index.html")', function() {
-		it('should extract 1 test suite', function(done) {
-			var cwd      = path.resolve(projectsDirectory, 'jquery-mobile/tests'),
-					expected = [{ 
-						path: 'unit/button-markup/index.html', 
-						dependencies: [ 
-							'widgets/page', 'buttonMarkup', 'widgets/controlgroup', 
-							'widgets/toolbar', 'widgets/fixedToolbar', 'widgets/forms/button',
-							'init', 'buttonMarkup_core.js' 
-						]
-					}];
+  describe('.fromFile("unit/button-markup/index.html")', function() {
+    it('should extract 1 test suite', function(done) {
+      var cwd      = path.resolve(projectsDirectory, 'jquery-mobile/tests'),
+          expected = [{ 
+            path: 'unit/button-markup/index.html', 
+            dependencies: [ 
+              'widgets/page', 'buttonMarkup', 'widgets/controlgroup', 
+              'widgets/toolbar', 'widgets/fixedToolbar', 'widgets/forms/button',
+              'init', 'buttonMarkup_core.js' 
+            ]
+          }];
 
-			extractor.fromFile('unit/button-markup/index.html', cwd)
+      extractor.fromFile('unit/button-markup/index.html', cwd)
                .should.eventually.eql(expected)
-							 .notify(done);
-		});
-	});
+               .notify(done);
+    });
+  });
 
-	describe('.fromDirectory(["**/*.html"], "jquery-mobile/tests")', function() {
+  describe('.fromDirectory(["**/*.html"], "jquery-mobile/tests")', function() {
 
-		it('should extract 78 test suites', function(done) {
-			var cwd = path.resolve(projectsDirectory, 'jquery-mobile/tests');
+    it('should extract 78 test suites', function(done) {
+      var cwd = path.resolve(projectsDirectory, 'jquery-mobile/tests');
 
-			extractor.fromDirectory(['**/*.html'], cwd)
+      extractor.fromDirectory(['**/*.html'], cwd)
                .should.eventually.have.length(78)
                .notify(done);
-		});
+    });
 
-	});
+  });
 
 });

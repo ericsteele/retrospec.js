@@ -33,32 +33,32 @@ module.exports = new FileContentExtractor('angular-module-extractor', extractMod
  */
 function extractModules(fileContents, filePath, cwd) {
 
-	// get the JavaScript's Abstact Syntax Tree (AST)
-	var ast = esprima.parse(fileContents);
+  // get the JavaScript's Abstact Syntax Tree (AST)
+  var ast = esprima.parse(fileContents);
 
-	// traverse the AST and extract module data
-	var modules = [];
-	estraverse.traverse(ast, {
-		enter: function (node, parent) {
+  // traverse the AST and extract module data
+  var modules = [];
+  estraverse.traverse(ast, {
+    enter: function (node, parent) {
       // if this node is a module
-			if(isAngularModuleDefinition(node)) {
-				// extract module data
-				var args = AstHelper.getCallExpressionArguments(node);
+      if(isAngularModuleDefinition(node)) {
+        // extract module data
+        var args = AstHelper.getCallExpressionArguments(node);
         // create a new code module
-				modules.push(new CodeModule(args[0], args[1], filePath));
-				// skip this node's children
-				this.skip();
-			}
-		}
-	});
+        modules.push(new CodeModule(args[0], args[1], filePath));
+        // skip this node's children
+        this.skip();
+      }
+    }
+  });
 
-	// check for duplicate module definitions
-	if(hasDuplicateCodeModules(modules)) {
-		throw new Error('encountered duplicate AngularJS module definitions: ' + filePath);
-	}
+  // check for duplicate module definitions
+  if(hasDuplicateCodeModules(modules)) {
+    throw new Error('encountered duplicate AngularJS module definitions: ' + filePath);
+  }
 
-	// remove duplicate module definitions
-	return modules;
+  // remove duplicate module definitions
+  return modules;
 }
 
 /**
@@ -72,11 +72,11 @@ function hasDuplicateCodeModules(modules) {
   for(var i = 0, iEnd = modules.length; i < iEnd; i++) {
     for(var j = i + 1; j < iEnd; j++) {
       if(modules[i].name === modules[j].name) {
-      	return true;
+        return true;
       }
     }
   }
-	return false;
+  return false;
 }
 
 /**
@@ -87,11 +87,11 @@ function hasDuplicateCodeModules(modules) {
  * @return {Boolean} True if the node represents an 'angular.module("",[])' call expression. False otherwise.
  */
 function isAngularModuleDefinition(node) {
-	return node && node.callee  && node.callee.object && node.callee.property && node.arguments && node.arguments.length >= 2 &&
-	       node.type                      === 'CallExpression' &&
-	       node.callee.type               === 'MemberExpression' &&
-	       node.callee.object.name        === 'angular' &&
-	       node.callee.property.name      === 'module' &&
-	       typeof node.arguments[0].value === 'string' &&
-	       node.arguments[1].type         === 'ArrayExpression';
+  return node && node.callee  && node.callee.object && node.callee.property && node.arguments && node.arguments.length >= 2 &&
+         node.type                      === 'CallExpression' &&
+         node.callee.type               === 'MemberExpression' &&
+         node.callee.object.name        === 'angular' &&
+         node.callee.property.name      === 'module' &&
+         typeof node.arguments[0].value === 'string' &&
+         node.arguments[1].type         === 'ArrayExpression';
 }

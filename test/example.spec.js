@@ -10,23 +10,23 @@ var assert = chai.assert,
 
 // Object under test
 var example = {
-	sayHello: function() {
-		return 'Hello World!';
-	}
+  sayHello: function() {
+    return 'Hello World!';
+  }
 };
 
 describe('example', function() {
 
-	describe('.sayHello()', function() {
-		it('should work with assert', function() {
-			assert.equal(example.sayHello(), 'Hello World!');
-		});
-		it('should work with expect', function() {
-			expect(example.sayHello()).to.equal('Hello World!');
-		});
-		it('should work with should', function() {
-			example.sayHello().should.equal('Hello World!');
-		});
-	});
-	
+  describe('.sayHello()', function() {
+    it('should work with assert', function() {
+      assert.equal(example.sayHello(), 'Hello World!');
+    });
+    it('should work with expect', function() {
+      expect(example.sayHello()).to.equal('Hello World!');
+    });
+    it('should work with should', function() {
+      example.sayHello().should.equal('Hello World!');
+    });
+  });
+  
 });

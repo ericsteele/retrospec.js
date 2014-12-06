@@ -17,8 +17,8 @@ chai.use(chaiAsPromised);
 
 // Grab Chai's assert, expect, and should interfaces
 var assert = chai.assert,
-		expect = chai.expect,
-		should = chai.should(); // Note that should has to be executed
+    expect = chai.expect,
+    should = chai.should(); // Note that should has to be executed
 
 // Load utilities for handling and transforming file paths
 var path = require('path');
@@ -31,29 +31,29 @@ var extractor = require('../../src/extractors/angular-karma-test-suite-extractor
 
 describe('angular-karma-test-suite-extractor.js', function() {
 
-	describe('.fromFile("ngCookies/cookiesSpec.js")', function() {
-		it('should extract 1 test suite', function(done) {
-			var cwd = path.resolve(projectsDirectory, 'angular.js/test'),
-				expected = [{ 
-					path: 'ngCookies/cookiesSpec.js', 
-					dependencies: [ 
-						'ngCookies' 
-					]
-				}];
+  describe('.fromFile("ngCookies/cookiesSpec.js")', function() {
+    it('should extract 1 test suite', function(done) {
+      var cwd = path.resolve(projectsDirectory, 'angular.js/test'),
+        expected = [{ 
+          path: 'ngCookies/cookiesSpec.js', 
+          dependencies: [ 
+            'ngCookies' 
+          ]
+        }];
 
-			extractor.fromFile('ngCookies/cookiesSpec.js', cwd)
-			         .should.eventually.eql(expected)
-					 .notify(done);
-		});
-	});
+      extractor.fromFile('ngCookies/cookiesSpec.js', cwd)
+               .should.eventually.eql(expected)
+           .notify(done);
+    });
+  });
 
-	describe('.fromDirectory(["**/*Spec.js"], "test")', function() {
-		it('should extract 25 test suites', function(done) {
-			var cwd = path.resolve(projectsDirectory, 'angular.js/test');
+  describe('.fromDirectory(["**/*Spec.js"], "test")', function() {
+    it('should extract 25 test suites', function(done) {
+      var cwd = path.resolve(projectsDirectory, 'angular.js/test');
 
-			var promise = extractor.fromDirectory(['**/*Spec.js'], cwd);
-			promise.should.eventually.have.length(25)
+      var promise = extractor.fromDirectory(['**/*Spec.js'], cwd);
+      promise.should.eventually.have.length(25)
                .notify(done);
-		});
-	});
+    });
+  });
 });

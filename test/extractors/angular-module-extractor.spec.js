@@ -34,70 +34,70 @@ var extractor = require('../../src/extractors/angular-module-extractor');
 
 describe('angular-module-extractor.js', function() {
 
-	describe('.fromFile("empty.js")', function() {
-		it('should extract 0 modules', function(done) {
-			extractor.fromFile('empty.js', codeSnippetDirectory)
-			         .should.eventually.have.length(0)
-			         .notify(done);
-		});
-	});
+  describe('.fromFile("empty.js")', function() {
+    it('should extract 0 modules', function(done) {
+      extractor.fromFile('empty.js', codeSnippetDirectory)
+               .should.eventually.have.length(0)
+               .notify(done);
+    });
+  });
 
-	describe('.fromFile("single-module.js")', function() {
-		it('should extract 1 module with 3 dependencies', function(done) {
-			var expected = [
-				{ name: 'test', dependencies: ['a', 'b', 'c'], path: 'angular/single-module.js' }
-			];
+  describe('.fromFile("single-module.js")', function() {
+    it('should extract 1 module with 3 dependencies', function(done) {
+      var expected = [
+        { name: 'test', dependencies: ['a', 'b', 'c'], path: 'angular/single-module.js' }
+      ];
 
-			extractor.fromFile('angular/single-module.js', codeSnippetDirectory)
-			         .should.eventually.eql(expected)
-			         .notify(done);
-		});
-	});
+      extractor.fromFile('angular/single-module.js', codeSnippetDirectory)
+               .should.eventually.eql(expected)
+               .notify(done);
+    });
+  });
 
-	describe('.fromFile("multiple-modules.js")', function() {
-		it('should extract 3 modules, each with 3 dependencies', function(done) {
-			var expected = [
-				{ name: 'test1', dependencies: ['a', 'b', 'c'], path: 'angular/multiple-modules.js' },
-				{ name: 'test2', dependencies: ['d', 'e', 'f'], path: 'angular/multiple-modules.js' },
-				{ name: 'test3', dependencies: ['g', 'h', 'i'], path: 'angular/multiple-modules.js' }
-			];
+  describe('.fromFile("multiple-modules.js")', function() {
+    it('should extract 3 modules, each with 3 dependencies', function(done) {
+      var expected = [
+        { name: 'test1', dependencies: ['a', 'b', 'c'], path: 'angular/multiple-modules.js' },
+        { name: 'test2', dependencies: ['d', 'e', 'f'], path: 'angular/multiple-modules.js' },
+        { name: 'test3', dependencies: ['g', 'h', 'i'], path: 'angular/multiple-modules.js' }
+      ];
 
-			extractor.fromFile('angular/multiple-modules.js', codeSnippetDirectory)
-			         .should.eventually.eql(expected)
-			         .notify(done);
-		});
-	});
+      extractor.fromFile('angular/multiple-modules.js', codeSnippetDirectory)
+               .should.eventually.eql(expected)
+               .notify(done);
+    });
+  });
 
-	describe('.fromFile("ui-bootstrap-example.js")', function() {
-		it('should extract 1 module, with 1 dependency', function(done) {
-			var expected = [{ 
-				name: 'ui.bootstrap.accordion', 
-				dependencies: ['ui.bootstrap.collapse'], 
-				path: 'angular/ui-bootstrap-example.js' 
-			}];
+  describe('.fromFile("ui-bootstrap-example.js")', function() {
+    it('should extract 1 module, with 1 dependency', function(done) {
+      var expected = [{ 
+        name: 'ui.bootstrap.accordion', 
+        dependencies: ['ui.bootstrap.collapse'], 
+        path: 'angular/ui-bootstrap-example.js' 
+      }];
 
-			extractor.fromFile('angular/ui-bootstrap-example.js', codeSnippetDirectory)
-			         .should.eventually.eql(expected)
-			         .notify(done);
-		});
-	});
+      extractor.fromFile('angular/ui-bootstrap-example.js', codeSnippetDirectory)
+               .should.eventually.eql(expected)
+               .notify(done);
+    });
+  });
 
-	describe('fromDirectory(["*/*.js", "angular.js/src")', function() {
-		it('should find 754 modules', function(done) {
-			var p = path.resolve(projectsDirectory, 'angular.js/src');
-			extractor.fromDirectory(['*/*.js'], p)
-			         .should.eventually.have.length(754)
-			         .notify(done);
-		});
-	});
+  describe('fromDirectory(["*/*.js", "angular.js/src")', function() {
+    it('should find 754 modules', function(done) {
+      var p = path.resolve(projectsDirectory, 'angular.js/src');
+      extractor.fromDirectory(['*/*.js'], p)
+               .should.eventually.have.length(754)
+               .notify(done);
+    });
+  });
 
-	describe('fromDirectory(["*/*.js", "ui-bootstrap/src")', function() {
-		it('should find 20 modules', function(done) {
-			var p = path.resolve(projectsDirectory, 'ui-bootstrap/src');
-			extractor.fromDirectory(['*/*.js'], p)
-			         .should.eventually.have.length(20)
-			         .notify(done);
-		});
-	});
+  describe('fromDirectory(["*/*.js", "ui-bootstrap/src")', function() {
+    it('should find 20 modules', function(done) {
+      var p = path.resolve(projectsDirectory, 'ui-bootstrap/src');
+      extractor.fromDirectory(['*/*.js'], p)
+               .should.eventually.have.length(20)
+               .notify(done);
+    });
+  });
 
 });

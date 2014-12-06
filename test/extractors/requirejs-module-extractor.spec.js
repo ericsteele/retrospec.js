@@ -34,66 +34,66 @@ var extractor = require('../../src/extractors/requirejs-module-extractor');
 
 describe('requirejs-module-extractor.js', function() {
 
-	describe('.fromFile("empty.js")', function() {
-		it('should extract 0 modules', function(done) {
-			extractor.fromFile('empty.js', codeSnippetDirectory)
-			         .should.eventually.have.length(0)
-			         .notify(done);
-		});
-	});
+  describe('.fromFile("empty.js")', function() {
+    it('should extract 0 modules', function(done) {
+      extractor.fromFile('empty.js', codeSnippetDirectory)
+               .should.eventually.have.length(0)
+               .notify(done);
+    });
+  });
 
-	describe('.fromFile("single-define.js")', function() {
-		it('should extract 1 module with 4 dependencies', function(done) {
-			var expected = [{
-				name:         'requirejs/single-define.js',
-				dependencies: ['a','b','c','x'],
-				path:         'requirejs/single-define.js'
-			}];
+  describe('.fromFile("single-define.js")', function() {
+    it('should extract 1 module with 4 dependencies', function(done) {
+      var expected = [{
+        name:         'requirejs/single-define.js',
+        dependencies: ['a','b','c','x'],
+        path:         'requirejs/single-define.js'
+      }];
 
-			extractor.fromFile('requirejs/single-define.js', codeSnippetDirectory)
-			         .should.eventually.eql(expected)
-			         .notify(done);
-		});
-	});
+      extractor.fromFile('requirejs/single-define.js', codeSnippetDirectory)
+               .should.eventually.eql(expected)
+               .notify(done);
+    });
+  });
 
-	describe('.fromFile("multiple-defines.js")', function() {
-		it('should extract 1 module with 12 dependencies', function(done) {
-			var expected = [{
-				name:         'requirejs/multiple-defines.js',
-				dependencies: ['a','b','c','d','e','f','g','h','i','x','y','z'],
-				path:         'requirejs/multiple-defines.js'
-			}];
+  describe('.fromFile("multiple-defines.js")', function() {
+    it('should extract 1 module with 12 dependencies', function(done) {
+      var expected = [{
+        name:         'requirejs/multiple-defines.js',
+        dependencies: ['a','b','c','d','e','f','g','h','i','x','y','z'],
+        path:         'requirejs/multiple-defines.js'
+      }];
 
-			extractor.fromFile('requirejs/multiple-defines.js', codeSnippetDirectory)
-			         .should.eventually.eql(expected)
-			         .notify(done);
-		});
-	});
+      extractor.fromFile('requirejs/multiple-defines.js', codeSnippetDirectory)
+               .should.eventually.eql(expected)
+               .notify(done);
+    });
+  });
 
-	describe('.fromFile("nested-defines.js")', function() {
-		it('should extract 1 module with 12 dependencies', function(done) {
-			var expected = [{
-				name:         'requirejs/nested-defines.js',
-				dependencies: ['a','b','c','d','e','f','g','h','i','x','y','z'],
-				path:         'requirejs/nested-defines.js'
-			}];
+  describe('.fromFile("nested-defines.js")', function() {
+    it('should extract 1 module with 12 dependencies', function(done) {
+      var expected = [{
+        name:         'requirejs/nested-defines.js',
+        dependencies: ['a','b','c','d','e','f','g','h','i','x','y','z'],
+        path:         'requirejs/nested-defines.js'
+      }];
 
-			extractor.fromFile('requirejs/nested-defines.js', codeSnippetDirectory)
-			         .should.eventually.eql(expected)
-			         .notify(done);
-		});
-	});
+      extractor.fromFile('requirejs/nested-defines.js', codeSnippetDirectory)
+               .should.eventually.eql(expected)
+               .notify(done);
+    });
+  });
 
-	describe('.fromDirectory(["**/*.js"], "jquery-mobile/js")', function() {
+  describe('.fromDirectory(["**/*.js"], "jquery-mobile/js")', function() {
 
-		it('should extract 83 modules', function(done) {
-			var cwd = path.resolve(projectsDirectory, 'jquery-mobile/js');
+    it('should extract 83 modules', function(done) {
+      var cwd = path.resolve(projectsDirectory, 'jquery-mobile/js');
 
-			extractor.fromDirectory(['**/*.js'], cwd)
-			         .should.eventually.have.length(83)
-			         .notify(done);
-		});
+      extractor.fromDirectory(['**/*.js'], cwd)
+               .should.eventually.have.length(83)
+               .notify(done);
+    });
 
-	});
+  });
 
 });
