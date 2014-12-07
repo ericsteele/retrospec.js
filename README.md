@@ -13,10 +13,12 @@ A regression test selection tool for JavaScript.
 * build a project model using the extracted module and test data
 * store and retrieve project models in JSON files
 * diff project models
-* select regression tests
+* select regression tests for 'angular'
+* select regression tests for 'jquery-mobile'
 
 ## Remaining Tasks
-* execute selected tests <------ WE ARE HERE
+* select regression tests for 'angular-bootstrap' <------ WE ARE HERE
+* execute selected tests
 * wrap it in a nice interface
 * grunt plugin?
 

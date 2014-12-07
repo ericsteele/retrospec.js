@@ -42,8 +42,7 @@ function extractTestSuites(fileContents, filePath, cwd) {
 }
 
 /**
- * Parses a jasmine javascript file and extracts test dependencies from
- * any 'module(string,...)' statements found within.
+ * Parses a JavaScript file containing Jasmine test suites and extracts test dependencies.
  * 
  * @param {String} fileContents - the file's text content
  * 
@@ -67,11 +66,11 @@ function getTestHelperDependencies(fileContents) {
 }
 
 /**
- *  Returns whether the node is a karma module declaration/require statement
+ * Checks if the specified JavaScript AST node represents a 'module("")' call expression.
  * 
- * @param  {[type]}  node The node to check
+ * @param {Object} node - the JavaScript AST node to check 
  * 
- * @return {Boolean}      Whether the node is a karma module declaration/require statement
+ * @return {Boolean} True if the node represents an 'module("")' call expression. False otherwise.
  */
 function isKarmaModuleStatement(node) {
   return node && 

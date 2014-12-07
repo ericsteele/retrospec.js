@@ -99,7 +99,7 @@ describe('jquery-mobile-diff.spec.js', function() {
     });
   });
 
-  describe('1.4.5 to (modified) 1.4.5', function() {
+  describe('1.4.5 to 1.4.5 (3 module edits)', function() {
     // diffs: widget/dialog, transitions/handlers, buttonMarkup
     it('should select 26 regression tests', function(done) {
       var promiseP1 = getJqmProject(jqmRev145),
@@ -111,7 +111,7 @@ describe('jquery-mobile-diff.spec.js', function() {
     });
   });
 
-  describe('1.4.5 to (modified) 1.4.5: test change', function() {
+  describe('1.4.5 to 1.4.5 (1 test edit)', function() {
     // diffs: widget/dialog, transitions/handlers, buttonMarkup
     it('should select 1 regression tests', function(done) {
       var promiseP1 = getJqmProject(jqmRev145),
