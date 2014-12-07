@@ -31,7 +31,7 @@ function selectTests(project, diffs) {
   selectedTests = {};
 
   // select tests
-  selectNewTests(diffs);
+  selectNewOrChangedTests(diffs);
   selectRegressionTests(project, diffs);
 
   return mapToArray(selectedTests);
@@ -71,15 +71,15 @@ function mapToArray(map) {
 }
 
 /**
- * [selectNewTests description]
+ * [selectNewOrChangedTests description]
  * 
  * @param  {[type]} diffs [description]
  * 
  * @return {[type]}       [description]
  */
-function selectNewTests(diffs) {
+function selectNewOrChangedTests(diffs) {
   diffs.testSuites.forEach(function(testSuite) { 
-    if (testSuite.change === 'Add') {
+    if (testSuite.change === 'Add' || testSuite.change === 'Edit' || testSuite.change === 'Move') {
       selectTestFile(testSuite.id);
     }
   });

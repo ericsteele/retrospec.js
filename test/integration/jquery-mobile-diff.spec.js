@@ -40,7 +40,8 @@ var projectsDirectory = path.resolve(__dirname, '../input/projects/jquery-mobile
     jqmRev131 = path.resolve(projectsDirectory, 'rev-1.3.1-74b4bec'),
     jqmRev144 = path.resolve(projectsDirectory, 'rev-1.4.4-08241cc'),
     jqmRev145 = path.resolve(projectsDirectory, 'rev-1.4.5-2ef45a1'),
-    jqmRev145_v2 = path.resolve(projectsDirectory, 'rev-1.4.5-2ef45a1-v2');
+    jqmRev145_v2 = path.resolve(projectsDirectory, 'rev-1.4.5-2ef45a1-v2'),
+    jqmRev145_v3 = path.resolve(projectsDirectory, 'rev-1.4.5-2ef45a1-v3');
 
 describe('jquery-mobile-diff.spec.js', function() {
 
@@ -89,12 +90,12 @@ describe('jquery-mobile-diff.spec.js', function() {
   });
 
   describe('1.4.4 to 1.4.5', function() {
-    it('should select 75 regression tests', function(done) {
+    it('should select 76 regression tests', function(done) {
       var promiseP1 = getJqmProject(jqmRev144),
           promiseP2 = getJqmProject(jqmRev145);
 
       Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                   .should.eventually.have.length(75)
+                                   .should.eventually.have.length(76)
                                    .notify(done);
     });
   });
@@ -107,6 +108,18 @@ describe('jquery-mobile-diff.spec.js', function() {
 
       Q.all([promiseP1, promiseP2]).then(selectTestSuites)
                                    .should.eventually.have.length(26)
+                                   .notify(done);
+    });
+  });
+
+  describe('1.4.5 to (modified) 1.4.5: test change', function() {
+    // diffs: widget/dialog, transitions/handlers, buttonMarkup
+    it('should select 1 regression tests', function(done) {
+      var promiseP1 = getJqmProject(jqmRev145),
+          promiseP2 = getJqmProject(jqmRev145_v3);
+
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(1)
                                    .notify(done);
     });
   });

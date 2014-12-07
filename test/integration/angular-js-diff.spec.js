@@ -40,6 +40,7 @@ var projectsDirectory = path.resolve(__dirname, '../input/projects/angular.js'),
     b6f4d4b   = path.resolve(projectsDirectory, 'b6f4d4b'),
     b6f4d4b_2 = path.resolve(projectsDirectory, 'b6f4d4b_2'),
     b6f4d4b_3 = path.resolve(projectsDirectory, 'b6f4d4b_3'),
+    b6f4d4b_4 = path.resolve(projectsDirectory, 'b6f4d4b_4'),
     e6ece7d   = path.resolve(projectsDirectory, 'e6ece7d'),
     fef0cfc   = path.resolve(projectsDirectory, 'fef0cfc');
 
@@ -51,6 +52,15 @@ describe('angular-js-diff.spec.js', function() {
 
     Q.all([promiseP1, promiseP2]).then(selectTestSuites)
                                  .should.eventually.have.length(0)
+                                 .notify(done);
+  });
+
+  it('test change: should select 1 regression tests', function(done) {
+    var promiseP1 = getAngularProject(b6f4d4b),
+        promiseP2 = getAngularProject(b6f4d4b_4);
+
+    Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                 .should.eventually.have.length(1)
                                  .notify(done);
   });
 
@@ -72,21 +82,21 @@ describe('angular-js-diff.spec.js', function() {
                                  .notify(done);
   });
 
-  it('close revisions: should select 14 regression tests', function(done) {
+  it('close revisions: should select 15 regression tests', function(done) {
     var promiseP1 = getAngularProject(b6f4d4b),
         promiseP2 = getAngularProject(e6ece7d);
 
     Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                 .should.eventually.have.length(14)
+                                 .should.eventually.have.length(15)
                                  .notify(done);
   });
 
-  it('far revisions: should select 20 regression tests', function(done) {
+  it('far revisions: should select 22 regression tests', function(done) {
     var promiseP1 = getAngularProject(b6f4d4b),
         promiseP2 = getAngularProject(fef0cfc);
 
     Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                 .should.eventually.have.length(20)
+                                 .should.eventually.have.length(22)
                                  .notify(done);
   });
 
