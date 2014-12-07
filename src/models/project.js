@@ -22,8 +22,8 @@ module.exports = Project;
 function Project(moduleMap, testSuiteMap) {
   // this is a special object and it deserves to be called with "new"!
   if(this instanceof Project === false) {
-    console.log('[warn] forgot to use "new" operator when invoking Project():' + id);
-    return new Project(id, moduleMap, testSuiteMap);
+    console.log('[warn] forgot to use "new" operator when invoking Project():');
+    return new Project(moduleMap, testSuiteMap);
   }
 
   this.moduleMap    = moduleMap || {};
