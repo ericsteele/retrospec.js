@@ -2,6 +2,24 @@
 
 A regression test selection tool for JavaScript.
 
+## Completed Tasks
+* automate extraction of RequireJS modules from 'jquery-mobile' 
+* automate extraction of AngularJS modules from 'angular' & 'angular-bootstrap'
+* automate extraction of QUnit tests from 'jquery-mobile'
+* automate extraction of Jasmine tests from 'angular' & 'angular-bootstrap'
+* automate extraction of RequireJS config from 'jquery-mobile'
+* automate extraction of inline comment test suite definitions 
+* detect changes to files by comparing hashes
+* build a project model using the extracted module and test data
+* store and retrieve project models in JSON files
+* diff project models
+* select regression tests
+
+## Remaining Tasks
+* execute selected tests <------ WE ARE HERE
+* wrap it in a nice interface
+* grunt plugin?
+
 ##Install dependencies:
 Project dependencies are managed via [npm](https://www.npmjs.org/):
 

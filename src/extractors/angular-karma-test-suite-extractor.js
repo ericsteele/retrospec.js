@@ -1,5 +1,5 @@
 /*
- * jquery-mobile-test-suite-extractor.js
+ * angular-karma-test-suite-extractor.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele

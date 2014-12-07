@@ -26,7 +26,6 @@ var path = require('path'), // utils for handling and transforming file paths
 
 // src under test
 var buildProject  = require('../../src/helper/build-project.js'),
-    diffProjects  = require('../../src/helper/diff-projects'),
     selectTests   = require('../../src/helper/select-tests'),  
     retrospec     = require('../../src/retrospec.js'),
     srcExtractor  = require('../../src/extractors/requirejs-module-extractor'),
@@ -139,9 +138,7 @@ function getJqmProject(projectDir) {
 
 // Helper method for selecting tests
 function selectTestSuites(projects) {
-  // tests: diffProjects
-  var diffs = diffProjects(projects[0], projects[1]);
-  // tests: selectTests
-  var tests = selectTests(projects[1], diffs);
+  // tests: selectTests, diffProjects
+  var tests = selectTests(projects[0], projects[1]);
   return tests;
 }

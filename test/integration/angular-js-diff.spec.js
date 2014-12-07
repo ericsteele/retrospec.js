@@ -122,11 +122,10 @@ describe('angular-js-diff.spec.js', function() {
     return buildProject(srcExtractor, srcDirPath, srcBlobs, testExtractor, testDirPath, testBlobs);
   }
 
+  // Helper method for selecting tests
   function selectTestSuites(projects) {
-    // tests: diffProjects
-    var diffs = diffProjects(projects[0], projects[1]);
-    // tests: selectTests
-    return selectTests(projects[1], diffs);
+    // tests: selectTests, diffProjects
+    return selectTests(projects[0], projects[1]);
   }
 
 });
