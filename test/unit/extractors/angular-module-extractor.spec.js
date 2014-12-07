@@ -98,10 +98,10 @@ describe('angular-module-extractor.js', function() {
   });
 
   describe('.fromDirectory(["*/*.js", "angular.js/src")', function() {
-    it('should find 754 modules', function(done) {
-      var p = path.resolve(projectsDirectory, 'angular.js/src');
+    it('should find 739 modules', function(done) {
+      var p = path.resolve(projectsDirectory, 'angular.js/b6f4d4b/src');
       extractor.fromDirectory(['*/*.js'], p)
-               .should.eventually.have.length(754)
+               .should.eventually.have.length(739)
                .notify(done);
     });
   });

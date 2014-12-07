@@ -33,10 +33,10 @@ describe('angular-karma-test-suite-extractor.js', function() {
 
   describe('.fromFile("ngCookies/cookiesSpec.js")', function() {
     it('should extract 1 test suite', function(done) {
-      var cwd = path.resolve(projectsDirectory, 'angular.js/test'),
+      var cwd = path.resolve(projectsDirectory, 'angular.js/b6f4d4b/test'),
         expected = [{ 
           path: 'ngCookies/cookiesSpec.js', 
-          hash: '9f61e268a21b2633ba814952390298829f71a6d3',
+          hash: '970eb05a85ffe26eb4bdb445ec715e3958a700b6',
           dependencies: ['ngCookies']
         }];
 
@@ -48,7 +48,7 @@ describe('angular-karma-test-suite-extractor.js', function() {
 
   describe('.fromDirectory(["**/*Spec.js"], "test")', function() {
     it('should extract 25 test suites', function(done) {
-      var cwd = path.resolve(projectsDirectory, 'angular.js/test');
+      var cwd = path.resolve(projectsDirectory, 'angular.js/b6f4d4b/test');
 
       var promise = extractor.fromDirectory(['**/*Spec.js'], cwd);
       promise.should.eventually.have.length(25)
