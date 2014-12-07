@@ -38,37 +38,97 @@ var codeSnippetDirectory = path.resolve(__dirname, '../input/code-snippets');
 // Directory containing some real projects we can use for our tests
 var projectsDirectory = path.resolve(__dirname, '../input/projects/jquery-mobile'),
     jqmRev131 = path.resolve(projectsDirectory, 'rev-1.3.1-74b4bec'),
-    jqmRev145 = path.resolve(projectsDirectory, 'rev-1.4.5-2ef45a1');
+    jqmRev144 = path.resolve(projectsDirectory, 'rev-1.4.4-08241cc'),
+    jqmRev145 = path.resolve(projectsDirectory, 'rev-1.4.5-2ef45a1'),
+    jqmRev145_v2 = path.resolve(projectsDirectory, 'rev-1.4.5-2ef45a1-v2');
 
 describe('jquery-mobile-diff.spec.js', function() {
 
-  it('should select 77 regression tests', function(done) {
-    var promiseP1 = getJqmProject(jqmRev131),
-        promiseP2 = getJqmProject(jqmRev145);
+  describe('1.3.1 to 1.3.1', function() {
+    it('should select 0 regression tests', function(done) {
+      var promiseP1 = getJqmProject(jqmRev131),
+          promiseP2 = getJqmProject(jqmRev131);
 
-    Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                 .should.eventually.have.length(77)
-                                 .notify(done);
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(0)
+                                   .notify(done);
+    });
+  });
 
-    function getJqmProject(projectDir) {
-      var srcDirPath  = path.resolve(projectDir, 'js'),
-          testDirPath = path.resolve(projectDir, 'tests'),
-          srcBlobs    = ['**/*.js'],
-          testBlobs   = ['**/*.html'];
+  describe('1.4.4 to 1.4.4', function() {
+    it('should select 0 regression tests', function(done) {
+      var promiseP1 = getJqmProject(jqmRev144),
+          promiseP2 = getJqmProject(jqmRev144);
 
-      // tests: buildProject
-      return buildProject(srcExtractor, srcDirPath, srcBlobs, testExtractor, testDirPath, testBlobs);
-    }
- 
-    function selectTestSuites(projects) {
-      // tests: diffProjects
-      var diffs = diffProjects(projects[0], projects[1]);
-      // tests: selectTests
-      var tests = selectTests(projects[1], diffs);
-      // console.log(tests);
-      return tests;
-    }
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(0)
+                                   .notify(done);
+    });
+  });
 
+  describe('1.4.5 to 1.4.5', function() {
+    it('should select 0 regression tests', function(done) {
+      var promiseP1 = getJqmProject(jqmRev145),
+          promiseP2 = getJqmProject(jqmRev145);
+
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(0)
+                                   .notify(done);
+    });
+  });
+
+  describe('1.3.1 to 1.4.5', function() {
+    it('should select 84 regression tests', function(done) {
+      var promiseP1 = getJqmProject(jqmRev131),
+          promiseP2 = getJqmProject(jqmRev145);
+
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(84)
+                                   .notify(done);
+    });
+  });
+
+  describe('1.4.4 to 1.4.5', function() {
+    it('should select 75 regression tests', function(done) {
+      var promiseP1 = getJqmProject(jqmRev144),
+          promiseP2 = getJqmProject(jqmRev145);
+
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(75)
+                                   .notify(done);
+    });
+  });
+
+  describe('1.4.5 to (modified) 1.4.5', function() {
+    // diffs: widget/dialog, transitions/handlers, buttonMarkup
+    it('should select 26 regression tests', function(done) {
+      var promiseP1 = getJqmProject(jqmRev145),
+          promiseP2 = getJqmProject(jqmRev145_v2);
+
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(26)
+                                   .notify(done);
+    });
   });
 
 });
+
+// Helper method for bulding projects
+function getJqmProject(projectDir) {
+  var srcDirPath  = path.resolve(projectDir, 'js'),
+      testDirPath = path.resolve(projectDir, 'tests'),
+      srcBlobs    = ['**/*.js'],
+      testBlobs   = ['**/*.html'];
+
+  // tests: buildProject
+  return buildProject(srcExtractor, srcDirPath, srcBlobs, testExtractor, testDirPath, testBlobs);
+}
+
+// Helper method for selecting tests
+function selectTestSuites(projects) {
+  // tests: diffProjects
+  var diffs = diffProjects(projects[0], projects[1]);
+  // tests: selectTests
+  var tests = selectTests(projects[1], diffs);
+  return tests;
+}

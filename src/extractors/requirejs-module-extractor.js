@@ -34,7 +34,7 @@ module.exports = new FileContentExtractor('requirejs-module-extractor', extractM
 function extractModules(fileContents, filePath, cwd) {
   // extract module dependencies
   var fileName   = filePath.replace(/^.*[\\\/]/, ''),
-      moduleName = filePath.slice(0, -3),
+      moduleName = filePath.slice(0, -3).replace('\\','/'),
       deps       = parse.findDependencies(fileName, fileContents),
       cjsDeps    = parse.findCjsDependencies(fileName, fileContents);
 

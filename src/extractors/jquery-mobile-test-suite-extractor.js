@@ -108,6 +108,6 @@ function isTestHelperAsyncLoad(node) {
          node.callee.object.object.name   === '$' &&
          node.callee.object.property.name === 'testHelper' &&
          node.callee.property.name        === 'asyncLoad' &&
-         node.arguments.length            === 1 &&
+         node.arguments.length            >= 1 &&
          node.arguments[0].type           === 'ArrayExpression';
 }

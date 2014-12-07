@@ -52,11 +52,11 @@ describe('jquery-mobile-test-suite-extractor.js', function() {
 
   describe('.fromDirectory(["**/*.html"], "jquery-mobile/tests")', function() {
 
-    it('should extract 78 test suites', function(done) {
+    it('should extract 84 test suites', function(done) {
       var cwd = path.resolve(projectsDirectory, 'jquery-mobile/rev-1.4.5-2ef45a1/tests');
 
       extractor.fromDirectory(['**/*.html'], cwd)
-               .should.eventually.have.length(78)
+               .should.eventually.have.length(84)
                .notify(done);
     });
 
@@ -64,11 +64,11 @@ describe('jquery-mobile-test-suite-extractor.js', function() {
 
   describe('.fromDirectory(["**/*.html"], "jquery-mobile/rev-1.3.1-74b4bec/tests")', function() {
 
-    it('should extract 33 test suites', function(done) {
+    it('should extract 38 test suites', function(done) {
       var cwd = path.resolve(projectsDirectory, 'jquery-mobile/rev-1.3.1-74b4bec/tests');
 
       extractor.fromDirectory(['**/*.html'], cwd)
-               .should.eventually.have.length(33)
+               .should.eventually.have.length(38)
                .notify(done);
     });
 
