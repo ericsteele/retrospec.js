@@ -63,7 +63,7 @@ function mapToArray(map) {
   // push all test names into an array
   for (var key in map) {
     if (map.hasOwnProperty(key)) {
-      array.push(map[key]);
+      array.push(key);
     }
   }
 

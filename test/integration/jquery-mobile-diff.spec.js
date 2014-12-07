@@ -64,7 +64,9 @@ describe('jquery-mobile-diff.spec.js', function() {
       // tests: diffProjects
       var diffs = diffProjects(projects[0], projects[1]);
       // tests: selectTests
-      return selectTests(projects[1], diffs);
+      var tests = selectTests(projects[1], diffs);
+      // console.log(tests);
+      return tests;
     }
 
   });
