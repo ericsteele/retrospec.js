@@ -38,66 +38,78 @@ var codeSnippetDirectory = path.resolve(__dirname, '../input/code-snippets');
 // Directory containing some real projects we can use for our tests
 var projectsDirectory = path.resolve(__dirname, '../input/projects/angular.js'),
     b6f4d4b   = path.resolve(projectsDirectory, 'b6f4d4b'),
-    b6f4d4b_2 = path.resolve(projectsDirectory, 'b6f4d4b_2'),
-    b6f4d4b_3 = path.resolve(projectsDirectory, 'b6f4d4b_3'),
-    b6f4d4b_4 = path.resolve(projectsDirectory, 'b6f4d4b_4'),
+    b6f4d4b_2 = path.resolve(projectsDirectory, 'b6f4d4b_2'), // ngTouch change
+    b6f4d4b_3 = path.resolve(projectsDirectory, 'b6f4d4b_3'), // ngAria change
+    b6f4d4b_4 = path.resolve(projectsDirectory, 'b6f4d4b_4'), // changed test
     e6ece7d   = path.resolve(projectsDirectory, 'e6ece7d'),
     fef0cfc   = path.resolve(projectsDirectory, 'fef0cfc');
 
 describe('angular-js-diff.spec.js', function() {
 
-  it('same revisions: should select 0 regression tests', function(done) {
-    var promiseP1 = getAngularProject(b6f4d4b),
-        promiseP2 = getAngularProject(b6f4d4b);
+  describe('b6f4d4b to b6f4d4b, same revision', function() {
+    it('should select 0 regression tests', function(done) {
+      var promiseP1 = getAngularProject(b6f4d4b),
+          promiseP2 = getAngularProject(b6f4d4b);
 
-    Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                 .should.eventually.have.length(0)
-                                 .notify(done);
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(0)
+                                   .notify(done);
+    });
   });
 
-  it('test change: should select 1 regression tests', function(done) {
-    var promiseP1 = getAngularProject(b6f4d4b),
-        promiseP2 = getAngularProject(b6f4d4b_4);
+  describe('b6f4d4b to b6f4d4b w/ changed test', function() {
+    it('should select 1 regression tests', function(done) {
+      var promiseP1 = getAngularProject(b6f4d4b),
+          promiseP2 = getAngularProject(b6f4d4b_4);
 
-    Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                 .should.eventually.have.length(1)
-                                 .notify(done);
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(1)
+                                   .notify(done);
+    });
   });
 
-  it('minor change: should select 3 regression tests', function(done) {
-    var promiseP1 = getAngularProject(b6f4d4b),
-        promiseP2 = getAngularProject(b6f4d4b_2);
+  describe('b6f4d4b to b6f4d4b w/ changed ngTouch', function() {
+    it('should select 3 regression tests', function(done) {
+      var promiseP1 = getAngularProject(b6f4d4b),
+          promiseP2 = getAngularProject(b6f4d4b_2);
 
-    Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                 .should.eventually.have.length(3)
-                                 .notify(done);
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(3)
+                                   .notify(done);
+    });
   });
 
-  it('minor change: should select 1 regression tests', function(done) {
-    var promiseP1 = getAngularProject(b6f4d4b),
-        promiseP2 = getAngularProject(b6f4d4b_3);
+  describe('b6f4d4b to b6f4d4b w/ changed ngAria', function() {
+    it('should select 1 regression tests', function(done) {
+      var promiseP1 = getAngularProject(b6f4d4b),
+          promiseP2 = getAngularProject(b6f4d4b_3);
 
-    Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                 .should.eventually.have.length(1)
-                                 .notify(done);
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(1)
+                                   .notify(done);
+    });
   });
 
-  it('close revisions: should select 15 regression tests', function(done) {
-    var promiseP1 = getAngularProject(b6f4d4b),
-        promiseP2 = getAngularProject(e6ece7d);
+  describe('b6f4d4b to e6ece7d, close revisions', function() {
+    it('should select 15 regression tests', function(done) {
+      var promiseP1 = getAngularProject(b6f4d4b),
+          promiseP2 = getAngularProject(e6ece7d);
 
-    Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                 .should.eventually.have.length(15)
-                                 .notify(done);
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(15)
+                                   .notify(done);
+    });
   });
 
-  it('far revisions: should select 22 regression tests', function(done) {
-    var promiseP1 = getAngularProject(b6f4d4b),
-        promiseP2 = getAngularProject(fef0cfc);
+  describe('b6f4d4b to fef0cfc, far revisions', function() {
+    it('should select 22 regression tests', function(done) {
+      var promiseP1 = getAngularProject(b6f4d4b),
+          promiseP2 = getAngularProject(fef0cfc);
 
-    Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                 .should.eventually.have.length(22)
-                                 .notify(done);
+      Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                   .should.eventually.have.length(22)
+                                   .notify(done);
+    });
   });
 
   function getAngularProject(projectDir) {

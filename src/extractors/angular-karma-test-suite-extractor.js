@@ -42,11 +42,12 @@ function extractTestSuites(fileContents, filePath, cwd) {
 }
 
 /**
- * [getTestHelperDependencies description]
+ * Parses a jasmine javascript file and extracts test dependencies from
+ * any 'module(string,...)' statements found within.
  * 
- * @param  {[type]} fileContents [description]
+ * @param {String} fileContents - the file's text content
  * 
- * @return {[type]}              [description]
+ * @return {Array} An array of test dependency names (i.e. strings).
  */
 function getTestHelperDependencies(fileContents) {
   var dependencies   = [],
@@ -66,11 +67,11 @@ function getTestHelperDependencies(fileContents) {
 }
 
 /**
- * [isKarmaModuleStatement description]
+ *  Returns whether the node is a karma module declaration/require statement
  * 
- * @param  {[type]}  node [description]
+ * @param  {[type]}  node The node to check
  * 
- * @return {Boolean}      [description]
+ * @return {Boolean}      Whether the node is a karma module declaration/require statement
  */
 function isKarmaModuleStatement(node) {
   return node && 
