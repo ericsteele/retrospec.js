@@ -11,7 +11,7 @@
 // libs
 var esprima     = require('esprima'),               // parses JS and produces an Abstract Syntax Tree (AST)
     estraverse  = require('estraverse'),            // simple interface for traversing the AST 
-    AstHelper   = require('../misc/ast-helper'),    // abstract syntax tree (AST) helper methods
+    AstHelper   = require('../helper/ast-helper'),  // abstract syntax tree (AST) helper methods
     CodeModule  = require('../models/code-module'); // loader-agnostic representation of a "module" of code
 
 // retrospec's interface for pluggable extraction logic
@@ -71,7 +71,7 @@ function extractModules(fileContents, filePath, cwd) {
 function hasDuplicateCodeModules(modules) {
   for(var i = 0, iEnd = modules.length; i < iEnd; i++) {
     for(var j = i + 1; j < iEnd; j++) {
-      if(modules[i].name === modules[j].name) {
+      if(modules[i].id === modules[j].id) {
         return true;
       }
     }
@@ -87,11 +87,16 @@ function hasDuplicateCodeModules(modules) {
  * @return {Boolean} True if the node represents an 'angular.module("",[])' call expression. False otherwise.
  */
 function isAngularModuleDefinition(node) {
-  return node && node.callee  && node.callee.object && node.callee.property && node.arguments && node.arguments.length >= 2 &&
-         node.type                      === 'CallExpression' &&
-         node.callee.type               === 'MemberExpression' &&
-         node.callee.object.name        === 'angular' &&
-         node.callee.property.name      === 'module' &&
+  return node && 
+         node.callee && 
+         node.callee.object && 
+         node.callee.property && 
+         node.arguments && 
+         node.arguments.length >= 2 &&
+         node.type === 'CallExpression' &&
+         node.callee.type === 'MemberExpression' &&
+         node.callee.object.name === 'angular' &&
+         node.callee.property.name === 'module' &&
          typeof node.arguments[0].value === 'string' &&
-         node.arguments[1].type         === 'ArrayExpression';
+         node.arguments[1].type === 'ArrayExpression';
 }

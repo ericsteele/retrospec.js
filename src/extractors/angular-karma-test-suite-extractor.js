@@ -11,10 +11,10 @@
 // libs
 var esprima    = require('esprima'),              // parses JS and produces an Abstract Syntax Tree (AST)
     estraverse = require('estraverse'),           // simple interface for traversing the AST 
-    AstHelper  = require('../misc/ast-helper'),   // abstract syntax tree (AST) helper methods
+    AstHelper  = require('../helper/ast-helper'), // abstract syntax tree (AST) helper methods
     TestSuite  = require('../models/test-suite'); // generic representation of a test suite
 
-// retrospec's interface for pluggable module extraction logic
+// retrospec's interface for pluggable extraction logic
 var FileContentExtractor = require('./file-content-extractor.js');
 
 // exports
@@ -41,6 +41,13 @@ function extractTestSuites(fileContents, filePath, cwd) {
   return testSuites;
 }
 
+/**
+ * [getTestHelperDependencies description]
+ * 
+ * @param  {[type]} fileContents [description]
+ * 
+ * @return {[type]}              [description]
+ */
 function getTestHelperDependencies(fileContents) {
   var dependencies   = [],
       ast            = esprima.parse(fileContents);
@@ -58,6 +65,13 @@ function getTestHelperDependencies(fileContents) {
   return dependencies;
 }
 
+/**
+ * [isKarmaModuleStatement description]
+ * 
+ * @param  {[type]}  node [description]
+ * 
+ * @return {Boolean}      [description]
+ */
 function isKarmaModuleStatement(node) {
   return node && 
          node.callee && 
@@ -65,10 +79,10 @@ function isKarmaModuleStatement(node) {
          node.callee.name &&  
          node.arguments && 
          node.arguments.length > 0 &&
-         node.type                        === 'CallExpression' &&
-         node.callee.type                 === 'Identifier' &&
-         node.callee.name                 === 'module' &&
+         node.type === 'CallExpression' &&
+         node.callee.type === 'Identifier' &&
+         node.callee.name === 'module' &&
          node.arguments[0].type &&
          node.arguments[0].value &&
-         node.arguments[0].type           === 'Literal';
+         node.arguments[0].type === 'Literal';
 }

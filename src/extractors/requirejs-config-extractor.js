@@ -11,7 +11,7 @@
 // libs
 var parse = require('../../lib/r.js/parse');  // r.js parse lib
 
-// retrospec's interface for pluggable module extraction logic
+// retrospec's interface for pluggable extraction logic
 var FileContentExtractor = require('./file-content-extractor.js');
 
 // exports

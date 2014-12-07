@@ -11,7 +11,7 @@
 // libs
 var esprima    = require('esprima'),              // parses JS and produces an Abstract Syntax Tree (AST)
     estraverse = require('estraverse'),           // simple interface for traversing the AST 
-    AstHelper  = require('../misc/ast-helper'),   // abstract syntax tree (AST) helper methods
+    AstHelper  = require('../helper/ast-helper'), // abstract syntax tree (AST) helper methods
     TestSuite  = require('../models/test-suite'); // generic representation of a test suite
 
 // retrospec's interface for pluggable extraction logic

@@ -9,11 +9,11 @@
 'use strict';
 
 // libs
-var FS          = require('fs'),                    // file system
-    Q           = require('q'),                     // `kriskowal/q` promises
-    path        = require('path'),                  // utils for resolving file paths
-    arrayHelper = require('../misc/array-helper'),  // array helper methods
-    fsHelper    = require('../misc/fs-helper');     // file system helper methods
+var FS          = require('fs'),                     // file system
+    Q           = require('q'),                      // `kriskowal/q` promises
+    path        = require('path'),                   // utils for resolving file paths
+    arrayHelper = require('../helper/array-helper'), // array helper methods
+    fsHelper    = require('../helper/fs-helper');    // file system helper methods
 
 // aliases
 var readFile = Q.nfbind(FS.readFile),  // add Q promise support to FS.readfile

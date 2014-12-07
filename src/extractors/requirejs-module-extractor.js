@@ -9,9 +9,10 @@
 'use strict';
 
 // libs
-var parse       = require('../../lib/r.js/parse'),  // r.js parse lib
-    arrayHelper = require('../misc/array-helper'),  // array helper methods
-    CodeModule  = require('../models/code-module'); // represents a "module" of code
+var parse       = require('../../lib/r.js/parse'),   // r.js parse lib
+    path        = require('path'),                   // utils for resolving file paths
+    arrayHelper = require('../helper/array-helper'), // array helper methods
+    CodeModule  = require('../models/code-module');  // represents a "module" of code
 
 // retrospec's interface for pluggable extraction logic
 var FileContentExtractor = require('./file-content-extractor.js');
@@ -32,9 +33,10 @@ module.exports = new FileContentExtractor('requirejs-module-extractor', extractM
  */
 function extractModules(fileContents, filePath, cwd) {
   // extract module dependencies
-  var fileName = filePath.replace(/^.*[\\\/]/, ''),
-      deps     = parse.findDependencies(fileName, fileContents),
-      cjsDeps  = parse.findCjsDependencies(fileName, fileContents);
+  var fileName   = filePath.replace(/^.*[\\\/]/, ''),
+      moduleName = filePath.slice(0, -3),
+      deps       = parse.findDependencies(fileName, fileContents),
+      cjsDeps    = parse.findCjsDependencies(fileName, fileContents);
 
   // TODO: Implement our own module extraction using estraverse
   // if(hasName)
@@ -45,10 +47,15 @@ function extractModules(fileContents, filePath, cwd) {
   // combine dependencies & remove duplicates
   deps = arrayHelper.getUnique(deps.concat(cjsDeps));
 
+  // remove contextual paths from dependency names 
+  deps.forEach(function(value, index, array) {
+    array[index] = value.replace(/^.*[\\\/]/, '');
+  });
+
   // currently, we consider a file to be a module if it has dependencies
   var codeModules = [];
   if(deps.length > 0) {
-    codeModules.push(new CodeModule(filePath, deps, filePath, fileContents));
+    codeModules.push(new CodeModule(moduleName, deps, filePath, fileContents));
   }
 
   return codeModules;
