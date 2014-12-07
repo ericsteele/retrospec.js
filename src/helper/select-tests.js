@@ -15,7 +15,7 @@ module.exports = selectTests;
 var tracedModules;
 
 // object map of selected test files
-var selectedTestFiles;
+var selectedTests;
 
 /**
  * Selects regression tests.
@@ -28,13 +28,13 @@ var selectedTestFiles;
 function selectTests(project, diffs) {
   // reset temp storage
   tracedModules = [];
-  selectedTestFiles = {};
+  selectedTests = {};
 
   // select tests
   selectNewTests(diffs);
   selectRegressionTests(project, diffs);
 
-  return mapToArray(selectedTestFiles);
+  return mapToArray(selectedTests);
 }
 
 /**
@@ -45,8 +45,8 @@ function selectTests(project, diffs) {
  * @return {[type]}              [description]
  */
 function selectTestFile(testFilePath) {
-  if(selectedTestFiles[testFilePath] !== 1) {
-    selectedTestFiles[testFilePath] = 1;
+  if(selectedTests[testFilePath] !== 1) {
+    selectedTests[testFilePath] = 1;
   }
 }
 
@@ -79,8 +79,8 @@ function mapToArray(map) {
  */
 function selectNewTests(diffs) {
   diffs.testSuites.forEach(function(testSuite) { 
-    if (testSuite.change === 'ADD') {
-      selectTestFile(testSuite.path);
+    if (testSuite.change === 'Add') {
+      selectTestFile(testSuite.id);
     }
   });
 }

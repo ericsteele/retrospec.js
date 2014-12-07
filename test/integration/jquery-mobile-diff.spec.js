@@ -42,12 +42,12 @@ var projectsDirectory = path.resolve(__dirname, '../input/projects/jquery-mobile
 
 describe('jquery-mobile-diff.spec.js', function() {
 
-  it('should select 63 regression tests', function(done) {
+  it('should select 77 regression tests', function(done) {
     var promiseP1 = getJqmProject(jqmRev131),
         promiseP2 = getJqmProject(jqmRev145);
 
     Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                 .should.eventually.have.length(63)
+                                 .should.eventually.have.length(77)
                                  .notify(done);
 
     function getJqmProject(projectDir) {
