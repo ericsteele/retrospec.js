@@ -12,24 +12,24 @@
 module.exports = diffProjects;
 
 /**
- * Performs a diff of the provided `Project` instances, treating `projectA` as an older
- * version of `projectB`. This diff considers both the project's modules and its test
+ * Performs a diff of the provided `Project` instances, treating `original` as an older
+ * version of `modified`. This diff considers both the project's modules and its test
  * suites. Each diff is represented as an object with the following properties:
  *
  *   - id     {String} - the unique identifier of the modified object 
  *   - change {String} - the type of change: Add, Edit, Move, Delete, None
  * 
- * @param  {Object} projectA [description]
- * @param  {Object} projectB [description]
+ * @param  {Object} original [description]
+ * @param  {Object} modified [description]
  * 
  * @return {Object} an object with the following properties
  *                  
  *   - modules:    {Array} - diffs between `CodeModule` maps
  *   - testSuites: {Array} - diffs between `TestSuite` maps
  */
-function diffProjects(projectA, projectB) {
-  var moduleChanges    = fileMapDiff(projectA.moduleMap,    projectB.moduleMap),
-      testSuiteChanges = fileMapDiff(projectA.testSuiteMap, projectB.testSuiteMap);
+function diffProjects(original, modified) {
+  var moduleChanges    = fileMapDiff(original.moduleMap,    modified.moduleMap),
+      testSuiteChanges = fileMapDiff(original.testSuiteMap, modified.testSuiteMap);
 
   return { modules: moduleChanges, testSuites: testSuiteChanges };
 }

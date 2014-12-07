@@ -11,51 +11,157 @@
 // exports
 module.exports = selectTests;
 
-// array of modules whose dependent tests have been traced
-var tracedModules;
+// libs
+var diffProjects = require('./diff-projects');
 
-// object map of selected test files
-var selectedTests;
+// globals
+var tracedModules, // array of modules whose dependent tests have been traced
+    selectedTests; // object map for tracking which tests have been selected
 
 /**
  * Selects regression tests.
  * 
- * @param  {Project} project [description]
- * @param  {Object}  diffs   [description]
+ * @param  {Project} original - the original `Project`
+ * @param  {Project} modified - the modified `Project`
  * 
- * @return {Array} - array of regression test paths
+ * @return {Array} - array of regression test paths for the modified `Project`
  */
-function selectTests(project, diffs) {
+function selectTests(original, modified) {
+  var diffs = diffProjects(original, modified);
+
   // reset temp storage
   tracedModules = [];
   selectedTests = {};
 
   // select tests
-  selectNewOrChangedTests(diffs);
-  selectRegressionTests(project, diffs);
+  selectNewOrChangedTests(diffs.testSuites);
+  selectRegressionTests(modified, diffs.modules);
 
   return mapToArray(selectedTests);
 }
 
 /**
- * [selectTestFile description]
+ * Selects a specific test.
  * 
- * @param  {[type]} testFilePath [description]
- * 
- * @return {[type]}              [description]
+ * @param  {String} test - the test's id/path
  */
-function selectTestFile(testFilePath) {
-  if(selectedTests[testFilePath] !== 1) {
-    selectedTests[testFilePath] = 1;
+function selectTest(test) {
+  if(selectedTests[test] !== 1) {
+    selectedTests[test] = 1;
   }
 }
 
 /**
- * [mapToArray description]
+ * Selects new and changed tests.
  * 
- * @param  {[type]} map [description]
+ * @param  {Object} testSuitesDiffs - diffs between the test suites of a modified Project and its original state.
+ */
+function selectNewOrChangedTests(testSuitesDiffs) {
+  testSuitesDiffs.forEach(function(diff) { 
+    if (diff.change === 'Add' || diff.change === 'Edit' || diff.change === 'Move') {
+      selectTest(diff.id);
+    }
+  });
+}
+
+/**
+ * Selects regression tests.
  * 
- * @return {[type]}     [description]
+ * @param  {Project} project     - the project that has been modified
+ * @param  {Object}  moduleDiffs - diffs between `project` and its original state
+ */
+function selectRegressionTests(project, moduleDiffs) {
+  moduleDiffs.forEach(function(diff) {
+    if (diff.change === 'Add' || diff.change === 'Edit' || diff.change === 'Move') {
+      var module = project.moduleMap[diff.id];
+      selectTestsForModule(module, project);
+    }
+  });
+}
+
+/**
+ * Selects regression tests for a modified `CodeModule`.
+ * 
+ * @param  {CodeModule} module  - a modified `CodeModule`
+ * @param  {Project}    project - the modified `Project` that contains `module`
+ */
+function selectTestsForModule(module, project) {
+  // skip modules that we've already selected tests for 
+  if(tracedModules.indexOf(module.id) !== -1) {
+    return {};
+  }
+
+  // don't select tests `module` more than once
+  tracedModules.push(module.id);
+
+  // select all tests that depend on the module
+  selectTestsThatDependOnModule(module, project.testSuiteMap);
+
+  // select all tests for modules that depend on this module
+  var dependentModules = getModuleDependents(module, project.moduleMap);
+  selectTestsForModules(dependentModules, project);
+}
+
+/**
+ * Selects regression tests for multiple modified `CodeModules`.
+ * 
+ * @param  {Array} modules - one or more modified `CodeModules`
+ */
+function selectTestsForModules(modules, project) {
+  for(var i = 0, iEnd = modules.length; i < iEnd; i++) {
+    selectTestsForModule(modules[i], project);
+  }
+}
+
+/**
+ * Selects tests that depend on the provided `CodeModule`.
+ * 
+ * @param  {CodeModule} module       - may have test suites that depend on it
+ * @param  {Object}     testSuiteMap - map containing all of the project's test suites
+ */
+function selectTestsThatDependOnModule(module, testSuiteMap) {
+  for (var key in testSuiteMap) {
+    if (testSuiteMap.hasOwnProperty(key)) {
+      var testSuite = testSuiteMap[key];
+      for(var i = 0, iEnd = testSuite.dependencies.length; i < iEnd; i++) {
+        var dependency = testSuite.dependencies[i];
+        if (dependency === module.id) {
+          selectTest(key);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Gets an array containing all modules that depend on `module`.
+ * 
+ * @param  {String} module    - 
+ * @param  {Object} moduleMap - map containing all of the project's test suites
+ * 
+ * @return {Array} contains all modules that depend on `module`.
+ */
+function getModuleDependents(module, moduleMap) {
+  var dependents = [];
+
+  for (var moduleName in moduleMap) {
+    if (moduleMap.hasOwnProperty(moduleName)) {
+      var mod = moduleMap[moduleName];
+      if (mod.dependencies.indexOf(module.id) !== -1) {
+        dependents.push(mod);
+      }
+    }
+  }
+
+  return dependents;
+}
+
+/**
+ * Converts an object map to an array.
+ * 
+ * @param  {Object} map - an object map
+ * 
+ * @return {Array} an array whose elements are the object map's properties
  */
 function mapToArray(map) {
   var array = [];
@@ -68,120 +174,4 @@ function mapToArray(map) {
   }
 
   return array;
-}
-
-/**
- * [selectNewOrChangedTests description]
- * 
- * @param  {[type]} diffs [description]
- * 
- * @return {[type]}       [description]
- */
-function selectNewOrChangedTests(diffs) {
-  diffs.testSuites.forEach(function(testSuite) { 
-    if (testSuite.change === 'Add' || testSuite.change === 'Edit' || testSuite.change === 'Move') {
-      selectTestFile(testSuite.id);
-    }
-  });
-}
-
-/**
- * [selectRegressionTests description]
- * 
- * @param  {[type]} project    [description]
- * @param  {[type]} diffs      [description]
- * 
- * @return {[type]}            [description]
- */
-function selectRegressionTests(project, diffs) {
-  diffs.modules.forEach(function(diff) {
-    if (diff.change === 'Add' || diff.change === 'Edit' || diff.change === 'Move') {
-      var module = project.moduleMap[diff.id];
-      selectTestsForModule(module, project);
-    }
-  });
-}
-
-/**
- * [selectRegressionTestsForModule description]
- * 
- * @param  {String} module     [description]
- * @param  {Object} modules    [description]
- * @param  {Object} testSuites [description]
- * 
- * @return {Array} [description]
- */
-function selectTestsForModule(module, project) {
-  if(tracedModules.indexOf(module.id) !== -1) {
-    return {};
-  }
-
-  // make sure we don't select tests for the module more than once
-  tracedModules.push(module.id);
-
-  // select all tests that depend on the module
-  getTestSuitesThatDependOnModule(module, project.testSuiteMap);
-
-  // select all tests for modules that depend on this module
-  var dependentModules = findModuleDependents(module, project.moduleMap);
-  selectTestsForModules(dependentModules, project);
-}
-
-/**
- * [selectTestsForModules description]
- * 
- * @param  {[type]} modules [description]
- * @param  {[type]} project [description]
- * 
- * @return {[type]}         [description]
- */
-function selectTestsForModules(modules, project) {
-  for(var i = 0, iEnd = modules.length; i < iEnd; i++) {
-    selectTestsForModule(modules[i], project);
-  }
-}
-
-/**
- * [getTestSuitesThatDependOnModule description]
- * 
- * @param  {[type]} module       [description]
- * @param  {[type]} testSuiteMap [description]
- * 
- * @return {[type]}              [description]
- */
-function getTestSuitesThatDependOnModule(module, testSuiteMap) {
-  for (var key in testSuiteMap) {
-    if (testSuiteMap.hasOwnProperty(key)) {
-      var testSuite = testSuiteMap[key];
-      for(var i = 0, iEnd = testSuite.dependencies.length; i < iEnd; i++) {
-        var dependency = testSuite.dependencies[i];
-        if (dependency === module.id) {
-          selectTestFile(key);
-        }
-      }
-    }
-  }
-}
-
-/**
- * [findModuleDependents description]
- * 
- * @param  {[type]} moduleName [description]
- * @param  {[type]} modules    [description]
- * 
- * @return {[type]}            [description]
- */
-function findModuleDependents(module, modules) {
-  var dependents = [];
-
-  for (var moduleName in modules) {
-    if (modules.hasOwnProperty(moduleName)) {
-      var mod = modules[moduleName];
-      if (mod.dependencies.indexOf(module.id) !== -1) {
-        dependents.push(mod);
-      }
-    }
-  }
-
-  return dependents;
 }

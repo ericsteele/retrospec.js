@@ -87,7 +87,13 @@ function exists(path) {
   return deferred.promise;
 }
 
-// Converts the POSIX paths output by node-glob into UNC paths if using a Windows OS 
+/**
+ * Converts the POSIX paths output by node-glob into UNC paths if using a Windows OS.
+ * 
+ * @param  {Array} paths - the POSIX paths output by node-glob
+ * 
+ * @return {Array} UNC paths if using Windows OS, POSIX paths otherwise.
+ */
 function fixFilePathsForOS(paths) {
   if(OS.type().indexOf('Windows') > -1) {
     for(var i = 0, iEnd = paths.length; i < iEnd; i++) {
