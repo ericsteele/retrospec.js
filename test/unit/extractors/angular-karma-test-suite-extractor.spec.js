@@ -58,12 +58,12 @@ describe('angular.js', function() {
 });
 
 describe('ui-bootstrap.js', function() {
-  describe('.fromFile("ngCookies/cookiesSpec.js")', function() {
+  describe('.fromFile("src/accordion/test/accordion.spec.js")', function() {
     it('should extract 1 test suite', function(done) {
       var cwd = path.resolve(projectsDirectory, 'ui-bootstrap/03b7c69'),
         expected = [{ 
           path: 'src/accordion/test/accordion.spec.js', 
-          hash: '7bedd0fd01ac7c0a24dce0f1eaec95b91a1493c5',
+          hash: '58353fe79f609fe48e1aedf45dacc2f86f12ea2a',
           dependencies: [
             'ui.bootstrap.accordion',
             'template/accordion/accordion.html',
