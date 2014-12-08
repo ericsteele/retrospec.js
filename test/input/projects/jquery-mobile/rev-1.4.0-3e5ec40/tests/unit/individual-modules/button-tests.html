@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>jQuery Mobile Collapsible Test Suite</title>
+
+	<script src="../../../external/requirejs/require.js"></script>
+	<script src="../../../js/requirejs.config.js"></script>
+	<script src="../../../js/jquery.tag.inserter.js"></script>
+	<script src="../../../tests/jquery.testHelper.js"></script>
+
+
+	<link rel="stylesheet"  href="../../../css/themes/default/jquery.mobile.css"/>
+	<link rel="stylesheet" href="../../../external/qunit.css"/>
+	<script src="../../../external/qunit.js"></script>
+	<script>
+		$.testHelper.asyncLoad([
+			[
+				"widgets/forms/button"
+			],
+			[
+				"../../jquery.setNameSpace.immediately.js"
+			],
+			[
+				"button_core.js"
+			]
+		]);
+	</script>
+
+	<script src="../../swarminject.js"></script>
+</head>
+<body>
+  <h1 id="qunit-header">jQuery Mobile Button Test Suite</h1>
+  <h2 id="qunit-banner"></h2>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests">
+  </ol>
+
+	<form class="ui-body-a">
+		<input type="button" name="theButton" id="theButton" value="The Button"></input>
+	</form>
+</body>
+</html>
