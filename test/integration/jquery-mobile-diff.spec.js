@@ -135,12 +135,12 @@ describe('jquery-mobile-diff.spec.js', function() {
 
   describe('Updating to each revision and testing:', function() {
     describe('1.3.1 to 1.3.2', function() {
-      it('should select 35 regression tests', function(done) {
+      it('should select 34 regression tests', function(done) {
         var promiseP1 = getJqmProject(jqmRev131),
             promiseP2 = getJqmProject(jqmRev132);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(35)
+                                     .should.eventually.have.length(34)
                                      .notify(done);
       });
     });
@@ -234,12 +234,12 @@ describe('jquery-mobile-diff.spec.js', function() {
     });
     
     describe('1.4.3.x to 1.4.4', function() {
-      it('should select 72 regression tests', function(done) {
+      it('should select 71 regression tests', function(done) {
         var promiseP1 = getJqmProject(jqmRev143x),
             promiseP2 = getJqmProject(jqmRev144);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(72)
+                                     .should.eventually.have.length(71)
                                      .notify(done);
       });
     });
