@@ -29,7 +29,8 @@ var buildProject  = require('../../src/helper/build-project.js'),
     selectTests   = require('../../src/helper/select-tests'),  
     retrospec     = require('../../src/retrospec.js'),
     srcExtractor  = require('../../src/extractors/requirejs-module-extractor'),
-    testExtractor = require('../../src/extractors/jquery-mobile-test-suite-extractor');
+    testExtractor = require('../../src/extractors/jqm-test-suite-extractor'),
+    testExecutor  = require('../../src/executors/jqm-test-suite-executor');
 
 // Directory containing code snippets used in our tests
 var codeSnippetDirectory = path.resolve(__dirname, '../input/code-snippets');
@@ -272,5 +273,6 @@ function getJqmProject(projectDir) {
 function selectTestSuites(projects) {
   // tests: selectTests, diffProjects
   var tests = selectTests(projects[0], projects[1]);
+  testExecutor.executeTests(tests);
   return tests;
 }

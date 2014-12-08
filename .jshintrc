@@ -2,5 +2,5 @@
   "node": true,
   "undef": true,
   "unused": false,
-  "predef": [ "describe", "it" ]
+  "predef": [ "describe", "it", "before" ]
 }

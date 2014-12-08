@@ -1,5 +1,5 @@
 /*
- * metadata-helper.spec.js
+ * metadata.spec.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Peter Ingulli
@@ -25,24 +25,26 @@ var path = require('path'),
     FS   = require('fs');
 
 // Module under test
-var metadataHelper = require('../../../src/helper/metadata-helper');
+var metadata = require('../../../src/helper/metadata');
 
 // Output directory (for temporary test output)
-var outputDirectoryPath = path.resolve(__dirname, '../../misc/output');
+var outputDirectoryPath = path.resolve(__dirname, 'output');
 
 // Mocks
-var modules = {
-  a: { name: 'a', dependencies: ['b'], path: 'src/a.js'},
-  b: { name: 'b', dependencies: ['c'], path: 'src/b.js'},
-  c: { name: 'c', dependencies: [   ], path: 'src/c.js'}
-};
-var testSuites = {
-  test1: { dependencies: ['a','b'], path: 'tests/test1.js'},
-  test2: { dependencies: ['b','c'], path: 'tests/test2.js'},
-  test3: { dependencies: ['a'],     path: 'tests/test3.js'}
+var project = {
+  modules: {
+    a: { name: 'a', dependencies: ['b'], path: 'src/a.js'},
+    b: { name: 'b', dependencies: ['c'], path: 'src/b.js'},
+    c: { name: 'c', dependencies: [   ], path: 'src/c.js'}
+  },
+  testSuites: {
+    test1: { dependencies: ['a','b'], path: 'tests/test1.js'},
+    test2: { dependencies: ['b','c'], path: 'tests/test2.js'},
+    test3: { dependencies: ['a'],     path: 'tests/test3.js'}
+  }
 };
 
-describe('metadataHelper', function() {
+describe('metadata', function() {
 
   // Make sure the output directory exists before running tests
   before(function() {
@@ -52,15 +54,13 @@ describe('metadataHelper', function() {
   });
 
   it('should be able to write metadata to a file and read it back', function(done) {
-    var expected = { modules: modules, testSuites: testSuites };
-
-    metadataHelper.writeMetadata(modules, testSuites, outputDirectoryPath)
-                  .then(readMetadata)
-                  .should.eventually.eql(expected)
-                  .notify(done);
+    metadata.store(project, outputDirectoryPath)
+            .then(readMetadata)
+            .should.eventually.eql(project)
+            .notify(done);
 
     function readMetadata() {
-      return metadataHelper.readMetadata(outputDirectoryPath);
+      return metadata.read(outputDirectoryPath);
     }
   });
 

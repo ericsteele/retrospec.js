@@ -1,5 +1,5 @@
 /*
- * metadata-helper.js
+ * metadata.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Peter Ingulli
@@ -24,8 +24,8 @@ var mkdir     = Q.nfbind(FS.mkdir),
 
 // exports
 module.exports = {
-  readMetadata:  readMetadata,
-  writeMetadata: writeMetadata
+  read:  readMetadata,
+  store: storeMetadata
 };
 
 // constants
@@ -33,18 +33,17 @@ var METADATA_DIRECTORY = '.retrospec',
     METADATA_FILE      = 'project-snapshot.json';
     
 /**
- * Writes the provided project meta-data to '{projectPath}/.retrospec/project-snapshot.json'.
+ * Writes a `Project` to file at '{projectPath}/.retrospec/project-snapshot.json'.
  * 
- * @param  {Object} modules     - an object map whose properties are the project's CodeModules
- * @param  {Object} testSuites  - an object map whose properties are the project's TestSuites
- * @param  {String} projectPath - absolute path of the project's root directory
+ * @param  {Project} project     - the `Project` to write to file
+ * @param  {String}  projectPath - absolute path of the project's root directory
  * 
- * @return {Promise} A promise to write the project's meta-data to file.
+ * @return {Promise} A promise to write the `Project` to file.
  */
-function writeMetadata(modules, testSuites, projectPath) {
+function storeMetadata(project, projectPath) {
   var metadataDirPath  = path.resolve(projectPath,     METADATA_DIRECTORY),
       metadataFilePath = path.resolve(metadataDirPath, METADATA_FILE),
-      jsonStr          = JSON.stringify({ modules: modules, testSuites: testSuites });
+      jsonStr          = JSON.stringify(project);
 
   return fsHelper.exists(metadataDirPath)
                  .then(mkdirIfNeeded)
