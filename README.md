@@ -1,6 +1,6 @@
 # retrospec.js
 
-A regression test selection tool for JavaScript.
+A regression test selection tool for JavaScript. Currently under development.
 
 ## Completed Tasks
 * automate extraction of RequireJS modules from 'jquery-mobile' 
@@ -21,6 +21,9 @@ A regression test selection tool for JavaScript.
 * execute selected tests
 * wrap it in a nice interface
 * grunt plugin?
+
+##This project uses Node
+If you do not have NodeJS installed, get it [here](https://nodejs.org/)
 
 ##Install dependencies:
 Project dependencies are managed via [npm](https://www.npmjs.org/):
