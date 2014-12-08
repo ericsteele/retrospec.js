@@ -30,10 +30,16 @@ $ npm install
 ```
 
 ## Tests
-To run the test suite, first install dependencies, then run grunt:
+To run the test suite, first install dependencies, then run:
 
 ```bash
-$ grunt
+$ npm test
+```
+
+or
+
+```bash
+$ grunt test
 ```
 
 ## Contributing
