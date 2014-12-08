@@ -1,5 +1,5 @@
 {
-  "name": "retrospec.js",
+  "name": "retrospec",
   "version": "0.0.0",
   "description": "A regression test selection tool for JavaScript",
   "author": "Eric Steele <ericrsteele@gmail.com>",
@@ -9,7 +9,7 @@
     "type": "git",
     "url": "https://github.com/ericsteele/retrospec.js.git"
   },
-  "main": "./src/retrospec",
+  "main": "./src/retrospec.js",
   "scripts": {
     "test": "grunt test"
   },
