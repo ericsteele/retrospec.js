@@ -108,10 +108,10 @@ describe('angular-module-extractor.js', function() {
 
   describe('.fromDirectory(["*/*.js", "ui-bootstrap/src")', function() {
     it('should find 20 modules', function(done) {
-      var p = path.resolve(projectsDirectory, 'ui-bootstrap/src');
-      extractor.fromDirectory(['*/*.js'], p)
-               .should.eventually.have.length(20)
-               .notify(done);
+      var p = path.resolve(projectsDirectory, 'ui-bootstrap/03b7c69/src');
+      var promise = extractor.fromDirectory(['*/*.js'], p);
+      promise.should.eventually.have.length(20)
+             .notify(done);
     });
   });
 

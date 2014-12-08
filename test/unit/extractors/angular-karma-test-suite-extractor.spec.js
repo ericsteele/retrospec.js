@@ -29,7 +29,7 @@ var projectsDirectory = path.resolve(__dirname, '../../input/projects/');
 // Module under test
 var extractor = require('../../../src/extractors/angular-karma-test-suite-extractor');
 
-describe('angular-karma-test-suite-extractor.js', function() {
+describe('angular.js', function() {
 
   describe('.fromFile("ngCookies/cookiesSpec.js")', function() {
     it('should extract 1 test suite', function(done) {
@@ -53,6 +53,37 @@ describe('angular-karma-test-suite-extractor.js', function() {
       var promise = extractor.fromDirectory(['**/*Spec.js'], cwd);
       promise.should.eventually.have.length(25)
                .notify(done);
+    });
+  });
+});
+
+describe('ui-bootstrap.js', function() {
+  describe('.fromFile("ngCookies/cookiesSpec.js")', function() {
+    it('should extract 1 test suite', function(done) {
+      var cwd = path.resolve(projectsDirectory, 'ui-bootstrap/03b7c69'),
+        expected = [{ 
+          path: 'src/accordion/test/accordion.spec.js', 
+          hash: '7bedd0fd01ac7c0a24dce0f1eaec95b91a1493c5',
+          dependencies: [
+            'ui.bootstrap.accordion',
+            'template/accordion/accordion.html',
+            'template/accordion/accordion-group.html'
+          ]
+        }];
+
+      extractor.fromFile('src/accordion/test/accordion.spec.js', cwd)
+               .should.eventually.eql(expected)
+               .notify(done);
+    });
+  });
+
+  describe('.fromDirectory(["**/*Spec.js"], "test")', function() {
+    it('should extract 26 test suites', function(done) {
+      var cwd = path.resolve(projectsDirectory, 'ui-bootstrap/03b7c69');
+
+      var promise = extractor.fromDirectory(['src/*/test/*.spec.js'], cwd);
+      promise.should.eventually.have.length(26)
+             .notify(done);
     });
   });
 });

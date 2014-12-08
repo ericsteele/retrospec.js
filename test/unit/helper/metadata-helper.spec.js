@@ -28,7 +28,7 @@ var path = require('path'),
 var metadataHelper = require('../../../src/helper/metadata-helper');
 
 // Output directory (for temporary test output)
-var outputDirectoryPath = path.resolve(__dirname, 'output');
+var outputDirectoryPath = path.resolve(__dirname, '../../misc/output');
 
 // Mocks
 var modules = {
