@@ -11,7 +11,7 @@ module.exports = function(grunt) {
           reporter: 'spec',
           //captureFile: 'results.txt', // Optionally capture the reporter output to a file
           quiet: false,   // Optionally suppress output to standard out (defaults to false)
-          timeout: 10000
+          timeout: 9999999
         },
         src: ['test/**/*.spec.js', '!test/input/**/*.spec.js']
       }
@@ -21,7 +21,7 @@ module.exports = function(grunt) {
     // retrospec: {
     //   src: {
     //     blobs:     ['js/**/*.js'], 
-    //     extractor: retrospec.requirejs,
+    //     extractor: retrospec.requirejs(),
     //     config:    './js/requirejs.config.js' // path or object
     //   },
     //   tests: {
