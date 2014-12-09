@@ -42,7 +42,7 @@ var projectsDirectory = path.resolve(__dirname, '../input/projects/jquery-mobile
 
 describe('jquery-mobile-rts.spec.js', function() {
 
-  describe.skip('2ef45a1 to 2ef45a1 (3 module edits, 1 test edit)', function() {
+  describe.only('2ef45a1 to 2ef45a1 (3 module edits, 1 test edit)', function() {
     // src  diff: "widget/dialog", "transitions/handlers", "buttonMarkup"
     // test diff: "init/weird file name-tests.html"
     it('should run 25 regression tests', function(done) {
@@ -70,17 +70,20 @@ function getJqmProject(projectDir) {
 
 // Helper method for selecting and running tests
 function runTestSuites(projects) {
-  console.log('ALL TEST SUITES');
-  for(var ts in projects[1].testSuiteMap) {
-    if(projects[1].testSuiteMap.hasOwnProperty(ts)) {
-      console.log(projects[1].testSuiteMap[ts].path);
-    }
-  }
+  // console.log('ALL TEST SUITES');
+  // for(var ts in projects[1].testSuiteMap) {
+  //   if(projects[1].testSuiteMap.hasOwnProperty(ts)) {
+  //     console.log(projects[1].testSuiteMap[ts].path);
+  //   }
+  // }
 
   var tests = selectTests(projects[0], projects[1]);
 
-  console.log('SELECTED TESTS');
-  console.log(tests);
+  // console.log('SELECTED TESTS');
+  // tests.forEach(function(test) {
+  //   console.log(test);
+  // });
+
   return testExecutor.executeTests(tests).then(function(testResults) {
     return tests;
   });
