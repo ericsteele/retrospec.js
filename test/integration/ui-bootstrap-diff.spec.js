@@ -75,7 +75,7 @@ var b7eb69e = path.resolve(projectsDirectory, 'b7eb69e'),
     d19b4c0 = path.resolve(projectsDirectory, 'd19b4c0'),
    _5ca23e9 = path.resolve(projectsDirectory, '5ca23e9');
 
-describe.only('ui-bootstrap-diff.spec.js', function() {
+describe('ui-bootstrap-diff.spec.js', function() {
 
   describe('03b7c69 to 03b7c69, same revision', function() {
     it('should select 0 regression tests', function(done) {
