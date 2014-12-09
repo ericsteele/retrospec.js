@@ -29,8 +29,7 @@ var buildProject  = require('../../src/helper/build-project.js'),
     selectTests   = require('../../src/helper/select-tests'),  
     retrospec     = require('../../src/retrospec.js'),
     srcExtractor  = require('../../src/extractors/requirejs-module-extractor'),
-    testExtractor = require('../../src/extractors/jqm-test-suite-extractor'),
-    testExecutor  = require('../../src/executors/jqm-test-suite-executor');
+    testExtractor = require('../../src/extractors/jqm-test-suite-extractor');
 
 // Directory containing code snippets used in our tests
 var codeSnippetDirectory = path.resolve(__dirname, '../input/code-snippets');
@@ -110,35 +109,35 @@ describe('jquery-mobile-diff.spec.js', function() {
   });
 
   describe('1.3.1 to 1.4.5', function() {
-    it('should select 84 regression tests', function(done) {
+    it('should select 101 regression tests', function(done) {
       var promiseP1 = getJqmProject(jqmRev131),
           promiseP2 = getJqmProject(jqmRev145);
 
       Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                   .should.eventually.have.length(84)
+                                   .should.eventually.have.length(101)
                                    .notify(done);
     });
   });
 
   describe('1.4.4 to 1.4.5', function() {
-    it('should select 76 regression tests', function(done) {
+    it('should select 75 regression tests', function(done) {
       var promiseP1 = getJqmProject(jqmRev144),
           promiseP2 = getJqmProject(jqmRev145);
 
       Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                   .should.eventually.have.length(76)
+                                   .should.eventually.have.length(75)
                                    .notify(done);
     });
   });
 
   describe('1.4.5 to 1.4.5 (3 module edits)', function() {
     // diffs: widget/dialog, transitions/handlers, buttonMarkup
-    it('should select 26 regression tests', function(done) {
+    it('should select 25 regression tests', function(done) {
       var promiseP1 = getJqmProject(jqmRev145),
           promiseP2 = getJqmProject(jqmRev145_v2);
 
       Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                   .should.eventually.have.length(26)
+                                   .should.eventually.have.length(25)
                                    .notify(done);
     });
   });
@@ -157,42 +156,31 @@ describe('jquery-mobile-diff.spec.js', function() {
 
   describe('Updating to each revision and testing:', function() {
     describe('1.3.1 to 1.3.2', function() {
-      it('should select 34 regression tests', function(done) {
+      it('should select 32 regression tests', function(done) {
         var promiseP1 = getJqmProject(jqmRev131),
             promiseP2 = getJqmProject(jqmRev132);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(34)
+                                     .should.eventually.have.length(32)
                                      .notify(done);
       });
     });
     
     describe('1.3.2 to 1.4.0-rc1', function() {
-      it('should select 55 regression tests', function(done) {
+      it('should select 73 regression tests', function(done) {
         var promiseP1 = getJqmProject(jqmRev132),
             promiseP2 = getJqmProject(jqmRev140rc1);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(55)
+                                     .should.eventually.have.length(73)
                                      .notify(done);
       });
     });
     
     describe('1.4.0-rc1 to 1.4.0', function() {
-      it('should select 52 regression tests', function(done) {
+      it('should select 50 regression tests', function(done) {
         var promiseP1 = getJqmProject(jqmRev140rc1),
             promiseP2 = getJqmProject(jqmRev140);
-
-        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(52)
-                                     .notify(done);
-      });
-    });
-    
-    describe('1.4.0 to 1.4.0.x', function() {
-      it('should select 50 regression tests', function(done) {
-        var promiseP1 = getJqmProject(jqmRev140),
-            promiseP2 = getJqmProject(jqmRev140x);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
                                      .should.eventually.have.length(50)
@@ -200,35 +188,46 @@ describe('jquery-mobile-diff.spec.js', function() {
       });
     });
     
+    describe('1.4.0 to 1.4.0.x', function() {
+      it('should select 48 regression tests', function(done) {
+        var promiseP1 = getJqmProject(jqmRev140),
+            promiseP2 = getJqmProject(jqmRev140x);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(48)
+                                     .notify(done);
+      });
+    });
+    
     describe('1.4.0.x to 1.4.1', function() {
-      it('should select 58 regression tests', function(done) {
+      it('should select 76 regression tests', function(done) {
         var promiseP1 = getJqmProject(jqmRev140x),
             promiseP2 = getJqmProject(jqmRev141);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(58)
+                                     .should.eventually.have.length(76)
                                      .notify(done);
       });
     });
     
     describe('1.4.1 to 1.4.1.x', function() {
-      it('should select 49 regression tests', function(done) {
+      it('should select 47 regression tests', function(done) {
         var promiseP1 = getJqmProject(jqmRev141),
             promiseP2 = getJqmProject(jqmRev141x);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(49)
+                                     .should.eventually.have.length(47)
                                      .notify(done);
       });
     });
     
     describe('1.4.1.x to 1.4.2', function() {
-      it('should select 56 regression tests', function(done) {
+      it('should select 54 regression tests', function(done) {
         var promiseP1 = getJqmProject(jqmRev141x),
             promiseP2 = getJqmProject(jqmRev142);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(56)
+                                     .should.eventually.have.length(54)
                                      .notify(done);
       });
     });
@@ -245,34 +244,34 @@ describe('jquery-mobile-diff.spec.js', function() {
     });
     
     describe('1.4.3 to 1.4.3.x', function() {
-      it('should select 69 regression tests', function(done) {
+      it('should select 68 regression tests', function(done) {
         var promiseP1 = getJqmProject(jqmRev143),
             promiseP2 = getJqmProject(jqmRev143x);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(69)
+                                     .should.eventually.have.length(68)
                                      .notify(done);
       });
     });
     
     describe('1.4.3.x to 1.4.4', function() {
-      it('should select 71 regression tests', function(done) {
+      it('should select 72 regression tests', function(done) {
         var promiseP1 = getJqmProject(jqmRev143x),
             promiseP2 = getJqmProject(jqmRev144);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(71)
+                                     .should.eventually.have.length(72)
                                      .notify(done);
       });
     });
     
     describe('1.4.4 to 1.4.5', function() {
-      it('should select 76 regression tests', function(done) {
+      it('should select 75 regression tests', function(done) {
         var promiseP1 = getJqmProject(jqmRev144),
             promiseP2 = getJqmProject(jqmRev145);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(76)
+                                     .should.eventually.have.length(75)
                                      .notify(done);
       });
     });
@@ -282,12 +281,12 @@ describe('jquery-mobile-diff.spec.js', function() {
   //Consecutive revisions
   describe('Consecutive revisions', function() {
     describe('3a22e02 to 2e1bb85', function() {
-      it('should select 54 regression tests', function(done) {
+      it('should select 63 regression tests', function(done) {
         var promiseP1 = getJqmProject(_3a22e02),
             promiseP2 = getJqmProject(_2e1bb85);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(54)
+                                     .should.eventually.have.length(63)
                                      .notify(done);
       });
     });
@@ -498,7 +497,7 @@ function getJqmProject(projectDir) {
   var srcDirPath  = path.resolve(projectDir, 'js'),
       testDirPath = path.resolve(projectDir, 'tests'),
       srcBlobs    = ['**/*.js'],
-      testBlobs   = ['**/*.html'];
+      testBlobs   = ['**/index.html','**/*-tests.html'];
 
   // tests: buildProject
   return buildProject(srcExtractor, srcDirPath, srcBlobs, testExtractor, testDirPath, testBlobs);
@@ -508,6 +507,5 @@ function getJqmProject(projectDir) {
 function selectTestSuites(projects) {
   // tests: selectTests, diffProjects
   var tests = selectTests(projects[0], projects[1]);
-  testExecutor.executeTests(tests);
   return tests;
 }

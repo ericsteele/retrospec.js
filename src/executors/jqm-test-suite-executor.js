@@ -33,7 +33,7 @@ function executeTests(filePaths) {
 
   var tests   = getTests(filePaths),
       cmd     = 'grunt test --force --suites=' + tests.toString(),
-      options = { cwd: jqmPath }; // TODO: set to process.cwd() b4 publishing
+      options = { cwd: jqmPath, stdio: 'inherit' }; // TODO: set to process.cwd() b4 publishing
   
   console.log(cmd);
   exec(cmd, options, function(error, stdout, stderr) {
@@ -46,6 +46,7 @@ function executeTests(filePaths) {
       deferred.resolve(stdout);
     }
   });
+  deferred.resolve();
 
   return deferred.promise;
 }
@@ -67,8 +68,29 @@ function getTests(filePaths) {
   return ArrayHelper.getUnique(tests);
 }
 
+/**
+ * Converts the given filePath into a valid test suite identifier (as per the JQM grunt test task).
+ * 
+ * @param  {String} filePath - a jquery-mobile test file path
+ * 
+ * @return {String} - a valid test suite identifier
+ */
 function getTestSuite(filePath) {
-  return removeFileName(removeTestCategoryFolder(filePath));
+  return allForwardSlashes(addQuotes(removeTestCategoryFolder(filePath)));
+}
+
+/**
+ * Surrounds a file path in quotes if it contains spaces.
+ * 
+ * @param  {String} filePath - path that may contain spaces
+ * 
+ * @return {String} - the `filePath` wrapped in quotes if it contains any spaces.
+ */
+function addQuotes(filePath) {
+  if(filePath.indexOf(' ') !== -1 ) {
+    return '"' + filePath + '"';
+  }
+  return filePath;
 }
 
 /**
@@ -97,4 +119,16 @@ function removeFileName(filePath) {
     var iLastSep = filePath.lastIndexOf(path.sep);
     return filePath.substring(0 , iLastSep);
   }
+}
+
+/**
+ * The jquery-mobile grunt test task expects test suite names to use forward slashes. This
+ * function changes all occurances of '\' with a '/'
+ * 
+ * @param  {String} filePath - a path that may have backslashes.
+ * 
+ * @return {[type]} the `filePath` with forward slashes
+ */
+function allForwardSlashes(filePath) {
+  return filePath.replace('\\', '/');
 }

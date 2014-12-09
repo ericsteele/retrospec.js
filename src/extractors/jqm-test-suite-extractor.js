@@ -32,15 +32,26 @@ module.exports = new FileContentExtractor('jqm-test-suite-extractor', extractTes
  * @return {Array} An array of `TestSuite` objects.
  */
 function extractTestSuites(fileContents, filePath, cwd) {
-  var testSuites = [];
+  var loadsQUnit      = fileContents.indexOf('qunit.js') !== -1,
+      loadsTestHelper = fileContents.indexOf('jquery.testHelper.js') !== -1,
+      hasAsyncLoad    = fileContents.indexOf('$.testHelper.asyncLoad') !== -1,
+      isRedirectTest  = fileContents.indexOf('location.href =') !== -1,
+      testSuites      = [];
 
-  if(fileContents.indexOf('qunit.js') !== -1) {
-    if(fileContents.indexOf('$.testHelper.asyncLoad') !== -1) {
-      var deps = getTestHelperDependencies(fileContents);
-      if(deps.length > 0) {
-        testSuites.push(new TestSuite(deps, filePath, fileContents));
-      }
+  if(loadsQUnit || loadsTestHelper) {
+    // find dependencies
+    var dependencies = [];
+    if(hasAsyncLoad) {
+      dependencies = getAsyncLoadDependencies(fileContents);
     }
+    // create the extracted test suite
+    testSuites.push(new TestSuite(dependencies, filePath, fileContents));
+  }
+  else if(isRedirectTest) {
+    // this is a special case for two tests:
+    // integration/navigation/sequence/sequence-dialog-hash-key-tests.html
+    // integration/navigation/sequence/sequence-path1-path2-dialog-hash-key-tests.html
+    testSuites.push(new TestSuite([], filePath, fileContents));
   }
 
   return testSuites;
@@ -54,10 +65,10 @@ function extractTestSuites(fileContents, filePath, cwd) {
  * 
  * @return {Array} An array of test dependency names (i.e. strings).
  */
-function getTestHelperDependencies(fileContents) {
-  var dependencies   = [],
-      testHelperStmt = getTestHelperStatement(fileContents),
-      ast            = esprima.parse(testHelperStmt);
+function getAsyncLoadDependencies(fileContents) {
+  var asyncLoadStmt = getAsyncLoadStatement(fileContents),
+      ast           = esprima.parse(asyncLoadStmt),
+      dependencies  = [];
 
   estraverse.traverse(ast, {
     enter: function (node, parent) {
@@ -74,14 +85,13 @@ function getTestHelperDependencies(fileContents) {
 }
 
 /**
- * Parses an HTML file's text and extracts the first 
- * '$.testHelper.asyncLoad([])' statement that is encountered.
+ * Parses an HTML file's text and extracts the first '$.testHelper.asyncLoad([])' statement that is encountered.
  * 
  * @param {String} fileContents - the file's text content
  * 
  * @return {String} A '$.testHelper.asyncLoad([])' statement.
  */
-function getTestHelperStatement(fileContents) {
+function getAsyncLoadStatement(fileContents) {
   var iStart = fileContents.indexOf('$.testHelper.asyncLoad'),
       iEnd   = fileContents.indexOf('</script>', iStart);
 
