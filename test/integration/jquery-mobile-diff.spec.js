@@ -52,6 +52,28 @@ var projectsDirectory = path.resolve(__dirname, '../input/projects/jquery-mobile
     jqmRev145_v2 = path.resolve(projectsDirectory, 'rev-1.4.5-2ef45a1-v2'),
     jqmRev145_v3 = path.resolve(projectsDirectory, 'rev-1.4.5-2ef45a1-v3');
 
+//Consecutive revisions
+var _3a22e02 = path.resolve(projectsDirectory,  '1-3a22e02'),
+    _2e1bb85 = path.resolve(projectsDirectory,  '2-2e1bb85'),
+    _277d379 = path.resolve(projectsDirectory,  '3-277d379'),
+    _044a3f8 = path.resolve(projectsDirectory,  '4-044a3f8'),
+     aea0f99 = path.resolve(projectsDirectory,  '5-aea0f99'),
+     eb8d2ba = path.resolve(projectsDirectory,  '6-eb8d2ba'),
+     b9b25ba = path.resolve(projectsDirectory,  '7-b9b25ba'),
+    _1651544 = path.resolve(projectsDirectory,  '8-1651544'),
+    _7378b55 = path.resolve(projectsDirectory,  '9-7378b55'),
+    _7b31cee = path.resolve(projectsDirectory, '10-7b31cee'),
+     bc4d8e2 = path.resolve(projectsDirectory, '11-bc4d8e2'),
+    _468d221 = path.resolve(projectsDirectory, '12-468d221'),
+    _5f34b77 = path.resolve(projectsDirectory, '13-5f34b77'),
+    _0e6bf28 = path.resolve(projectsDirectory, '14-0e6bf28'),
+    _2d5b272 = path.resolve(projectsDirectory, '15-2d5b272'),
+    _1ff2d3a = path.resolve(projectsDirectory, '16-1ff2d3a'),
+     bbb3bd5 = path.resolve(projectsDirectory, '17-bbb3bd5'),
+    _40d4cb8 = path.resolve(projectsDirectory, '18-40d4cb8'),
+    _87453e0 = path.resolve(projectsDirectory, '19-87453e0'),
+    _4b66652 = path.resolve(projectsDirectory, '20-4b66652');
+
 describe('jquery-mobile-diff.spec.js', function() {
 
   describe('1.3.1 to 1.3.1', function() {
@@ -251,6 +273,219 @@ describe('jquery-mobile-diff.spec.js', function() {
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
                                      .should.eventually.have.length(76)
+                                     .notify(done);
+      });
+    });
+  });
+
+
+  //Consecutive revisions
+  describe('Consecutive revisions', function() {
+    describe('3a22e02 to 2e1bb85', function() {
+      it('should select 54 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_3a22e02),
+            promiseP2 = getJqmProject(_2e1bb85);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(54)
+                                     .notify(done);
+      });
+    });
+    
+    describe('2e1bb85 to 277d379', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_2e1bb85),
+            promiseP2 = getJqmProject(_277d379);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('277d379 to 044a3f8', function() {
+      it('should select 1 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_277d379),
+            promiseP2 = getJqmProject(_044a3f8);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(1)
+                                     .notify(done);
+      });
+    });
+    
+    describe('044a3f8 to aea0f99', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_044a3f8),
+            promiseP2 = getJqmProject(aea0f99);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('aea0f99 to eb8d2ba', function() {
+      it('should select 13 regression tests', function(done) {
+        var promiseP1 = getJqmProject(aea0f99),
+            promiseP2 = getJqmProject(eb8d2ba);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(13)
+                                     .notify(done);
+      });
+    });
+    
+    describe('eb8d2ba to b9b25ba', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(eb8d2ba),
+            promiseP2 = getJqmProject(b9b25ba);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('b9b25ba to 1651544', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(b9b25ba),
+            promiseP2 = getJqmProject(_1651544);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('1651544 to 7378b55', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_1651544),
+            promiseP2 = getJqmProject(_7378b55);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('7378b55 to 7b31cee', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_7378b55),
+            promiseP2 = getJqmProject(_7b31cee);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('7b31cee to bc4d8e2', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_7b31cee),
+            promiseP2 = getJqmProject(bc4d8e2);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('bc4d8e2 to 468d221', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(bc4d8e2),
+            promiseP2 = getJqmProject(_468d221);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('468d221 to 5f34b77', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_468d221),
+            promiseP2 = getJqmProject(_5f34b77);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('5f34b77 to 0e6bf28', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_5f34b77),
+            promiseP2 = getJqmProject(_0e6bf28);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('0e6bf28 to 2d5b272', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_0e6bf28),
+            promiseP2 = getJqmProject(_2d5b272);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('2d5b272 to 1ff2d3a', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_2d5b272),
+            promiseP2 = getJqmProject(_1ff2d3a);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('1ff2d3a to bbb3bd5', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_1ff2d3a),
+            promiseP2 = getJqmProject(bbb3bd5);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('bbb3bd5 to 40d4cb8', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(bbb3bd5),
+            promiseP2 = getJqmProject(_40d4cb8);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('40d4cb8 to 87453e0', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_40d4cb8),
+            promiseP2 = getJqmProject(_87453e0);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('87453e0 to 4b66652', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getJqmProject(_87453e0),
+            promiseP2 = getJqmProject(_4b66652);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
                                      .notify(done);
       });
     });
