@@ -46,7 +46,6 @@ function executeTests(filePaths) {
       deferred.resolve(stdout);
     }
   });
-  deferred.resolve();
 
   return deferred.promise;
 }
