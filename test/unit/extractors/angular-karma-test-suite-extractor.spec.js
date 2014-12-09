@@ -47,11 +47,11 @@ describe('angular.js', function() {
   });
 
   describe('.fromDirectory(["**/*Spec.js"], "test")', function() {
-    it('should extract 25 test suites', function(done) {
+    it('should extract 93 test suites', function(done) {
       var cwd = path.resolve(projectsDirectory, 'angular.js/b6f4d4b/test');
 
       var promise = extractor.fromDirectory(['**/*Spec.js'], cwd);
-      promise.should.eventually.have.length(25)
+      promise.should.eventually.have.length(93)
                .notify(done);
     });
   });

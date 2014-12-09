@@ -30,7 +30,8 @@ var buildProject  = require('../../src/helper/build-project.js'),
     selectTests   = require('../../src/helper/select-tests'),  
     retrospec     = require('../../src/retrospec.js'),
     srcExtractor  = require('../../src/extractors/angular-module-extractor'),
-    testExtractor = require('../../src/extractors/angular-karma-test-suite-extractor');
+    testExtractor = require('../../src/extractors/angular-karma-test-suite-extractor'),
+    testExecutor  = require('../../src/executors/angular-test-suite-executor');
 
 // Directory containing code snippets used in our tests
 var codeSnippetDirectory = path.resolve(__dirname, '../input/code-snippets');
@@ -44,14 +45,38 @@ var projectsDirectory = path.resolve(__dirname, '../input/projects/angular.js'),
     e6ece7d   = path.resolve(projectsDirectory, 'e6ece7d'),
     f6f0791   = path.resolve(projectsDirectory, 'f6f0791'),
     d396f42   = path.resolve(projectsDirectory, 'd396f42'),
-    _00456a8   = path.resolve(projectsDirectory, '00456a8'),
-    _93b0c2d   = path.resolve(projectsDirectory, '93b0c2d'),
+    _00456a8  = path.resolve(projectsDirectory, '00456a8'),
+    _93b0c2d  = path.resolve(projectsDirectory, '93b0c2d'),
     cd9afd9   = path.resolve(projectsDirectory, 'cd9afd9'),
     eba192b   = path.resolve(projectsDirectory, 'eba192b'),
     b586bfd   = path.resolve(projectsDirectory, 'b586bfd'),
     f0904cf   = path.resolve(projectsDirectory, 'f0904cf'),
-    _6acc73f   = path.resolve(projectsDirectory, '6acc73f'),
+    _6acc73f  = path.resolve(projectsDirectory, '6acc73f'),
     fef0cfc   = path.resolve(projectsDirectory, 'fef0cfc');
+
+//Consecutive revisions:
+// 4/3/2014
+var d64d41e   = path.resolve(projectsDirectory, 'd64d41e'),
+   _83e36db   = path.resolve(projectsDirectory, '83e36db'),
+    c967792   = path.resolve(projectsDirectory, 'c967792'),
+   _71c11e9   = path.resolve(projectsDirectory, '71c11e9'),
+    c67bd69   = path.resolve(projectsDirectory, 'c67bd69'),
+   _1cb8584   = path.resolve(projectsDirectory, '1cb8584'),
+   _7227f1a   = path.resolve(projectsDirectory, '7227f1a'),
+    cb6b976   = path.resolve(projectsDirectory, 'cb6b976'),
+   _8e2c62a   = path.resolve(projectsDirectory, '8e2c62a'),
+    c369563   = path.resolve(projectsDirectory, 'c369563'),
+    b63fd11   = path.resolve(projectsDirectory, 'b63fd11'),
+// 4/4/2014
+    a526ae8   = path.resolve(projectsDirectory, 'a526ae8'),
+   _7b0c5b9   = path.resolve(projectsDirectory, '7b0c5b9'),
+   _6b7a1b8   = path.resolve(projectsDirectory, '6b7a1b8'),
+   _2845301   = path.resolve(projectsDirectory, '2845301'),
+    e55c8bc   = path.resolve(projectsDirectory, 'e55c8bc'),
+    dbe381f   = path.resolve(projectsDirectory, 'dbe381f'),
+   _708f2ba   = path.resolve(projectsDirectory, '708f2ba'),
+   _20b22f1   = path.resolve(projectsDirectory, '20b22f1'),
+   _8b0b7ca   = path.resolve(projectsDirectory, '8b0b7ca');
 
 describe('angular-js-diff.spec.js', function() {
 
@@ -100,87 +125,65 @@ describe('angular-js-diff.spec.js', function() {
   });
 
   describe('b6f4d4b to e6ece7d, close revisions', function() {
-    it('should select 15 regression tests', function(done) {
+    it('should select 23 regression tests', function(done) {
       var promiseP1 = getAngularProject(b6f4d4b),
           promiseP2 = getAngularProject(e6ece7d);
 
       Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                   .should.eventually.have.length(15)
+                                   .should.eventually.have.length(23)
                                    .notify(done);
     });
   });
 
   describe('b6f4d4b to fef0cfc, far revisions', function() {
-    it('should select 22 regression tests', function(done) {
+    it('should select 70 regression tests', function(done) {
       var promiseP1 = getAngularProject(b6f4d4b),
           promiseP2 = getAngularProject(fef0cfc);
 
       Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                   .should.eventually.have.length(22)
+                                   .should.eventually.have.length(70)
                                    .notify(done);
     });
   });
 
   describe('Updating to each revision and testing:', function() {
     describe('b6f4d4b to e6ece7d', function() {
-      it('should select 15 regression tests', function(done) {
+      it('should select 23 regression tests', function(done) {
         var promiseP1 = getAngularProject(b6f4d4b),
             promiseP2 = getAngularProject(e6ece7d);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(15)
+                                     .should.eventually.have.length(23)
                                      .notify(done);
       });
     });
     
     describe('e6ece7d to f6f0791', function() {
-      it('should select 18 regression tests', function(done) {
+      it('should select 56 regression tests', function(done) {
         var promiseP1 = getAngularProject(e6ece7d),
             promiseP2 = getAngularProject(f6f0791);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(18)
+                                     .should.eventually.have.length(56)
                                      .notify(done);
       });
     });
     
     describe('f6f0791 to d396f42', function() {
-      it('should select 1 regression tests', function(done) {
+      it('should select 3 regression tests', function(done) {
         var promiseP1 = getAngularProject(f6f0791),
             promiseP2 = getAngularProject(d396f42);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(1)
+                                     .should.eventually.have.length(3)
                                      .notify(done);
       });
     });
     
     describe('d396f42 to _00456a8', function() {
-      it('should select 11 regression tests', function(done) {
+      it('should select 17 regression tests', function(done) {
         var promiseP1 = getAngularProject(d396f42),
             promiseP2 = getAngularProject(_00456a8);
-
-        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(11)
-                                     .notify(done);
-      });
-    });
-    
-    describe('_00456a8 to _93b0c2d', function() {
-      it('should select 12 regression tests', function(done) {
-        var promiseP1 = getAngularProject(_00456a8),
-            promiseP2 = getAngularProject(_93b0c2d);
-
-        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(12)
-                                     .notify(done);
-      });
-    });
-    
-    describe('_93b0c2d to cd9afd9', function() {
-      it('should select 17 regression tests', function(done) {
-        var promiseP1 = getAngularProject(_93b0c2d),
-            promiseP2 = getAngularProject(cd9afd9);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
                                      .should.eventually.have.length(17)
@@ -188,57 +191,291 @@ describe('angular-js-diff.spec.js', function() {
       });
     });
     
+    describe('_00456a8 to _93b0c2d', function() {
+      it('should select 16 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_00456a8),
+            promiseP2 = getAngularProject(_93b0c2d);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(16)
+                                     .notify(done);
+      });
+    });
+    
+    describe('_93b0c2d to cd9afd9', function() {
+      it('should select 22 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_93b0c2d),
+            promiseP2 = getAngularProject(cd9afd9);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(22)
+                                     .notify(done);
+      });
+    });
+    
     describe('cd9afd9 to eba192b', function() {
-      it('should select 19 regression tests', function(done) {
+      it('should select 27 regression tests', function(done) {
         var promiseP1 = getAngularProject(cd9afd9),
             promiseP2 = getAngularProject(eba192b);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(19)
+                                     .should.eventually.have.length(27)
                                      .notify(done);
       });
     });
     
     describe('eba192b to b586bfd', function() {
-      it('should select 21 regression tests', function(done) {
+      it('should select 61 regression tests', function(done) {
         var promiseP1 = getAngularProject(eba192b),
             promiseP2 = getAngularProject(b586bfd);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(21)
+                                     .should.eventually.have.length(61)
                                      .notify(done);
       });
     });
     
     describe('b586bfd to f0904cf', function() {
-      it('should select 11 regression tests', function(done) {
+      it('should select 17 regression tests', function(done) {
         var promiseP1 = getAngularProject(b586bfd),
             promiseP2 = getAngularProject(f0904cf);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(11)
+                                     .should.eventually.have.length(17)
                                      .notify(done);
       });
     });
     
     describe('f0904cf to _6acc73f', function() {
-      it('should select 7 regression tests', function(done) {
+      it('should select 9 regression tests', function(done) {
         var promiseP1 = getAngularProject(f0904cf),
             promiseP2 = getAngularProject(_6acc73f);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(7)
+                                     .should.eventually.have.length(9)
                                      .notify(done);
       });
     });
     
     describe('_6acc73f to fef0cfc', function() {
-      it('should select 20 regression tests', function(done) {
+      it('should select 27 regression tests', function(done) {
         var promiseP1 = getAngularProject(_6acc73f),
             promiseP2 = getAngularProject(fef0cfc);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(20)
+                                     .should.eventually.have.length(27)
+                                     .notify(done);
+      });
+    });
+  });
+
+  //Consecutive revisions
+  describe('Consecutive revisions', function() {
+    describe('d64d41e to 83e36db', function() {
+      it('should select 6 regression tests', function(done) {
+        var promiseP1 = getAngularProject(d64d41e),
+            promiseP2 = getAngularProject(_83e36db);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(6)
+                                     .notify(done);
+      });
+    });
+    
+    describe('83e36db to c967792', function() {
+      it('should select 1 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_83e36db),
+            promiseP2 = getAngularProject(c967792);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(1)
+                                     .notify(done);
+      });
+    });
+    
+    describe('c967792 to 71c11e9', function() {
+      it('should select 1 regression tests', function(done) {
+        var promiseP1 = getAngularProject(c967792),
+            promiseP2 = getAngularProject(_71c11e9);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(1)
+                                     .notify(done);
+      });
+    });
+    
+    describe('71c11e9 to c67bd69', function() {
+      it('should select 4 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_71c11e9),
+            promiseP2 = getAngularProject(c67bd69);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(4)
+                                     .notify(done);
+      });
+    });
+    
+    describe('c67bd69 to 1cb8584', function() {
+      it('should select 1 regression tests', function(done) {
+        var promiseP1 = getAngularProject(c67bd69),
+            promiseP2 = getAngularProject(_1cb8584);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(1)
+                                     .notify(done);
+      });
+    });
+    
+    describe('1cb8584 to 7227f1a', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_1cb8584),
+            promiseP2 = getAngularProject(_7227f1a);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('7227f1a to cb6b976', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_7227f1a),
+            promiseP2 = getAngularProject(cb6b976);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('cb6b976 to 8e2c62a', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(cb6b976),
+            promiseP2 = getAngularProject(_8e2c62a);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('8e2c62a to c369563', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_8e2c62a),
+            promiseP2 = getAngularProject(c369563);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('c369563 to b63fd11', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(c369563),
+            promiseP2 = getAngularProject(b63fd11);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('b63fd11 to a526ae8', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(b63fd11),
+            promiseP2 = getAngularProject(a526ae8);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('a526ae8 to 7b0c5b9', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(a526ae8),
+            promiseP2 = getAngularProject(_7b0c5b9);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('7b0c5b9 to 6b7a1b8', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_7b0c5b9),
+            promiseP2 = getAngularProject(_6b7a1b8);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('6b7a1b8 to 2845301', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_6b7a1b8),
+            promiseP2 = getAngularProject(_2845301);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('2845301 to e55c8bc', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_2845301),
+            promiseP2 = getAngularProject(e55c8bc);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('e55c8bc to dbe381f', function() {
+      it('should select 1 regression tests', function(done) {
+        var promiseP1 = getAngularProject(e55c8bc),
+            promiseP2 = getAngularProject(dbe381f);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(1)
+                                     .notify(done);
+      });
+    });
+    
+    describe('dbe381f to 708f2ba', function() {
+      it('should select 4 regression tests', function(done) {
+        var promiseP1 = getAngularProject(dbe381f),
+            promiseP2 = getAngularProject(_708f2ba);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(4)
+                                     .notify(done);
+      });
+    });
+    
+    describe('708f2ba to 20b22f1', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_708f2ba),
+            promiseP2 = getAngularProject(_20b22f1);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
+                                     .notify(done);
+      });
+    });
+    
+    describe('20b22f1 to 8b0b7ca', function() {
+      it('should select 0 regression tests', function(done) {
+        var promiseP1 = getAngularProject(_20b22f1),
+            promiseP2 = getAngularProject(_8b0b7ca);
+
+        Q.all([promiseP1, promiseP2]).then(selectTestSuites)
+                                     .should.eventually.have.length(0)
                                      .notify(done);
       });
     });
@@ -257,7 +494,9 @@ describe('angular-js-diff.spec.js', function() {
   // Helper method for selecting tests
   function selectTestSuites(projects) {
     // tests: selectTests, diffProjects
-    return selectTests(projects[0], projects[1]);
+    var tests = selectTests(projects[0], projects[1]);
+    //testExecutor.executeTests(tests);
+    return tests;
   }
 
 });
