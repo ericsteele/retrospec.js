@@ -75,7 +75,7 @@ var b7eb69e = path.resolve(projectsDirectory, 'b7eb69e'),
     d19b4c0 = path.resolve(projectsDirectory, 'd19b4c0'),
    _5ca23e9 = path.resolve(projectsDirectory, '5ca23e9');
 
-describe('ui-bootstrap-diff.spec.js', function() {
+describe.only('ui-bootstrap-diff.spec.js', function() {
 
   describe('03b7c69 to 03b7c69, same revision', function() {
     it('should select 0 regression tests', function(done) {
@@ -225,22 +225,22 @@ describe('ui-bootstrap-diff.spec.js', function() {
       });
     });
     describe('3e5f796 to ceb396f', function() {
-      it('should select 18 regression tests', function(done) {
+      it('should select 13 regression tests', function(done) {
         var promiseP1 = getAngularProject(_3e5f796),
             promiseP2 = getAngularProject(_ceb396f);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(18)
+                                     .should.eventually.have.length(13)
                                      .notify(done);
       });
     });
     describe('ceb396f to 23a3226', function() {
-      it('should select 15 regression tests', function(done) {
+      it('should select 10 regression tests', function(done) {
         var promiseP1 = getAngularProject(_ceb396f),
             promiseP2 = getAngularProject(_23a3226);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(15)
+                                     .should.eventually.have.length(10)
                                      .notify(done);
       });
     });
