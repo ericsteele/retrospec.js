@@ -10,6 +10,8 @@
     "url": "https://github.com/ericsteele/retrospec.js.git"
   },
   "main": "./src/retrospec.js",
+  "preferGlobal": "true",
+  "bin": { "retrospec": "./src/retrospec.js" },
   "scripts": {
     "test": "grunt test"
   },
