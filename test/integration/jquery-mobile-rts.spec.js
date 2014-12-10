@@ -42,15 +42,15 @@ var projectsDirectory = path.resolve(__dirname, '../input/projects/jquery-mobile
 
 describe('jquery-mobile-rts.spec.js', function() {
 
-  describe.skip('2ef45a1 to 2ef45a1 (3 module edits, 1 test edit)', function() {
+  describe.only('2ef45a1 to 2ef45a1 (3 module edits, 1 test edit)', function() {
     // src  diff: "widget/dialog", "transitions/handlers", "buttonMarkup"
     // test diff: "init/weird file name-tests.html"
-    it('should select 26 regression tests', function(done) {
+    it('should run 25 regression tests', function(done) {
       var promiseP1 = getJqmProject(jqmRev145),
           promiseP2 = getJqmProject(jqmRev145_v2);
 
       Q.all([promiseP1, promiseP2]).then(runTestSuites)
-                                   .should.eventually.have.length(26)
+                                   .should.eventually.have.length(25)
                                    .notify(done);
     });
   });
@@ -62,7 +62,7 @@ function getJqmProject(projectDir) {
   var srcDirPath  = path.resolve(projectDir, 'js'),
       testDirPath = path.resolve(projectDir, 'tests'),
       srcBlobs    = ['**/*.js'],
-      testBlobs   = ['**/*.html'];
+      testBlobs   = ['**/index.html','**/*-tests.html'];
 
   // tests: buildProject
   return buildProject(srcExtractor, srcDirPath, srcBlobs, testExtractor, testDirPath, testBlobs);
@@ -70,7 +70,20 @@ function getJqmProject(projectDir) {
 
 // Helper method for selecting and running tests
 function runTestSuites(projects) {
+  // console.log('ALL TEST SUITES');
+  // for(var ts in projects[1].testSuiteMap) {
+  //   if(projects[1].testSuiteMap.hasOwnProperty(ts)) {
+  //     console.log(projects[1].testSuiteMap[ts].path);
+  //   }
+  // }
+
   var tests = selectTests(projects[0], projects[1]);
+
+  // console.log('SELECTED TESTS');
+  // tests.forEach(function(test) {
+  //   console.log(test);
+  // });
+
   return testExecutor.executeTests(tests).then(function(testResults) {
     return tests;
   });
