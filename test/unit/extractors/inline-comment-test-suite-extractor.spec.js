@@ -12,8 +12,7 @@
 var chai = require('chai');
 
 // Extend Chai with assertions about promises
-var chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
+chai.use(require('chai-as-promised'));
 
 // Grab Chai's assert, expect, and should interfaces
 var assert = chai.assert,
@@ -42,17 +41,24 @@ describe('inline-comment-test-suite-extractor.js', function() {
   describe('.fromFile("test-suite-comments.js")', function() {
     it('should extract 6 test suites', function(done) {
       var expected = [
-        { dependencies: [ 'a', 'b' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' },
-        { dependencies: [ 'c', 'd' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' },
-        { dependencies: [ 'e', 'f' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' },
-        { dependencies: [ 'g', 'h' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' },
-        { dependencies: [ 'i', 'j' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' },
-        { dependencies: [ 'k', 'l' ], path: 'misc/test-suite-comments.js', hash: '4dfac0dc7b7d5438fa938abb3513ea9bd7699110' } 
+        { dependencies: [ 'a', 'b' ], path: 'misc/test-suite-comments.js' },
+        { dependencies: [ 'c', 'd' ], path: 'misc/test-suite-comments.js' },
+        { dependencies: [ 'e', 'f' ], path: 'misc/test-suite-comments.js' },
+        { dependencies: [ 'g', 'h' ], path: 'misc/test-suite-comments.js' },
+        { dependencies: [ 'i', 'j' ], path: 'misc/test-suite-comments.js' },
+        { dependencies: [ 'k', 'l' ], path: 'misc/test-suite-comments.js' } 
       ];
 
       extractor.fromFile('misc/test-suite-comments.js', codeSnippetDirectory)
-               .should.eventually.eql(expected)
-               .notify(done);
+               .then(function (result) {
+                 result.length.should.equal(6);
+                 result.forEach(function(item, index) {
+                   item.should.have.property('hash');
+                   item.path.should.eql(expected[index].path);
+                   item.dependencies.should.eql(expected[index].dependencies);
+                 });
+               })
+               .done(done);
     });
   });
 

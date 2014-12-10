@@ -12,8 +12,7 @@
 var chai = require('chai');
 
 // Extend Chai with assertions about promises
-var chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
+chai.use(require('chai-as-promised'));
 
 // Grab Chai's assert, expect, and should interfaces
 var assert = chai.assert,
@@ -34,16 +33,13 @@ describe('requirejs-config-extractor.js', function() {
   describe('.fromFile("requirejs-config.js")', function() {
 
     it('should extract 1 config object', function(done) {
-      var expected = { 
-        config: { paths: { a: './a', b: './b', c: './c' } },
-        range: [17, 83],
-        quote: '"',
-        path:  'requirejs/requirejs-config.js' 
-      };
-
       extractor.fromFile('requirejs/requirejs-config.js', codeSnippetDirectory)
-               .should.eventually.eql(expected)
-               .notify(done);
+               .then(function (result) {
+                 result.should.have.property('range');
+                 result.config.should.eql({ paths: { a: './a', b: './b', c: './c' } });
+                 result.path.should.eql('requirejs/requirejs-config.js');
+               })
+               .done(done);
     });
 
   });

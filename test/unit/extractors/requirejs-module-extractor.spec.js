@@ -12,8 +12,7 @@
 var chai = require('chai');
 
 // Extend Chai with assertions about promises
-var chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
+chai.use(require('chai-as-promised'));
 
 // Grab Chai's assert, expect, and should interfaces
 var assert = chai.assert,
@@ -44,46 +43,43 @@ describe('requirejs-module-extractor.js', function() {
 
   describe('.fromFile("single-define.js")', function() {
     it('should extract 1 module with 4 dependencies', function(done) {
-      var expected = [{
-        id:           'requirejs/single-define',
-        dependencies: ['a','b','c','x'],
-        path:         'requirejs/single-define.js',
-        hash:         '9e9bf24b9dfc549949f86ef1ff184d5606c431c0'
-      }];
-
       extractor.fromFile('requirejs/single-define.js', codeSnippetDirectory)
-               .should.eventually.eql(expected)
-               .notify(done);
+               .then(function (result) {
+                 result.length.should.equal(1);
+                 result[0].should.have.property('hash');
+                 result[0].id.should.eql('requirejs/single-define');
+                 result[0].path.should.eql('requirejs/single-define.js');
+                 result[0].dependencies.should.eql(['a', 'b', 'c','x']);
+               })
+               .done(done);
     });
   });
 
   describe('.fromFile("multiple-defines.js")', function() {
     it('should extract 1 module with 12 dependencies', function(done) {
-      var expected = [{
-        id:           'requirejs/multiple-defines',
-        dependencies: ['a','b','c','d','e','f','g','h','i','x','y','z'],
-        path:         'requirejs/multiple-defines.js',
-        hash:         'aa2c119ec94b1190da6d9cc6dea9c21621758d29'
-      }];
-
       extractor.fromFile('requirejs/multiple-defines.js', codeSnippetDirectory)
-               .should.eventually.eql(expected)
-               .notify(done);
+               .then(function (result) {
+                 result.length.should.equal(1);
+                 result[0].should.have.property('hash');
+                 result[0].id.should.eql('requirejs/multiple-defines');
+                 result[0].path.should.eql('requirejs/multiple-defines.js');
+                 result[0].dependencies.should.eql(['a','b','c','d','e','f','g','h','i','x','y','z']);
+               })
+               .done(done);
     });
   });
 
   describe('.fromFile("nested-defines.js")', function() {
     it('should extract 1 module with 12 dependencies', function(done) {
-      var expected = [{
-        id:           'requirejs/nested-defines',
-        dependencies: ['a','b','c','d','e','f','g','h','i','x','y','z'],
-        path:         'requirejs/nested-defines.js',
-        hash:         '1753180b6c4d49c6053dde13197112289cf12ded'
-      }];
-
       extractor.fromFile('requirejs/nested-defines.js', codeSnippetDirectory)
-               .should.eventually.eql(expected)
-               .notify(done);
+               .then(function (result) {
+                 result.length.should.equal(1);
+                 result[0].should.have.property('hash');
+                 result[0].id.should.eql('requirejs/nested-defines');
+                 result[0].path.should.eql('requirejs/nested-defines.js');
+                 result[0].dependencies.should.eql(['a','b','c','d','e','f','g','h','i','x','y','z']);
+               })
+               .done(done);
     });
   });
 
@@ -91,7 +87,6 @@ describe('requirejs-module-extractor.js', function() {
   describe('.fromDirectory(["**/*.js"], "jquery-mobile/rev-1.4.5-2ef45a1/js")', function() {
     it('should extract 83 modules', function(done) {
       var cwd = path.resolve(projectsDirectory, 'jquery-mobile/rev-1.4.5-2ef45a1/js');
-
       extractor.fromDirectory(['**/*.js'], cwd)
                .should.eventually.have.length(83)
                .notify(done);
@@ -102,7 +97,6 @@ describe('requirejs-module-extractor.js', function() {
   describe('.fromDirectory(["**/*.js"], "jquery-mobile/rev-1.3.1-74b4bec/js")', function() {
     it('should extract 66 modules', function(done) {
       var cwd = path.resolve(projectsDirectory, 'jquery-mobile/rev-1.3.1-74b4bec/js');
-
       extractor.fromDirectory(['**/*.js'], cwd)
                .should.eventually.have.length(66)
                .notify(done);

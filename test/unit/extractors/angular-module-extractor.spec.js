@@ -12,8 +12,7 @@
 var chai = require('chai');
 
 // Extend Chai with assertions about promises
-var chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
+chai.use(require('chai-as-promised'));
 
 // Grab Chai's assert, expect, and should interfaces
 var assert = chai.assert,
@@ -44,56 +43,51 @@ describe('angular-module-extractor.js', function() {
 
   describe('.fromFile("single-module.js")', function() {
     it('should extract 1 module with 3 dependencies', function(done) {
-      var expected = [{ 
-        id:   'test', dependencies: ['a', 'b', 'c'], 
-        path: 'angular/single-module.js',
-        hash: '4ec504b02e09484bc41e0314a4746bf13712faf4'
-      }];
-
       extractor.fromFile('angular/single-module.js', codeSnippetDirectory)
-               .should.eventually.eql(expected)
-               .notify(done);
+               .then(function (result) {
+                 result.length.should.equal(1);
+                 result[0].should.have.property('hash');
+                 result[0].id.should.eql('test');
+                 result[0].path.should.eql('angular/single-module.js');
+                 result[0].dependencies.should.eql(['a', 'b', 'c']);
+               })
+               .done(done);
     });
   });
 
   describe('.fromFile("multiple-modules.js")', function() {
     it('should extract 3 modules, each with 3 dependencies', function(done) {
-      var expected = [
-        { 
-          id:   'test1', dependencies: ['a', 'b', 'c'], 
-          path: 'angular/multiple-modules.js',
-          hash: '11e66d7f4c3a75d1a25e591d2b5c58daaf5307bf' 
-        },
-        { 
-          id:   'test2', dependencies: ['d', 'e', 'f'], 
-          path: 'angular/multiple-modules.js',
-          hash: '11e66d7f4c3a75d1a25e591d2b5c58daaf5307bf'
-        },
-        { 
-          id:   'test3', dependencies: ['g', 'h', 'i'], 
-          path: 'angular/multiple-modules.js',
-          hash: '11e66d7f4c3a75d1a25e591d2b5c58daaf5307bf'
-        }
-      ];
-
       extractor.fromFile('angular/multiple-modules.js', codeSnippetDirectory)
-               .should.eventually.eql(expected)
-               .notify(done);
+               .then(function (result) {
+                 result.length.should.equal(3);
+                 result[0].should.have.property('hash');
+                 result[1].should.have.property('hash');
+                 result[2].should.have.property('hash');
+                 result[0].id.should.eql('test1');
+                 result[1].id.should.eql('test2');
+                 result[2].id.should.eql('test3');
+                 result[0].path.should.eql('angular/multiple-modules.js');
+                 result[1].path.should.eql('angular/multiple-modules.js');
+                 result[2].path.should.eql('angular/multiple-modules.js');
+                 result[0].dependencies.should.eql(['a', 'b', 'c']);
+                 result[1].dependencies.should.eql(['d', 'e', 'f']);
+                 result[2].dependencies.should.eql(['g', 'h', 'i']);
+               })
+               .done(done);
     });
   });
 
   describe('.fromFile("ui-bootstrap-example.js")', function() {
     it('should extract 1 module, with 1 dependency', function(done) {
-      var expected = [{ 
-        id:   'ui.bootstrap.accordion', 
-        dependencies: ['ui.bootstrap.collapse'], 
-        path: 'angular/ui-bootstrap-example.js',
-        hash: 'b45a37d401ed0fef5f70a0c30781fe77e06b53ac'
-      }];
-
       extractor.fromFile('angular/ui-bootstrap-example.js', codeSnippetDirectory)
-               .should.eventually.eql(expected)
-               .notify(done);
+               .then(function (result) {
+                 result.length.should.equal(1);
+                 result[0].should.have.property('hash');
+                 result[0].id.should.eql('ui.bootstrap.accordion');
+                 result[0].path.should.eql('angular/ui-bootstrap-example.js');
+                 result[0].dependencies.should.eql(['ui.bootstrap.collapse']);
+               })
+               .done(done);
     });
   });
 
