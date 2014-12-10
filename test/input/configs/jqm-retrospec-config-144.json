@@ -1,0 +1,13 @@
+{
+  "src": {
+    "path":      "js",
+    "blobs":     ["**/*.js"], 
+    "extractor": "requirejs-module-extractor"
+  },
+  "test": {
+    "path":      "tests",
+    "blobs":     ["**/index.html", "**/*-tests.html"],
+    "extractor": "jqm-test-suite-extractor",
+    "executor":  "jqm-test-suite-executor-144"
+  }
+}

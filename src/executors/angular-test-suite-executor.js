@@ -27,25 +27,29 @@ var rootDirectory = path.resolve(__dirname, '../../');
 var testDirectory = path.resolve(rootDirectory, 'test/input/projects/angular.js/b6f4d4b/test');
 
 /**
- * Executes the selected jQuery Mobile tests.
+ * Executes the selected angular.js tests.
  * 
- * @param  {Array} filePaths - relative paths of regression tests
+ * @param  {Array}  filePaths  - relative paths of regression tests
+ * @param  {String} projectDir - absolute path of the project under test
  */
-function executeTests(filePaths) {
+function executeTests(filePaths, projectDir) {
   filePaths = ArrayHelper.getUnique(filePaths);
 
   filePaths.forEach(function(filePath) {
     var cmd = baseCmd + testDirectory + "\\" + filePath;
+  
+    console.log('[info] ' + cmd);
+
     exec(cmd).then(
       function(result) {
         console.log('success!');
         console.log(result);
       },
       function(a,b,c) {
-        console.log('fail')
-        console.log(a)
-        console.log(b)
-        console.log(c)
-      })
+        console.log('fail');
+        console.log(a);
+        console.log(b);
+        console.log(c);
+      });
   });
 }

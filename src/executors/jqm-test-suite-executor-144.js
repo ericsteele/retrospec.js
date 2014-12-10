@@ -1,5 +1,5 @@
 /*
- * jqm-test-executor.js
+ * jqm-test-suite-executor-144.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele
@@ -18,24 +18,22 @@ var Q           = require('q'),                      // `kriskowal/q` promises
 var TestSuiteExecutor = require('./test-suite-executor');
 
 // exports
-module.exports = new TestSuiteExecutor('jqm-test-suite-executor', executeTests);
-
-// path to jquery-mobile. we assume that its in a folder next to 'retrospec.js'
-var jqmPath = path.resolve(process.cwd(),'../jquery-mobile');
+module.exports = new TestSuiteExecutor('jqm-test-suite-executor-144', executeTests);
 
 /**
  * Executes the selected jQuery Mobile tests.
  * 
  * @param {Array} filePaths - relative paths of the tests to execute
  */
-function executeTests(filePaths) {
+function executeTests(filePaths, projectDir) {
   var deferred = Q.defer();
 
   var tests   = getTests(filePaths),
       cmd     = 'grunt test --force --suites=' + tests.toString(),
-      options = { cwd: jqmPath, stdio: 'inherit' }; // TODO: set to process.cwd() b4 publishing
+      options = { cwd: projectDir, stdio: 'inherit' };
   
-  console.log(cmd);
+  console.log('[info] ' + cmd);
+  
   exec(cmd, options, function(error, stdout, stderr) {
     console.log('stdout: ' + stdout);
     console.log('stderr: ' + stderr);
@@ -104,20 +102,6 @@ function addQuotes(filePath) {
 function removeTestCategoryFolder(filePath) {
   var iFirstSep = filePath.indexOf(path.sep);
   return filePath.slice(iFirstSep + 1);
-}
-
-/**
- * Test paths that end in "/index.html" should have it removed. 
- * 
- * @param  {String} filePath - a path that may end in "/index.html"
- * 
- * @return {String} - the `filePath` minus the "/index.html" ending.
- */
-function removeFileName(filePath) {
-  if(filePath.indexOf('.html') !== -1) {
-    var iLastSep = filePath.lastIndexOf(path.sep);
-    return filePath.substring(0 , iLastSep);
-  }
 }
 
 /**

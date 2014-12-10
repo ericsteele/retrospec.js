@@ -19,19 +19,23 @@ module.exports = buildProject;
 
 /**
  * Builds a new instance `Project` using the specified arguments.
+ *
+ * @param {Object} config - an object with the following properties:
  * 
- * @param  {FileContentExtractor} codeModuleExtractor [description]
- * @param  {String}               srcDir              [description]
- * @param  {Array}                srcBlobs            [description]
- * @param  {FileContentExtractor} testSuiteExtractor  [description]
- * @param  {String}               testDirPath         [description]
- * @param  {Array}                testBlobs           [description]
+ *   - {String}               srcDirPath    - project source directory
+ *   - {Array}                srcBlobs      - src file blobs
+ *   - {FileContentExtractor} srcExtractor  - extracts code modules
+ *   - {String}               testDirPath   - project test directory
+ *   - {Array}                testBlobs     - test file blobs
+ *   - {FileContentExtractor} testExtractor - extracts test suites
  * 
  * @return {Object} a new instance of `Project`
  */
-function buildProject(codeModuleExtractor, srcDirPath, srcBlobs, testSuiteExtractor, testDirPath, testBlobs) {
-  var srcPromise  = codeModuleExtractor.fromDirectory(srcBlobs, srcDirPath),
-      testPromise = testSuiteExtractor.fromDirectory(testBlobs, testDirPath);
+function buildProject(config) {
+  validateConfig(config);
+
+  var srcPromise  = config.srcExtractor.fromDirectory(config.srcBlobs, config.srcDirPath),
+      testPromise = config.testExtractor.fromDirectory(config.testBlobs, config.testDirPath);
 
   return Q.all([srcPromise, testPromise]).then(createProject);
 
@@ -43,6 +47,21 @@ function buildProject(codeModuleExtractor, srcDirPath, srcBlobs, testSuiteExtrac
 
     return new Project(moduleMap, testSuiteMap);
   }
+}
+
+/**
+ * Validates config options for the `buildProject` method;
+ * 
+ * @param  {Object} config [description]
+ */
+function validateConfig(config) {
+  if(!config)               throw Error('missing argument "config"');
+  if(!config.srcDirPath)    throw Error('missing argument "config.srcDirPath"');
+  if(!config.srcBlobs)      throw Error('missing argument "config.srcBlobs"');
+  if(!config.srcExtractor)  throw Error('missing argument "config.srcExtractor"');
+  if(!config.testDirPath)   throw Error('missing argument "config.testDirPath"');
+  if(!config.testBlobs)     throw Error('missing argument "config.testBlobs"');
+  if(!config.testExtractor) throw Error('missing argument "config.testExtractor"');
 }
 
 /**

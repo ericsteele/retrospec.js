@@ -50,16 +50,20 @@ function TestSuiteExecutor(id, testExecutionFn) {
   /**
    * Executes the tests contained in the specified files.
    *
-   * @param {Array} testFilePaths - relative paths of the test files to execute
+   * @param {Array}  testFilePaths - relative paths of the test files to execute
+   * @param {String} projectDir    - absolute path of the project under test
    * 
    * @type {Promise} A promise to execute all of the provided tests.
    */
-  this.executeTests = function(testfilePaths) {
+  this.executeTests = function(testfilePaths, projectDir) {
     // validate arguments
     if(!isArray(testfilePaths)) throw new Error('invalid argument "testfilePaths" = ' + testfilePaths);
 
+    // set optional arguments to default values (if not provided)
+    projectDir = projectDir || process.cwd();
+
     // invoke the client's test execution function
-    return self.testExecutionFn(testfilePaths);
+    return self.testExecutionFn(testfilePaths, projectDir);
   };
 }
 
