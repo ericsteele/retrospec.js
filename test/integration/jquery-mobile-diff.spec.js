@@ -27,7 +27,6 @@ var path = require('path'), // utils for handling and transforming file paths
 // src under test
 var buildProject  = require('../../src/helper/build-project.js'),
     selectTests   = require('../../src/helper/select-tests'),  
-    retrospec     = require('../../src/retrospec.js'),
     srcExtractor  = require('../../src/extractors/requirejs-module-extractor'),
     testExtractor = require('../../src/extractors/jqm-test-suite-extractor');
 

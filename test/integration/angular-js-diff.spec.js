@@ -27,8 +27,7 @@ var path = require('path'), // utils for handling and transforming file paths
 // src under test
 var buildProject  = require('../../src/helper/build-project.js'),
     diffProjects  = require('../../src/helper/diff-projects'),
-    selectTests   = require('../../src/helper/select-tests'),  
-    retrospec     = require('../../src/retrospec.js'),
+    selectTests   = require('../../src/helper/select-tests'),
     srcExtractor  = require('../../src/extractors/angular-module-extractor'),
     testExtractor = require('../../src/extractors/angular-karma-test-suite-extractor'),
     testExecutor  = require('../../src/executors/angular-test-suite-executor');
