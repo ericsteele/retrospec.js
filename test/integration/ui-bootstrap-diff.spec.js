@@ -458,7 +458,14 @@ describe('ui-bootstrap-diff.spec.js', function() {
         testBlobs   = ['src/*/test/*.spec.js'];
 
     // tests: buildProject
-    return buildProject(srcExtractor, srcDirPath, srcBlobs, testExtractor, testDirPath, testBlobs);
+    return buildProject({
+      srcDirPath: srcDirPath,
+      srcBlobs: srcBlobs,
+      srcExtractor: srcExtractor,
+      testDirPath: testDirPath,
+      testBlobs: testBlobs,
+      testExtractor: testExtractor
+    });
   }
 
   // Helper method for selecting tests

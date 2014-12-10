@@ -30,7 +30,7 @@ var buildProject  = require('../../src/helper/build-project.js'),
     retrospec     = require('../../src/retrospec.js'),
     srcExtractor  = require('../../src/extractors/requirejs-module-extractor'),
     testExtractor = require('../../src/extractors/jqm-test-suite-extractor'),
-    testExecutor  = require('../../src/executors/jqm-test-suite-executor');
+    testExecutor  = require('../../src/executors/jqm-test-suite-executor-144');
 
 // Directory containing code snippets used in our tests
 var codeSnippetDirectory = path.resolve(__dirname, '../input/code-snippets');
@@ -40,9 +40,9 @@ var projectsDirectory = path.resolve(__dirname, '../input/projects/jquery-mobile
     jqmRev145    = path.resolve(projectsDirectory, 'rev-1.4.5-2ef45a1'),
     jqmRev145_v2 = path.resolve(projectsDirectory, 'rev-1.4.5-2ef45a1-v2');
 
-describe('jquery-mobile-rts.spec.js', function() {
+describe.skip('jquery-mobile-rts.spec.js', function() {
 
-  describe.only('2ef45a1 to 2ef45a1 (3 module edits, 1 test edit)', function() {
+  describe('2ef45a1 to 2ef45a1 (3 module edits, 1 test edit)', function() {
     // src  diff: "widget/dialog", "transitions/handlers", "buttonMarkup"
     // test diff: "init/weird file name-tests.html"
     it('should run 25 regression tests', function(done) {
@@ -65,7 +65,14 @@ function getJqmProject(projectDir) {
       testBlobs   = ['**/index.html','**/*-tests.html'];
 
   // tests: buildProject
-  return buildProject(srcExtractor, srcDirPath, srcBlobs, testExtractor, testDirPath, testBlobs);
+  return buildProject({
+    srcDirPath: srcDirPath,
+    srcBlobs: srcBlobs,
+    srcExtractor: srcExtractor,
+    testDirPath: testDirPath,
+    testBlobs: testBlobs,
+    testExtractor: testExtractor
+  });
 }
 
 // Helper method for selecting and running tests

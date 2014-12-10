@@ -602,7 +602,14 @@ describe('angular-js-diff.spec.js', function() {
         testBlobs   = ['**/*Spec.js'];
 
     // tests: buildProject
-    return buildProject(srcExtractor, srcDirPath, srcBlobs, testExtractor, testDirPath, testBlobs);
+    return buildProject({
+      srcDirPath: srcDirPath,
+      srcBlobs: srcBlobs,
+      srcExtractor: srcExtractor,
+      testDirPath: testDirPath,
+      testBlobs: testBlobs,
+      testExtractor: testExtractor
+    });
   }
 
   // Helper method for selecting tests
