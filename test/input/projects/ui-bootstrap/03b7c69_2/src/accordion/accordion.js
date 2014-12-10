@@ -1,5 +1,3 @@
-var shoopdewoop = true;
-
 angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
 
 .constant('accordionConfig', {
