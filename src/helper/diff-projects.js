@@ -11,6 +11,9 @@
 // exports
 module.exports = diffProjects;
 
+// src
+var log = require('../helper/logger');
+
 /**
  * Performs a diff of the provided `Project` instances, treating `original` as an older
  * version of `modified`. This diff considers both the project's modules and its test
@@ -28,6 +31,8 @@ module.exports = diffProjects;
  *   - testSuites: {Array} - diffs between `TestSuite` maps
  */
 function diffProjects(original, modified) {
+  log.info('detecting changes');
+  
   var moduleChanges    = fileMapDiff(original.moduleMap,    modified.moduleMap),
       testSuiteChanges = fileMapDiff(original.testSuiteMap, modified.testSuiteMap);
 

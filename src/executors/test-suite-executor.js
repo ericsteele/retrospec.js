@@ -9,11 +9,14 @@
 'use strict';
 
 // libs
-var FS          = require('fs'),                     // file system
-    Q           = require('q'),                      // `kriskowal/q` promises
-    path        = require('path'),                   // utils for resolving file paths
-    arrayHelper = require('../helper/array-helper'), // array helper methods
-    fsHelper    = require('../helper/fs-helper');    // file system helper methods
+var FS          = require('fs'),    // file system
+    Q           = require('q'),     // `kriskowal/q` promises
+    path        = require('path');  // utils for resolving file paths
+
+// src
+var arrayHelper = require('../helper/array-helper'), // array helper methods
+    fsHelper    = require('../helper/fs-helper'),    // file system helper methods
+    log         = require('../helper/logger');       // logging
 
 // aliases
 var readFile = Q.nfbind(FS.readFile),  // add Q promise support to FS.readfile
@@ -32,7 +35,7 @@ function TestSuiteExecutor(id, testExecutionFn) {
 
   // this is a special object and it deserves to be called with "new" damn it!
   if(this instanceof TestSuiteExecutor === false) {
-    console.log('[warn] forgot to use "new" operator when invoking TestSuiteExecutor(): ' + id);
+    log.warn('forgot to use "new" operator when invoking TestSuiteExecutor(): ' + id);
     return new TestSuiteExecutor(id, testExecutionFn);
   }
 
@@ -62,8 +65,16 @@ function TestSuiteExecutor(id, testExecutionFn) {
     // set optional arguments to default values (if not provided)
     projectDir = projectDir || process.cwd();
 
+    // log how many tests will be ran
+    log.info('running tests');
+
     // invoke the client's test execution function
-    return self.testExecutionFn(testfilePaths, projectDir);
+    return self.testExecutionFn(testfilePaths, projectDir).then(function (result) {
+      // log that the tests ran successfully
+      log.info('finished running tests');
+      // forward result to its intended receiver
+      return result; 
+    });
   };
 }
 

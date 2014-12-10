@@ -9,9 +9,12 @@
 'use strict';
 
 // libs
-var path        = require('path'),
-    ArrayHelper = require('../helper/array-helper'), // array util methods
-    exec        = require('child-process-promise').exec;
+var path = require('path'),
+    exec = require('child-process-promise').exec;
+
+// src
+var log         = require('../helper/logger'),
+    ArrayHelper = require('../helper/array-helper'); // array util methods
 
 // retrospec's interface for pluggable test execution logic
 var TestSuiteExecutor = require('./test-suite-executor');
@@ -38,18 +41,18 @@ function executeTests(filePaths, projectDir) {
   filePaths.forEach(function(filePath) {
     var cmd = baseCmd + testDirectory + "\\" + filePath;
   
-    console.log('[info] ' + cmd);
+    log.info(cmd);
 
     exec(cmd).then(
       function(result) {
-        console.log('success!');
-        console.log(result);
+        log.info('success!');
+        log.info(result);
       },
       function(a,b,c) {
-        console.log('fail');
-        console.log(a);
-        console.log(b);
-        console.log(c);
+        log.info('fail');
+        log.info(a);
+        log.info(b);
+        log.info(c);
       });
   });
 }

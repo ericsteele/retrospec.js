@@ -9,10 +9,14 @@
 'use strict';
 
 // libs
-var Q           = require('q'),                      // `kriskowal/q` promises
-    path        = require('path'),                   // utils for transforming file paths
-    ArrayHelper = require('../helper/array-helper'), // array util methods
-    exec        = require('child_process').exec;     // util for creating child processes
+var Q     = require('q'),                   // `kriskowal/q` promises
+    path  = require('path'),                // util for transforming file paths
+    exec  = require('child_process').exec,  // util for creating child processes
+    spawn = require('child_process').spawn; // util for spawning child processes
+
+// src
+var log         = require('../helper/logger'),
+    ArrayHelper = require('../helper/array-helper'); // array util methods
 
 // retrospec's interface for pluggable test execution logic
 var TestSuiteExecutor = require('./test-suite-executor');
@@ -26,24 +30,26 @@ module.exports = new TestSuiteExecutor('jqm-test-suite-executor-131', executeTes
  * @param {Array} filePaths - relative paths of the tests to execute
  */
 function executeTests(filePaths, projectDir) {
-  var deferred = Q.defer();
-
-  var tests   = getTests(filePaths),
-      cmd     = 'grunt test --force --suites=' + tests.toString(),
-      options = { cwd: projectDir, stdio: 'inherit' }; 
+  var deferred = Q.defer(),
+      tests    = getTests(filePaths),
+      cmd      = 'grunt test --force --suites=' + tests.toString(),
+      options  = { cwd: projectDir };
   
-  console.log('[info] ' + cmd);
+  // log the test command for user to see
+  log.info(cmd);
   
-  exec(cmd, options, function(error, stdout, stderr) {
-    console.log('stdout: ' + stdout);
-    console.log('stderr: ' + stderr);
+  // execute the tests
+  var childProcess = exec(cmd, options, function(error, stdout, stderr) {
     if (error !== null) {
-        console.log('exec error: ' + error);
+        log.error(error);
         deferred.reject(error);
     } else {
       deferred.resolve(stdout);
     }
   });
+
+  // pipe child process output to stdout
+  childProcess.stdout.pipe(process.stdout);
 
   return deferred.promise;
 }

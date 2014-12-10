@@ -11,8 +11,9 @@
 // exports
 module.exports = selectTests;
 
-// libs
-var diffProjects = require('./diff-projects');
+// src
+var diffProjects = require('./diff-projects'),
+    log          = require('./logger');
 
 // globals
 var tracedModules, // array of modules whose dependent tests have been traced
@@ -37,7 +38,13 @@ function selectTests(original, modified) {
   selectNewOrChangedTests(diffs.testSuites);
   selectRegressionTests(modified, diffs.modules);
 
-  return mapToArray(selectedTests);
+  // convert test map to an array
+  var tests = mapToArray(selectedTests);
+
+  // log selection results for user
+  log.info(tests.length + ' tests selected');
+
+  return tests;
 }
 
 /**

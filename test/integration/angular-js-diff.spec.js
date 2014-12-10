@@ -12,8 +12,7 @@
 var chai = require('chai');
 
 // Extend Chai with assertions about promises
-var chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
+chai.use(require('chai-as-promised'));
 
 // Grab Chai's assert, expect, and should interfaces
 var assert = chai.assert,
@@ -31,6 +30,9 @@ var buildProject  = require('../../src/helper/build-project.js'),
     srcExtractor  = require('../../src/extractors/angular-module-extractor'),
     testExtractor = require('../../src/extractors/angular-karma-test-suite-extractor'),
     testExecutor  = require('../../src/executors/angular-test-suite-executor');
+
+// turn off retrospec's logging
+require('../../src/helper/logger').off();
 
 // Directory containing code snippets used in our tests
 var codeSnippetDirectory = path.resolve(__dirname, '../input/code-snippets');

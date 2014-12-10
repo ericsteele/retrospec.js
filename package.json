@@ -25,7 +25,8 @@
     "esprima": "~1.2.2",
     "q": "~1.0.1",
     "estraverse": "~1.7.0",
-    "glob": "~4.0.6"
+    "glob": "~4.0.6",
+    "rimraf": "^2.2.8"
   },
   "devDependencies": {
     "argv": "0.0.2",

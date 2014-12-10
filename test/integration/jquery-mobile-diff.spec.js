@@ -12,8 +12,7 @@
 var chai = require('chai');
 
 // Extend Chai with assertions about promises
-var chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
+chai.use(require('chai-as-promised'));
 
 // Grab Chai's assert, expect, and should interfaces
 var assert = chai.assert,
@@ -23,6 +22,9 @@ var assert = chai.assert,
 // libs
 var path = require('path'), // utils for handling and transforming file paths
     Q    = require('q');    // `kriskowal/q` promises
+
+// turn off retrospec's logging
+require('../../src/helper/logger').off();
 
 // src under test
 var buildProject  = require('../../src/helper/build-project.js'),

@@ -12,8 +12,7 @@
 var chai = require('chai');
 
 // Extend Chai with assertions about promises
-var chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
+chai.use(require('chai-as-promised'));
 
 // Grab Chai's assert, expect, and should interfaces
 var assert = chai.assert,

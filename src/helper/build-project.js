@@ -12,7 +12,8 @@
 var Q = require('q'); // `kriskowal/q` promises
 
 // src
-var Project = require('../models/project'); // generic representation of a project
+var log     = require('../helper/logger'),
+    Project = require('../models/project'); // generic representation of a project
 
 // exports
 module.exports = buildProject;
@@ -33,6 +34,8 @@ module.exports = buildProject;
  */
 function buildProject(config) {
   validateConfig(config);
+
+  log.info('extracting metadata');
 
   var srcPromise  = config.srcExtractor.fromDirectory(config.srcBlobs, config.srcDirPath),
       testPromise = config.testExtractor.fromDirectory(config.testBlobs, config.testDirPath);

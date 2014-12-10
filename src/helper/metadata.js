@@ -9,9 +9,13 @@
 'use strict';
 
 // libs
-var FS         = require('fs'),                    // file system
-    Q          = require('q'),                     // `kriskowal/q` promises
-    path       = require('path'),                  // utils for resolving file paths
+var FS    = require('fs'),     // file system
+    Q     = require('q'),      // `kriskowal/q` promises
+    rmdir = require('rimraf'), // `rm -rf` for node
+    path  = require('path');   // utils for resolving file paths
+
+// src
+var log        = require('../helper/logger'),      // logging util methods
     fsHelper   = require('../helper/fs-helper'),   // file system helper methods
     CodeModule = require('../models/code-module'), // generic representation of a code module
     TestSuite  = require('../models/test-suite');  // generic representation of a test suite
@@ -25,7 +29,8 @@ var mkdir     = Q.nfbind(FS.mkdir),
 // exports
 module.exports = {
   read:  readMetadata,
-  store: storeMetadata
+  store: storeMetadata,
+  reset: deleteMetadata
 };
 
 // constants
@@ -44,6 +49,8 @@ function storeMetadata(project, projectPath) {
   var metadataDirPath  = path.resolve(projectPath,     METADATA_DIRECTORY),
       metadataFilePath = path.resolve(metadataDirPath, METADATA_FILE),
       jsonStr          = JSON.stringify(project);
+
+  log.info('writing project metadata to file');
 
   return fsHelper.exists(metadataDirPath)
                  .then(mkdirIfNeeded)
@@ -78,6 +85,34 @@ function readMetadata(projectPath) {
                  .then(JSON.parse);
 
   function readMetadataFile(exists) {
-    return exists ? readFile(filepath, 'utf-8') : null;
+    if(exists) {
+      log.info('reading metadata from file');
+      return readFile(filepath, 'utf-8');
+    } else {
+      log.warn('no project metadata found');
+      return null;
+    }
   }
+}
+
+/**
+ * Deletes project meta-data from '{projectPath}/.retrospec/project-snapshot.json'
+ * 
+ * @param  {String} projectPath - absolute path of the project's root directory
+ * 
+ * @return {Promise} A promise to delete the project's meta-data.
+ */
+function deleteMetadata(projectPath) {
+  var deferred = Q.defer();
+
+  var metadataDirPath = path.resolve(projectPath, METADATA_DIRECTORY);
+  rmdir(metadataDirPath, function(error) {
+    if(error) {
+      deferred.reject(error);
+    } else {
+      deferred.resolve();
+    }
+  });
+
+  return deferred.promise;
 }
