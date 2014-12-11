@@ -24,7 +24,7 @@ if(configPath) {
   });
 }
 else {
-  log.error('no config file path provided')
+  log.error('no config file path provided');
 }
 
 /**
