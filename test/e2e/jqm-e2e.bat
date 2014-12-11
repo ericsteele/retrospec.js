@@ -1,4 +1,15 @@
 @echo OFF
+REM jqm-e2e.bat
+REM https://github.com/ericsteele/retrospec.js
+REM 
+REM Copyright (c) 2014 Eric Steele
+REM Licensed under the MIT license.
+REM https://github.com/ericsteele/retrospec.js/blob/master/LICENSE
+REM
+REM End-to-end (e2e) test of retrospec's rts capabilities.
+REM
+REM It tests retrospec on 20 consecutive revisions of jquery-mobile
+REM and collects all of the output.
 
 REM Get the current datetime (YYYY-MM-DD_HH-MM-SS format)
 REM Src: http://stackoverflow.com/a/1445724
