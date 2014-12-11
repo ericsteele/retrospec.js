@@ -38,7 +38,7 @@ var projectsDirectory = path.resolve(__dirname, '../input/projects/ui-bootstrap'
    _1_d19b4c0 = path.resolve(projectsDirectory, 'd19b4c0'),
    _2_5ca23e9 = path.resolve(projectsDirectory, '5ca23e9');
 
-describe.only('ui-bootstrap-rts.spec.js', function() {
+describe.skip('ui-bootstrap-rts.spec.js', function() {
 
   describe('2ef45a1 to 2ef45a1 (3 module edits, 1 test edit)', function() {
     // src  diff: "widget/dialog", "transitions/handlers", "buttonMarkup"
