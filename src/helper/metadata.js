@@ -8,11 +8,13 @@
  */
 'use strict';
 
-// libs
+// node libs
 var FS    = require('fs'),     // file system
-    Q     = require('q'),      // `kriskowal/q` promises
-    rmdir = require('rimraf'), // `rm -rf` for node
     path  = require('path');   // utils for resolving file paths
+
+// libs
+var Q     = require('q'),      // `kriskowal/q` promises
+    rmdir = require('rimraf'); // `rm -rf` for node
 
 // src
 var log        = require('../helper/logger'),      // logging util methods

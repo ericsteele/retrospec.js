@@ -8,12 +8,16 @@
  */
 'use strict';
 
+// node libs
+var FS = require('fs'),      // file system
+    OS = require('os');      // operating system info
+
 // libs
-var FS          = require('fs'),             // file system
-    OS          = require('os'),             // operating system info
-    Q           = require('q'),              // `kriskowal/q` promises
-    glob        = require('glob'),           // file globbing
-    arrayHelper = require('./array-helper'); // array helper methods
+var Q    = require('q'),     // `kriskowal/q` promises
+    glob = require('glob');  // file globbing
+
+// src
+var arrayHelper = require('./array-helper');
 
 // exports
 module.exports = {

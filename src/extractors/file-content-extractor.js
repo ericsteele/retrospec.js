@@ -8,11 +8,15 @@
  */
 'use strict';
 
+// node libs
+var FS   = require('fs'),    // file system
+    path = require('path');  // utils for resolving file paths
+
 // libs
-var FS          = require('fs'),                     // file system
-    Q           = require('q'),                      // `kriskowal/q` promises
-    path        = require('path'),                   // utils for resolving file paths
-    arrayHelper = require('../helper/array-helper'), // array helper methods
+var Q = require('q');        // `kriskowal/q` promises
+
+// src
+var arrayHelper = require('../helper/array-helper'), // array helper methods
     fsHelper    = require('../helper/fs-helper');    // file system helper methods
 
 // aliases
