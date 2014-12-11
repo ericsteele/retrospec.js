@@ -93,7 +93,6 @@ retrospec.cli = function(args) {
  */
 function retrospec(config) {
   printHeader();
-  printArgs();
   validateConfig(config);
 
   var testExecutor = getExecutor(config.test.executor);
@@ -107,7 +106,7 @@ function retrospec(config) {
   .then(getProjects)
   .then(getTests)
   .then(runTests)
-  .then(finish);
+  .then(storeMetadata);
 
   function getProjects() {
     return Q.all([
@@ -138,9 +137,9 @@ function retrospec(config) {
     }
   }
 
-  function finish() {
+  function storeMetadata() {
     if(cliArgs.options.save) {
-      metadata.store(modified, cwd);
+      return metadata.store(modified, cwd);
     }
   }
 
@@ -212,13 +211,7 @@ function getExecutor(id) {
  */
 function printHeader() {
   log.divider();
-  console.log(' retrospec.js');
+  log.msg(' retrospec.js');
   log.divider();
-}
-
-/**
- * Prints arguments passed via the CLI.
- */
-function printArgs() {
   log.info('args: ' + JSON.stringify(cliArgs));
 }
