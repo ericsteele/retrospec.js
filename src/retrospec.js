@@ -16,8 +16,6 @@ module.exports = retrospec;
 // libs
 var FS      = require('fs'),        // file system
     Q       = require('q'),         // `kriskowal/q` promises
-    argv    = require('argv'),      // CLI argument parser
-
     path    = require('path');      // file path transform utils
 
 // src
@@ -52,81 +50,29 @@ var readFile = Q.nfbind(FS.readFile);
 // current working directory
 var cwd = process.cwd();
 
-// get CLI arguments
-var args = parseArguments();
-
-// start the program
-main();
+// CLI arguments
+var cliArgs;
 
 /**
- * Executes retrospec when ran via CLI.
+ * Invoked by retrospec-cli.
  */
-function main() {
-  printHeader();
-  log.info('args: ' + JSON.stringify(args));
-
-  if(args.options.reset) {
-    metadata.reset(cwd).then(bootstrap);
-  } else {
-    bootstrap();
-  }
-}
-
-/**
- * Attempts to read the provided config file and run retrospec.
- */
-function bootstrap() {
-  // retrospec needs a configuration file to run
-  var configFilePath = (args.targets.length >= 1) ? args.targets[0] : null;
+retrospec.cli = function(args) {
+  cliArgs = args;
 
   // read config and run retrospec
-  if(configFilePath) {
-    readFile(configFilePath, 'utf-8')
-       .then(parseConfig, log.error)
-       .then(retrospec, log.error);
-  }
+  readFile(cliArgs.configPath, 'utf-8')
+     .then(parseConfig, log.error)
+     .then(retrospec, log.error);
 
+  // parses the config JSON
   function parseConfig(configJSON) {
     log.info('config: ' + configJSON);
     return JSON.parse(configJSON);
   }
-}
+};
 
 /**
- * Parses CLI arguments with 'argv' and returns the result.
- * 
- * @return {Object} an object with the following properties:
- *
- *   - targets {Array}  - array of non-option arguments
- *   - options {Object} - object map from option name to its value
- */
-function parseArguments() {
-  // define a custom 'flag' CLI argument type
-  argv.type('flag', function(value) {
-    return true;
-  });
-
-  // define expected CLI arguments
-  argv.option([{
-    name: 'reset',
-    short: 'r',
-    type: 'flag',
-    description: 'Deletes all existing retrospec metadata',
-    example: "'retrospec --reset or 'retrospec -r'"
-  }, {
-    name: 'save',
-    short: 's',
-    type: 'flag',
-    description: 'Indicates whether or not retrospec should save project metadata',
-    example: "'retrospec --save or 'retrospec -s'"
-  }]);
-
-  // run the CLI argument parser
-  return argv.run();
-}
-
-/**
- * This function is retrospec's public API.
+ * Retrospec's public API.
  * 
  * @param  {Object} config - an object with the following structure:
  * 
@@ -146,6 +92,7 @@ function parseArguments() {
  *   
  */
 function retrospec(config) {
+  printHeader();
   validateConfig(config);
 
   var testExecutor = getExecutor(config.test.executor);
@@ -154,35 +101,47 @@ function retrospec(config) {
   var original, // read from metadata in file 
       modified; // built from the project's files
 
-  Q.all([
-    metadata.read(cwd),
-    buildProject({
-      srcBlobs:      config.src.blobs, 
-      testBlobs:     config.test.blobs,
-      srcDirPath:    path.resolve(cwd, config.src.path), 
-      testDirPath:   path.resolve(cwd, config.test.path), 
-      srcExtractor:  getExtractor(config.src.extractor), 
-      testExtractor: getExtractor(config.test.extractor)
-    })
-  ])
-  .then(function(projects) {
+  Q(cliArgs.options.reset)
+  .then(function (reset) { if(reset) return metadata.reset(cwd); })  
+  .then(getProjects)
+  .then(getTests)
+  .then(runTests)
+  .then(storeMetadata);
+
+  function getProjects() {
+    return Q.all([
+      metadata.read(cwd),
+      buildProject({
+        srcBlobs:      config.src.blobs, 
+        testBlobs:     config.test.blobs,
+        srcDirPath:    path.resolve(cwd, config.src.path), 
+        testDirPath:   path.resolve(cwd, config.test.path), 
+        srcExtractor:  getExtractor(config.src.extractor), 
+        testExtractor: getExtractor(config.test.extractor)
+      })
+    ]);
+  }
+
+  function getTests(projects) {
     original = projects[0];
     modified = projects[1];
 
     if(original) {
       return selectTests(original, modified);
     }
-  })
-  .then(function(testPaths) {
+  }
+
+  function runTests(testPaths) {
     if(testPaths && testPaths.length > 0) {
       return testExecutor.executeTests(testPaths);
     }
-  })
-  .then(function() {
-    if(args.options.save) {
-      metadata.store(modified, cwd);
+  }
+
+  function storeMetadata() {
+    if(cliArgs.options.save) {
+      return metadata.store(modified, cwd);
     }
-  });
+  }
 
 }
 
@@ -252,6 +211,7 @@ function getExecutor(id) {
  */
 function printHeader() {
   log.divider();
-  console.log(' retrospec.js');
+  log.msg(' retrospec.js');
   log.divider();
+  log.info('args: ' + JSON.stringify(cliArgs));
 }

@@ -1,6 +1,6 @@
 {
   "name": "retrospec",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A regression test selection tool for JavaScript",
   "author": "Eric Steele <ericrsteele@gmail.com>",
   "license": "MIT",
@@ -11,7 +11,7 @@
   },
   "main": "./src/retrospec.js",
   "preferGlobal": "true",
-  "bin": { "retrospec": "./src/retrospec.js" },
+  "bin": { "retrospec": "./src/retrospec-cli.js" },
   "scripts": {
     "test": "grunt test"
   },
@@ -24,6 +24,7 @@
     "url": "https://github.com/ericsteele/retrospec.js/issues"
   },
   "dependencies": {
+    "argv": "0.0.2",
     "esprima": "~1.2.2",
     "q": "~1.0.1",
     "estraverse": "~1.7.0",
@@ -31,10 +32,8 @@
     "rimraf": "^2.2.8"
   },
   "devDependencies": {
-    "argv": "0.0.2",
     "chai": "~1.9.2",
     "chai-as-promised": "~4.1.1",
-    "child-process-promise": "~1.0.0",
     "grunt": "~0.4.5",
     "grunt-mocha-test": "~0.12.2",
     "mocha": "~2.0.1"

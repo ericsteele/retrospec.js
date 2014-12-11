@@ -8,11 +8,13 @@
  */
 'use strict';
 
-// libs
+// node libs
 var FS    = require('fs'),     // file system
-    Q     = require('q'),      // `kriskowal/q` promises
-    rmdir = require('rimraf'), // `rm -rf` for node
     path  = require('path');   // utils for resolving file paths
+
+// libs
+var Q     = require('q'),      // `kriskowal/q` promises
+    rmdir = require('rimraf'); // `rm -rf` for node
 
 // src
 var log        = require('../helper/logger'),      // logging util methods
@@ -78,18 +80,18 @@ function storeMetadata(project, projectPath) {
  * @return {Promise} A promise to produce the project's meta-data.
  */
 function readMetadata(projectPath) {
-  var filepath = path.resolve(projectPath, '.retrospec/project-snapshot.json');
+  var filePath = path.resolve(projectPath, '.retrospec/project-snapshot.json');
 
-  return fsHelper.exists(filepath)
+  return fsHelper.exists(filePath)
                  .then(readMetadataFile)
                  .then(JSON.parse);
 
   function readMetadataFile(exists) {
     if(exists) {
       log.info('reading metadata from file');
-      return readFile(filepath, 'utf-8');
+      return readFile(filePath, 'utf-8');
     } else {
-      log.warn('no project metadata found');
+      log.warn('project metadata file not found');
       return null;
     }
   }
