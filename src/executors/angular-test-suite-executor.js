@@ -10,7 +10,7 @@
 
 // libs
 var path = require('path'),
-    exec = require('child-process-promise').exec;
+    exec = require('child_process').exec;  // util for creating child processes
 
 // src
 var log         = require('../helper/logger'),
@@ -36,23 +36,25 @@ var testDirectory = path.resolve(rootDirectory, 'test/input/projects/angular.js/
  * @param  {String} projectDir - absolute path of the project under test
  */
 function executeTests(filePaths, projectDir) {
-  filePaths = ArrayHelper.getUnique(filePaths);
-
-  filePaths.forEach(function(filePath) {
-    var cmd = baseCmd + testDirectory + "\\" + filePath;
+  // var deferred = Q.defer(),
+  //     cmd      = 'grunt test --force --suites=' + tests.toString(),
+  //     options  = { cwd: projectDir };
   
-    log.info(cmd);
+  // log the test command for user to see
+  // log.info(cmd);
+  
+  // execute the tests
+  // var childProcess = exec(cmd, options, function(error, stdout, stderr) {
+  //   if (error !== null) {
+  //       log.error(error);
+  //       deferred.reject(error);
+  //   } else {
+  //     deferred.resolve(stdout);
+  //   }
+  // });
 
-    exec(cmd).then(
-      function(result) {
-        log.info('success!');
-        log.info(result);
-      },
-      function(a,b,c) {
-        log.info('fail');
-        log.info(a);
-        log.info(b);
-        log.info(c);
-      });
-  });
+  // pipe child process output to stdout
+  // childProcess.stdout.pipe(process.stdout);
+  
+  // return deferred.promise;
 }

@@ -11,8 +11,7 @@
 // libs
 var Q     = require('q'),                   // `kriskowal/q` promises
     path  = require('path'),                // util for transforming file paths
-    exec  = require('child_process').exec,  // util for creating child processes
-    spawn = require('child_process').spawn; // util for spawning child processes
+    exec  = require('child_process').exec;  // util for creating child processes
 
 // src
 var log         = require('../helper/logger'),
@@ -41,8 +40,8 @@ function executeTests(filePaths, projectDir) {
   // execute the tests
   var childProcess = exec(cmd, options, function(error, stdout, stderr) {
     if (error !== null) {
-        log.error(error);
-        deferred.reject(error);
+      log.error(error);
+      deferred.reject(error);
     } else {
       deferred.resolve(stdout);
     }
@@ -104,21 +103,6 @@ function removeTestCategoryFolder(filePath) {
  * @param  {String} filePath - path that may contain spaces
  * 
  * @return {String} - the `filePath` wrapped in quotes if it contains any spaces.
- */
-function removeFileName(filePath) {
-  if(filePath.indexOf('.html') !== -1) {
-    var iLastSep = filePath.lastIndexOf(path.sep);
-    return filePath.slice(iLastSep);
-  }
-  return filePath;
-}
-
-/**
- * Test paths that end in "/index.html" should have it removed. 
- * 
- * @param  {String} filePath - a path that may end in "/index.html"
- * 
- * @return {String} - the `filePath` minus the "/index.html" ending.
  */
 function removeFileName(filePath) {
   if(filePath.indexOf('.html') !== -1) {

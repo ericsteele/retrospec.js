@@ -11,9 +11,12 @@
 // libs
 var Q           = require('q'),                      // `kriskowal/q` promises
     path        = require('path'),                   // utils for transforming file paths
-    ArrayHelper = require('../helper/array-helper'), // array util methods
     exec        = require('child_process').exec,     // util for creating child processes
     FS          = require('fs');                     // file system
+
+// src
+var log         = require('../helper/logger'),       // logging
+    ArrayHelper = require('../helper/array-helper'); // array util methods
 
 // retrospec's interface for pluggable test execution logic
 var TestSuiteExecutor = require('./test-suite-executor');
@@ -37,18 +40,19 @@ function executeTests(filePaths, projectDir) {
   var cmd     = 'grunt test:retrospec',
       options = { cwd: projectDir, maxBuffer: 1024 * 5000 };
   
-  exec(cmd, options, function(error, stdout, stderr) {
+  var childProcess = exec(cmd, options, function(error, stdout, stderr) {
     if (error !== null) {
-      console.log(stdout)
-      console.log(stderr)
+      log.error(error);
       deferred.reject(error);
     } else {
-      console.log(stdout)
       deferred.resolve(stdout);
     }
   });
 
-  return deferred.promise
+  // pipe child process output to stdout
+  childProcess.stdout.pipe(process.stdout);
+
+  return deferred.promise;
 }
 
 /**
