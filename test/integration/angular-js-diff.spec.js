@@ -28,8 +28,7 @@ var buildProject  = require('../../src/helper/build-project.js'),
     diffProjects  = require('../../src/helper/diff-projects'),
     selectTests   = require('../../src/helper/select-tests'),
     srcExtractor  = require('../../src/extractors/angular-module-extractor'),
-    testExtractor = require('../../src/extractors/angular-karma-test-suite-extractor'),
-    testExecutor  = require('../../src/executors/angular-test-suite-executor');
+    testExtractor = require('../../src/extractors/angular-karma-test-suite-extractor');
 
 // turn off retrospec's logging
 require('../../src/helper/logger').off();
@@ -617,7 +616,6 @@ describe('angular-js-diff.spec.js', function() {
   function selectTestSuites(projects) {
     // tests: selectTests, diffProjects
     var tests = selectTests(projects[0], projects[1]);
-    //testExecutor.executeTests(tests);
     return tests;
   }
 
