@@ -235,6 +235,9 @@ function printHeader() {
  * @param  {Array}  startTime - the current high-resolution real time in a [seconds, nanoseconds] tuple Array
  */
 function printElapsed(message, startTime) {
-  var elapsed = process.hrtime(startTime);
-  log.info(message + elapsed[1]/1000000 + 'ms');
+  var elapsed = process.hrtime(startTime),
+      seconds = elapsed[0],
+      ms      = elapsed[1]/1000000;
+      
+  log.info(message + seconds + 's ' + ms + 'ms');
 }
