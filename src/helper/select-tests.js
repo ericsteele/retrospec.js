@@ -25,7 +25,7 @@ var tracedModules, // array of modules whose dependent tests have been traced
  * @param  {Project} original - the original `Project`
  * @param  {Project} modified - the modified `Project`
  * 
- * @return {Array} - array of regression test paths for the modified `Project`
+ * @return {Array} selected regression test paths for the modified `Project`
  */
 function selectTests(original, modified) {
   var diffs = diffProjects(original, modified);
@@ -42,9 +42,29 @@ function selectTests(original, modified) {
   var tests = mapToArray(selectedTests);
 
   // log selection results for user
-  log.info(tests.length + ' tests selected');
+  var totalTests = countTests(modified);
+  log.info(tests.length + '/' + totalTests + ' tests selected');
 
   return tests;
+}
+
+/**
+ * Counts how many test suites are in the provided project.
+ * 
+ * @param  {Project} project - the project
+ * 
+ * @return {Number} the number of test suites in the provided project.
+ */
+function countTests(project) {
+  var count = 0;
+
+  for(var test in project.testSuiteMap) {
+    if(project.testSuiteMap.hasOwnProperty(test)) {
+      count += 1;
+    }
+  }
+
+  return count;
 }
 
 /**
