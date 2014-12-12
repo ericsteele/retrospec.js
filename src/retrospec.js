@@ -39,9 +39,9 @@ var extractors = {
 
 // test execution plugins
 var executors = {
-  'angular-test-suite-executor': require('./executors/angular-test-suite-executor'),
-  'jqm-test-suite-executor-144': require('./executors/jqm-test-suite-executor-144'),
-  'jqm-test-suite-executor-131': require('./executors/jqm-test-suite-executor-131')
+  'angular-js-test-suite-executor': require('./executors/angular-js-test-suite-executor'),
+  'jqm-test-suite-executor-144':    require('./executors/jqm-test-suite-executor-144'),
+  'jqm-test-suite-executor-131':    require('./executors/jqm-test-suite-executor-131')
 };
 
 // add Q promise support to file system operations
