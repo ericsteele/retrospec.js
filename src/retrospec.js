@@ -66,7 +66,6 @@ retrospec.cli = function(args) {
 
   // parses the config JSON
   function parseConfig(configJSON) {
-    log.info('config: ' + configJSON);
     return JSON.parse(configJSON);
   }
 };
@@ -92,7 +91,7 @@ retrospec.cli = function(args) {
  *   
  */
 function retrospec(config) {
-  printHeader();
+  printHeader(config);
   validateConfig(config);
 
   // for measuring execution time
@@ -132,7 +131,9 @@ function retrospec(config) {
     modified = projects[1];
 
     if(original) {
-      return selectTests(original, modified);
+      var tests = selectTests(original, modified);
+      printElapsed('test selection time: ', retrospecStartTime);
+      return tests;
     }
   }
 
@@ -142,6 +143,9 @@ function retrospec(config) {
       return testExecutor.executeTests(testPaths).then(function() {
         printElapsed('test execution time: ', testExecStart);
       });
+    }
+    else {
+      log.info('test execution time: 0s 0ms');
     }
   }
 
@@ -221,11 +225,12 @@ function getExecutor(id) {
 /**
  * Prints the program header message.
  */
-function printHeader() {
+function printHeader(config) {
   log.divider();
   log.msg(' retrospec.js');
   log.divider();
   log.info('args: ' + JSON.stringify(cliArgs));
+  log.info('config: ' + JSON.stringify(config));
 }
 
 /**

@@ -47,13 +47,20 @@ var baseDir      = path.resolve(__dirname,    '../../..'),
     retrospecDir = path.resolve(baseDir,      'retrospec.js'),
     jqmDir       = path.resolve(baseDir,      'jquery-mobile'),
     outputDir    = path.resolve(retrospecDir, 'output/jqm-e2e-results-' + dtStamp),
-    configFile   = path.resolve(retrospecDir, 'test/input/configs/jqm-retrospec-config-131.json');
+    configFile   = path.resolve(retrospecDir, 'test/input/configs/jqm-retrospec-config-131.json'),
+    resultsFile  = path.resolve(outputDir,    'final-results.txt');
 
-// count of the number of tests that have run
-var testCount = 0;
+// count of the number of rts executions
+var rtsCount = 0;
 
-// 20 consecutive SHAs
+// will contain concatenated results of all rts executions
+var rtsResults = 'rev1 to rev2: [selected tests] [test selection time] [test execution time]\n' +
+                 '--------------------------------------------------------------------------\n';
+
+// 30 consecutive SHAs
 var SHAs = [
+  '22fcdba', '516afad', '050ef35', '18a3cd6', 'cb6a2c1',
+  'f6ce1bf', 'cc95c3f', '86c75da', '6f97d29', '09832f3',
   '3a22e02', '2e1bb85', '277d379', '044a3f8', 'aea0f99',
   'eb8d2ba', 'b9b25ba', '1651544', '7378b55', '7b31cee',
   'bc4d8e2', '468d221', '5f34b77', '0e6bf28', '2d5b272',
@@ -82,8 +89,12 @@ for(var i = 1, iEnd = SHAs.length; i < iEnd; i++) {
   executeTests(SHAs[i], SHAs[i-1]);
 }
 
+// Write results to file
+log.info('writing results to file');
+FS.writeFileSync(resultsFile, rtsResults);
+
 function executeTests(nextSHA, currSHA) {
-  testCount += 1;
+  rtsCount += 1;
   gitCheckout(nextSHA);
   npmInstall();
   runRetrospec(nextSHA, currSHA);
@@ -100,13 +111,23 @@ function npmInstall() {
 }
 
 function runRetrospec(currSHA, prevSHA) {
+  var outputFileName = 'rts-' + rtsCount + '-' + prevSHA + '-to-' + currSHA + '.txt',
+      outputFilePath = path.resolve(outputDir, outputFileName);
+
+  // execute rts
   log.info('running retrospec');
-
-  var resultFileName = 'rts-' + testCount + '-' + prevSHA + '-to-' + currSHA + '.txt',
-      resultFilePath = path.resolve(outputDir, resultFileName);
-
   var output = shell.exec('retrospec ' + configFile + ' -s').output;
-
   log.info('finished rts for ' + prevSHA + ' to ' + currSHA);
-  FS.writeFileSync(resultFilePath, output);
+
+  // write output to file
+  log.info('writing output to file: ' + outputFileName);
+  FS.writeFileSync(outputFilePath, output);
+
+  // parse output for results
+  var selectTime = output.match(/test selection time: (.*)/)[1],
+      execTime   = output.match(/test execution time: (.*)/)[1],
+      testsRun   = output.match(/ (.*) tests selected/)[1];
+
+  // add results
+  rtsResults += prevSHA + ' to ' + currSHA + ': [' + testsRun + '] [' + selectTime  + '] [' + execTime + ']\n';
 }
