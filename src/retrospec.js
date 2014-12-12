@@ -95,6 +95,10 @@ function retrospec(config) {
   printHeader();
   validateConfig(config);
 
+  // for measuring execution time
+  var retrospecStartTime = process.hrtime();
+
+  // get the test executor
   var testExecutor = getExecutor(config.test.executor);
 
   // project metadata
@@ -106,7 +110,8 @@ function retrospec(config) {
   .then(getProjects)
   .then(getTests)
   .then(runTests)
-  .then(storeMetadata);
+  .then(storeMetadata)
+  .then(logExecutionTime);
 
   function getProjects() {
     return Q.all([
@@ -133,7 +138,10 @@ function retrospec(config) {
 
   function runTests(testPaths) {
     if(testPaths && testPaths.length > 0) {
-      return testExecutor.executeTests(testPaths);
+      var testExecStart = process.hrtime(); 
+      return testExecutor.executeTests(testPaths).then(function() {
+        printElapsed('test execution time: ', testExecStart);
+      });
     }
   }
 
@@ -141,6 +149,10 @@ function retrospec(config) {
     if(cliArgs.options.save) {
       return metadata.store(modified, cwd);
     }
+  }
+
+  function logExecutionTime() {
+    printElapsed('total execution time: ', retrospecStartTime);
   }
 
 }
@@ -214,4 +226,15 @@ function printHeader() {
   log.msg(' retrospec.js');
   log.divider();
   log.info('args: ' + JSON.stringify(cliArgs));
+}
+
+/**
+ * Prints the provided message followed by how much time has elapsed since `startTime` was created.
+ * 
+ * @param  {String} message   - message to print before displaying the elapsed time
+ * @param  {Array}  startTime - the current high-resolution real time in a [seconds, nanoseconds] tuple Array
+ */
+function printElapsed(message, startTime) {
+  var elapsed = process.hrtime(startTime);
+  log.info(message + elapsed[1]/1000000 + 'ms');
 }
