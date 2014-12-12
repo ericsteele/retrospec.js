@@ -29,7 +29,8 @@ function hashStr(string) {
   hash.setEncoding('hex');
 
   // the text that you want to hash
-  hash.write(string);
+  var newStr = string.replace(/\n/g, '').replace(/\r/g, '');
+  hash.write(newStr);
 
   // very important! You cannot read from the stream until you haven't called end()
   hash.end();

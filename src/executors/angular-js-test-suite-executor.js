@@ -19,7 +19,7 @@ var Q           = require('q'),                      // `kriskowal/q` promises
 var TestSuiteExecutor = require('./test-suite-executor');
 
 // exports
-module.exports = new TestSuiteExecutor('angular-karma-test-suite-executor', executeTests);
+module.exports = new TestSuiteExecutor('angular-js-test-suite-executor', executeTests);
 
 /**
  * Executes the selected jQuery Mobile tests.
