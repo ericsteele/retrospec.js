@@ -148,12 +148,12 @@ describe('angular-js-diff.spec.js', function() {
   });
 
   describe('b6f4d4b to fef0cfc, far revisions', function() {
-    it('should select 70 regression tests', function(done) {
+    it('should select 69 regression tests', function(done) {
       var promiseP1 = getAngularProject(b6f4d4b),
           promiseP2 = getAngularProject(fef0cfc);
 
       Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                   .should.eventually.have.length(70)
+                                   .should.eventually.have.length(69)
                                    .notify(done);
     });
   });
@@ -171,12 +171,12 @@ describe('angular-js-diff.spec.js', function() {
     });
     
     describe('e6ece7d to f6f0791', function() {
-      it('should select 56 regression tests', function(done) {
+      it('should select 54 regression tests', function(done) {
         var promiseP1 = getAngularProject(e6ece7d),
             promiseP2 = getAngularProject(f6f0791);
 
         Q.all([promiseP1, promiseP2]).then(selectTestSuites)
-                                     .should.eventually.have.length(56)
+                                     .should.eventually.have.length(54)
                                      .notify(done);
       });
     });
