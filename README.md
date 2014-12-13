@@ -97,11 +97,9 @@ In order to select and execute test suites, this tool must be able to extract te
 We validated retrospec's ability to select and execute regression tests by running it over 50 consecutive revisions of 3 OSS projects and inspecting the results.
 
 #####Tasks
-* Run retrospec on 50 consecutive revisions of `angular-bootstrap`
-
-### Remaining Tasks
 * Run retrospec on 50 consecutive revisions of `jquery-mobile`
 * Run retrospec on 50 consecutive revisions of `angular`
+* Run retrospec on 50 consecutive revisions of `angular-bootstrap`
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
