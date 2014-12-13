@@ -34,14 +34,15 @@ var extractors = {
   // test suite
   'inline-comment-test-suite-extractor': require('./extractors/requirejs-module-extractor'),
   'angular-karma-test-suite-extractor':  require('./extractors/angular-karma-test-suite-extractor'),
-  'jqm-test-suite-extractor':            require('./extractors/jqm-test-suite-extractor'),
+  'jqm-test-suite-extractor':            require('./extractors/jqm-test-suite-extractor')
 };
 
 // test execution plugins
 var executors = {
   'angular-js-test-suite-executor': require('./executors/angular-js-test-suite-executor'),
   'jqm-test-suite-executor-144':    require('./executors/jqm-test-suite-executor-144'),
-  'jqm-test-suite-executor-131':    require('./executors/jqm-test-suite-executor-131')
+  'jqm-test-suite-executor-131':    require('./executors/jqm-test-suite-executor-131'),
+  'ui-bootstrap-test-suite-executor': require('./executors/ui-bootstrap-test-suite-executor')
 };
 
 // add Q promise support to file system operations

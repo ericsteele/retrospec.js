@@ -1,0 +1,11 @@
+  grunt.registerTask('test:retrospec', 'Run tests on singleRun karma server using retrospec framework', function() {
+    var isToRunJenkinsTask = false;
+    var karmaOptions = grunt.config.get('karma.options');
+    karmaOptions.configFile = 'retrospec-karma.conf.js';
+    if(grunt.option('coverage')) {
+      var coverageOpts = grunt.config.get('karma.coverage');
+      grunt.util._.extend(karmaOptions, coverageOpts);
+    }
+    grunt.config.set('karma.options', karmaOptions);
+    grunt.task.run('karma:continuous');
+  });

@@ -1,0 +1,13 @@
+{
+  "src": {
+    "path":      "./",
+    "blobs":     ["src/*/*.js"], 
+    "extractor": "angular-module-extractor"
+  },
+  "test": {
+    "path":      "./",
+    "blobs":     ["src/*/test/*.spec.js"],
+    "extractor": "angular-karma-test-suite-extractor",
+    "executor":  "ui-bootstrap-test-suite-executor"
+  }
+}
