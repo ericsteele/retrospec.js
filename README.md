@@ -14,7 +14,7 @@ $ npm install
 ```
 
 ## Tests
-This project uses the [Mocha](https://github.com/mochajs/mocha) testing framework and the [Chai](https://github.com/chaijs/chai) assertion library. It contains unit, integration, and end-2-end (e2e) tests. 
+This project uses the [Mocha](https://github.com/mochajs/mocha) testing framework and the [Chai](https://github.com/chaijs/chai) assertion library. It contains unit, integration, and end-to-end (e2e) tests. 
 
 #### Unit & Integration
 To run unit and integration tests, first install dependencies, then run:
@@ -30,7 +30,16 @@ $ grunt test
 ```
 
 #### End-to-End (e2e)
-This project stores its e2e test scripts in the `retrospec.js/test/e2e` directory. After installing project dependencies, you can execute the e2e scripts using NodeJS:
+This project stores its e2e test scripts in the `retrospec.js/test/e2e` directory. Each script executes retrospec on 50 consecutive revisions of one of our 3 validation projects. The output of each retrospec execution is written to file in the `retrospec.js/output` directory. We aggregate this output data and write it to a file named `final-results.txt` (also in the output directory). The results file has the following format:
+
+> rev1 to rev2: [selected tests] [test selection time] [test execution time]
+<br>---------------------------------------------------------------------------------------
+<br>b7eb69e to a294c87: [2/25] [0s 93.613631ms] [3s 987.647555ms]
+<br>a294c87 to 68e5644: [0/25] [0s 98.243777ms] [0s 0ms]
+<br>cde6a45 to 09678b1: [4/25] [0s 97.150709ms] [2s 860.635545ms]
+
+##### Running E2E Tests 
+After installing project dependencies, you can execute the e2e scripts using NodeJS:
 
 ```bash
 $ node ./test/e2e/jquery-mobile-e2e.js
