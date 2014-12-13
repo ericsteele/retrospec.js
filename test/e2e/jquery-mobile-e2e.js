@@ -1,5 +1,5 @@
 /*
- * jquery-mobile-e2e.spec.js
+ * jquery-mobile-e2e.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele
@@ -7,17 +7,6 @@
  * https://github.com/ericsteele/retrospec.js/blob/master/LICENSE
  */
 'use strict';
-
-// chai assertion library
-// var chai = require('chai');
-
-// extend chai with assertions about promises
-// chai.use(require('chai-as-promised'));
-
-// grab chai's assert, expect, and should interfaces
-// var assert = chai.assert,
-//     expect = chai.expect,
-//     should = chai.should(); // Note that should has to be executed
 
 // node libs
 var FS   = require('fs'),
@@ -40,7 +29,7 @@ if (!shell.which('git')) {
 log.on();
 
 // get the current datetime
-var dtStamp = moment().format('YYYY-MM-DD_HH-MM-SS');
+var dtStamp = moment().format('YYYY-MM-DD_HH-mm-ss');
 
 // cwd = retrospec/test/e2e
 var baseDir      = path.resolve(__dirname,    '../../..'),
@@ -57,8 +46,12 @@ var rtsCount = 0;
 var rtsResults = 'rev1 to rev2: [selected tests] [test selection time] [test execution time]\n' +
                  '--------------------------------------------------------------------------\n';
 
-// 30 consecutive SHAs
+// 50 consecutive SHAs
 var SHAs = [
+  '3bec3f1', '246c455', '30c669a', '2b04726', '143bdae',
+  'd8375b7', 'b554523', '6173fb9', 'f41168a', 'b207d6c',
+  '923ca08', 'b989774', 'd14b90d', 'dfc5d32', 'abc9754',
+  '819a0cd', 'a379025', 'cfc1195', 'a8618c4', '66404fd',
   '22fcdba', '516afad', '050ef35', '18a3cd6', 'cb6a2c1',
   'f6ce1bf', 'cc95c3f', '86c75da', '6f97d29', '09832f3',
   '3a22e02', '2e1bb85', '277d379', '044a3f8', 'aea0f99',
