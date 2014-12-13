@@ -40,7 +40,7 @@ if (!shell.which('git')) {
 log.on();
 
 // get the current datetime
-var dtStamp = moment().format('YYYY-MM-DD_HH-MM-SS');
+var dtStamp = moment().format('YYYY-MM-DD_HH-mm-ss');
 
 // cwd = retrospec/test/e2e
 var baseDir      = path.resolve(__dirname,    '../../..'),
