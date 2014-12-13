@@ -1,5 +1,5 @@
 /*
- * jquery-mobile-e2e.spec.js
+ * jquery-mobile-e2e.js
  * https://github.com/ericsteele/retrospec.js
  *
  * Copyright (c) 2014 Eric Steele
@@ -7,17 +7,6 @@
  * https://github.com/ericsteele/retrospec.js/blob/master/LICENSE
  */
 'use strict';
-
-// chai assertion library
-// var chai = require('chai');
-
-// extend chai with assertions about promises
-// chai.use(require('chai-as-promised'));
-
-// grab chai's assert, expect, and should interfaces
-// var assert = chai.assert,
-//     expect = chai.expect,
-//     should = chai.should(); // Note that should has to be executed
 
 // node libs
 var FS   = require('fs'),
