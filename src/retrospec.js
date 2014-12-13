@@ -54,6 +54,8 @@ var cwd = process.cwd();
 // CLI arguments
 var cliArgs;
 
+var shouldRunTests = true; // Will be set to false if no executor is found in config
+
 /**
  * Invoked by retrospec-cli.
  */
@@ -99,7 +101,9 @@ function retrospec(config) {
   var retrospecStartTime = process.hrtime();
 
   // get the test executor
-  var testExecutor = getExecutor(config.test.executor);
+  if (shouldRunTests) {
+    var testExecutor = getExecutor(config.test.executor);
+  }
 
   // project metadata
   var original, // read from metadata in file 
@@ -139,6 +143,9 @@ function retrospec(config) {
   }
 
   function runTests(testPaths) {
+    if (!shouldRunTests) {
+      return;
+    }
     if(testPaths && testPaths.length > 0) {
       var testExecStart = process.hrtime(); 
       return testExecutor.executeTests(testPaths).then(function() {
@@ -190,7 +197,9 @@ function validateConfig(config) {
   if(!config.src.path)       throw Error('missing argument "config.src.path"');
   if(!config.test)           throw Error('missing argument "config.test"');
   if(!config.test.extractor) throw Error('missing argument "config.test.extractor"');
-  if(!config.test.executor)  throw Error('missing argument "config.test.executor"');
+  // Executor is optional.
+  //if(!config.test.executor)  throw Error('missing argument "config.test.executor"');
+  if(!config.test.executor)  shouldRunTests = false;
 }
 
 /**

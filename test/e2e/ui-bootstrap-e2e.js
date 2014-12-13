@@ -8,17 +8,6 @@
  */
 'use strict';
 
-// chai assertion library
-// var chai = require('chai');
-
-// extend chai with assertions about promises
-// chai.use(require('chai-as-promised'));
-
-// grab chai's assert, expect, and should interfaces
-// var assert = chai.assert,
-//     expect = chai.expect,
-//     should = chai.should(); // Note that should has to be executed
-
 // node libs
 var FS   = require('fs'),
     exec = require('child_process').exec,
@@ -40,7 +29,7 @@ if (!shell.which('git')) {
 log.on();
 
 // get the current datetime
-var dtStamp = moment().format('YYYY-MM-DD_HH-MM-SS');
+var dtStamp = moment().format('YYYY-MM-DD_HH-mm-ss');
 
 // cwd = retrospec/test/e2e
 var baseDir        = path.resolve(__dirname,    '../../..'),
@@ -154,7 +143,7 @@ function copyKarmaConfigTemplate(karmaConfigTemplatePath) {
 
 function gitCheckout(sha) {
   log.info('git checkout ' + sha);
-  shell.exec('git checkout ' + sha);
+  shell.exec('git checkout -f ' + sha);
 }
 
 function npmInstall() {
