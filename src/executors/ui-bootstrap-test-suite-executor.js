@@ -22,7 +22,7 @@ var log         = require('../helper/logger'),       // logging
 var TestSuiteExecutor = require('./test-suite-executor');
 
 // exports
-module.exports = new TestSuiteExecutor('angular-karma-test-suite-executor', executeTests);
+module.exports = new TestSuiteExecutor('ui-bootstrap-test-suite-executor', executeTests);
 
 /**
  * Executes the selected jQuery Mobile tests.
