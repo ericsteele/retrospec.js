@@ -59,7 +59,7 @@ The following projects are being used for validation purposes:
 #### [jQuery-Mobile](https://github.com/jquery/jquery-mobile/)
 Uses the [RequireJS](https://github.com/jrburke/requirejs) module loader and the [QUnit](https://github.com/jquery/qunit) testing framework.
 
-#### [AngularJS](https://github.com/jquery/jquery-mobile/)
+#### [AngularJS](https://github.com/angular/angular)
 Uses the [AngularJS](https://github.com/angular/angular) module loader, [Karma](https://github.com/karma-runner/karma) test runner, and [Jasmine](https://github.com/jasmine/jasmine) testing framework.
 
 #### [Angular UI-Bootstrap](https://github.com/angular-ui/bootstrap)
