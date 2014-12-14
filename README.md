@@ -78,7 +78,7 @@ This tool  uses the dependency tracking information provided by JavaScript modul
 * Automate extraction of `AngularJS` modules from `angular` & `angular-bootstrap`
 
 #### Test Suite Extraction
-In order to select and execute test suites, this tool must be able to extract test suite metadata from testing frameworks such as [QUnit](https://github.com/jquery/qunit) and  [Jasmine](https://github.com/jasmine/jasmine).
+In order to select and execute test suites, this tool must be able to extract test suite metadata from testing frameworks such as [QUnit](https://github.com/jquery/qunit) and  [Karma](https://github.com/karma-runner/karma).
 
 #####Completed Tasks
 * Automate extraction of `QUnit` test suites from `jquery-mobile`
