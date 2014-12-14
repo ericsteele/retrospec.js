@@ -92,7 +92,7 @@ In order to select and execute test suites, this tool must be able to extract te
 * Build a project model using the extracted code module and test suite data
 * Store and retrieve project models in JSON files
 * Diff project models to identify file adds, edits, deletes, and moves.
-* Select regression tests using project model diff results.
+* Select regression tests for `angular`, `angular-bootstrap`, and `jquery-mobile`.
 * Execute selected regression tests for `jquery-mobile` and `angular-bootstrap`.
 
 #####Dropped Tasks
