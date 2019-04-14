@@ -1,6 +1,10 @@
 # retrospec.js
 
-A regression test selection tool for JavaScript. Currently under development.
+**Note: This project has been discontinued.**
+
+A regression test selection tool for JavaScript.
+
+Developed for CS 527 "Topics in Software Engineering" @ UIUC.
 
 ## Project Setup
 
@@ -69,26 +73,26 @@ Uses the [AngularJS](https://github.com/angular/angular) module loader, [Karma](
 ## Progress
 
 #### Validation Project Selection
-In order to test `retrospec` and validate that it works we needed to find some open source JavaScript projects that could use it. After downloading and executing unit tests for 10 popular open source projects (12 revisions of each), we found that 3 of the projects had tests that ran long enough to warrant regression test selection. We found that `jquery-mobile`'s tests typically run for about 18 minutes on average while `angular's` tests run for about 18 seconds and `angular-bootstrap`'s tests take about 7.5 seconds.
+In order to test `retrospec` and validate that it works, we needed to find some open source JavaScript projects that could use it. After downloading and executing unit tests for 10 popular open source projects (12 revisions of each), we found that 3 of the projects had tests that ran long enough to warrant regression test selection. We found that `jquery-mobile`'s tests typically run for about 18 minutes on average while `angular's` tests run for about 18 seconds and `angular-bootstrap`'s tests take about 7.5 seconds.
 
 #### Code Module Extraction
 This tool  uses the dependency tracking information provided by JavaScript module loaders such as [AngularJS](https://github.com/angular/angular) and [RequireJS](https://github.com/jrburke/requirejs).
 
-#####Completed Tasks
+##### Completed Tasks
 * Automate extraction of `RequireJS` modules from `jquery-mobile` 
 * Automate extraction of `AngularJS` modules from `angular` & `angular-bootstrap`
 
 #### Test Suite Extraction
 In order to select and execute test suites, this tool must be able to extract test suite metadata from testing frameworks such as [QUnit](https://github.com/jquery/qunit) and  [Karma](https://github.com/karma-runner/karma).
 
-#####Completed Tasks
+##### Completed Tasks
 * Automate extraction of `QUnit` test suites from `jquery-mobile`
 * Automate extraction of `Jasmine` test suites from `angular` & `angular-bootstrap`
 * Automate extraction of `inline comment` test suite definitions (for ad-hoc use)
 
 #### Regression Test Selection
 
-#####Completed Tasks
+##### Completed Tasks
 * Detect changes to files between revisions by comparing file hashes
 * Build a project model using the extracted code module and test suite data
 * Store and retrieve project models in JSON files
@@ -96,7 +100,7 @@ In order to select and execute test suites, this tool must be able to extract te
 * Select regression tests for `angular`, `angular-bootstrap`, and `jquery-mobile`.
 * Execute selected regression tests for `jquery-mobile` and `angular-bootstrap`.
 
-#####Dropped Tasks
+##### Dropped Tasks
 * Execute selected regression tests for `angular`.
 	* Unfortunately, the `angular` project's testing setup does not allow us to execute individual tests.
 
