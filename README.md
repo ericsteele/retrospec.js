@@ -3,10 +3,11 @@
 A regression test selection tool for JavaScript. Currently under development.
 
 ## Project Setup
-####This project uses NodeJS
+
+#### This project uses NodeJS
 If you do not have NodeJS installed, get it [here](https://nodejs.org/).
 
-####Install dependencies
+#### Install dependencies
 Project dependencies are managed via [npm](https://www.npmjs.org/):
 
 ```bash
